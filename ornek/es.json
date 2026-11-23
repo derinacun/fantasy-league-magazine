@@ -1,0 +1,720 @@
+{
+ "haftalar/hafta-01.json": {
+  "period": "20–25 de octubre de 2026",
+  "weeks": [
+   {
+    "period": "20–25 de octubre de 2026"
+   }
+  ],
+  "title": "Iron Hoopers arrolla a Bench Mob 7–2",
+  "summary": "Semana 1 de la liga de ejemplo: Iron Hoopers firmó la victoria más amplia, Mountain Goats superó por poco a Pick and Rollers 5–4 y Iron Hoopers lidera la clasificación con 7–2.",
+  "article": {
+   "byline": "La redacción",
+   "photo": {
+    "caption": "La directiva de Iron Hoopers tras la victoria 7–2 (pie de foto de ejemplo)."
+   },
+   "paragraphs": [
+    "Este es un texto de ejemplo de la liga de demostración. En tu propia liga, la IA escribe este artículo cada semana a partir de los números y, si tu liga está de acuerdo, del chat del grupo.",
+    "Iron Hoopers ganó 7–2 a Bench Mob, el enfrentamiento más desigual de la semana 1. El más ajustado: Mountain Goats ante Pick and Rollers, 5–4.",
+    "Iron Hoopers lidera la clasificación con un balance de 7–2. Todas las cifras de esta página las calcula el sitio a partir del archivo de datos de la semana."
+   ]
+  },
+  "stories": [
+   {
+    "label": "EL PARTIDO DE LA SEMANA",
+    "title": "Mountain Goats se salva por poco",
+    "text": "Mountain Goats ganó 5–4 a Pick and Rollers. Análisis de ejemplo: el redactor explica qué categorías decidieron el partido."
+   },
+   {
+    "label": "ACTUALIDAD DE LA LIGA",
+    "title": "Iron Hoopers marca el ritmo",
+    "text": "Análisis de ejemplo sobre el líder de la liga, Iron Hoopers."
+   }
+  ],
+  "teamNotes": [
+   {
+    "text": "Nota de ejemplo para Lakeside Lynx: de una a tres frases sobre su semana."
+   },
+   {
+    "text": "Nota de ejemplo para Iron Hoopers: de una a tres frases sobre su semana."
+   },
+   {
+    "text": "Nota de ejemplo para Night Shift: de una a tres frases sobre su semana."
+   },
+   {
+    "text": "Nota de ejemplo para Brick City: de una a tres frases sobre su semana."
+   },
+   {
+    "text": "Nota de ejemplo para Coastal Comets: de una a tres frases sobre su semana."
+   },
+   {
+    "text": "Nota de ejemplo para Paper Tigers: de una a tres frases sobre su semana."
+   },
+   {
+    "text": "Nota de ejemplo para Bench Mob: de una a tres frases sobre su semana."
+   },
+   {
+    "text": "Nota de ejemplo para Green Clovers: de una a tres frases sobre su semana."
+   },
+   {
+    "text": "Nota de ejemplo para Glass Cleaners: de una a tres frases sobre su semana."
+   },
+   {
+    "text": "Nota de ejemplo para Mountain Goats: de una a tres frases sobre su semana."
+   },
+   {
+    "text": "Nota de ejemplo para Pick and Rollers: de una a tres frases sobre su semana."
+   },
+   {
+    "text": "Nota de ejemplo para Soup Kitchen: de una a tres frases sobre su semana."
+   },
+   {
+    "text": "Nota de ejemplo para Storm Chasers: de una a tres frases sobre su semana."
+   },
+   {
+    "text": "Nota de ejemplo para Court Jesters: de una a tres frases sobre su semana."
+   }
+  ],
+  "playerNotes": [
+   {
+    "label": "NOTA DE JUGADOR",
+    "text": "Nota de ejemplo sobre Ty Jerome: qué pasó esta semana y por qué importa en fantasy."
+   },
+   {
+    "label": "NOTA DE JUGADOR",
+    "text": "Nota de ejemplo sobre Anthony Black: qué pasó esta semana y por qué importa en fantasy."
+   },
+   {
+    "label": "NOTA DE JUGADOR",
+    "text": "Nota de ejemplo sobre Fred VanVleet: qué pasó esta semana y por qué importa en fantasy."
+   },
+   {
+    "label": "NOTA DE JUGADOR",
+    "text": "Nota de ejemplo sobre Shai Gilgeous-Alexander: qué pasó esta semana y por qué importa en fantasy."
+   },
+   {
+    "label": "NOTA DE JUGADOR",
+    "text": "Nota de ejemplo sobre Peyton Watson: qué pasó esta semana y por qué importa en fantasy."
+   }
+  ],
+  "trades": [
+   {
+    "benefitA": "Ejemplo: lo que gana el equipo A.",
+    "benefitB": "Ejemplo: lo que gana el equipo B.",
+    "risk": "Ejemplo: el principal riesgo de este traspaso.",
+    "confidence": "Encaje · condicionado"
+   },
+   {
+    "benefitA": "Ejemplo: lo que gana el equipo A.",
+    "benefitB": "Ejemplo: lo que gana el equipo B.",
+    "risk": "Ejemplo: el principal riesgo de este traspaso.",
+    "confidence": "Encaje · condicionado"
+   },
+   {
+    "benefitA": "Ejemplo: lo que gana el equipo A.",
+    "benefitB": "Ejemplo: lo que gana el equipo B.",
+    "risk": "Ejemplo: el principal riesgo de este traspaso.",
+    "confidence": "Encaje · condicionado"
+   },
+   {
+    "benefitA": "Ejemplo: lo que gana el equipo A.",
+    "benefitB": "Ejemplo: lo que gana el equipo B.",
+    "risk": "Ejemplo: el principal riesgo de este traspaso.",
+    "confidence": "Encaje · condicionado"
+   },
+   {
+    "benefitA": "Ejemplo: lo que gana el equipo A.",
+    "benefitB": "Ejemplo: lo que gana el equipo B.",
+    "risk": "Ejemplo: el principal riesgo de este traspaso.",
+    "confidence": "Encaje · condicionado"
+   },
+   {
+    "benefitA": "Ejemplo: lo que gana el equipo A.",
+    "benefitB": "Ejemplo: lo que gana el equipo B.",
+    "risk": "Ejemplo: el principal riesgo de este traspaso.",
+    "confidence": "Encaje · condicionado"
+   },
+   {
+    "benefitA": "Ejemplo: lo que gana el equipo A.",
+    "benefitB": "Ejemplo: lo que gana el equipo B.",
+    "risk": "Ejemplo: el principal riesgo de este traspaso.",
+    "confidence": "Encaje · condicionado"
+   }
+  ],
+  "sources": [
+   {
+    "label": "Datos de ejemplo · liga de ejemplo anonimizada"
+   }
+  ]
+ },
+ "haftalar/hafta-02.json": {
+  "period": "26 de octubre – 1 de noviembre de 2026",
+  "weeks": [
+   {
+    "period": "20–25 de octubre de 2026"
+   },
+   {
+    "period": "26 de octubre – 1 de noviembre de 2026"
+   }
+  ],
+  "title": "Coastal Comets arrolla a Pick and Rollers 6–3",
+  "summary": "Semana 2 de la liga de ejemplo: Coastal Comets firmó la victoria más amplia, Soup Kitchen superó por poco a Paper Tigers 5–4 y Iron Hoopers lidera la clasificación con 12–5.",
+  "article": {
+   "byline": "La redacción",
+   "photo": {
+    "caption": "La directiva de Coastal Comets tras la victoria 6–3 (pie de foto de ejemplo)."
+   },
+   "paragraphs": [
+    "Este es un texto de ejemplo de la liga de demostración. En tu propia liga, la IA escribe este artículo cada semana a partir de los números y, si tu liga está de acuerdo, del chat del grupo.",
+    "Coastal Comets ganó 6–3 a Pick and Rollers, el enfrentamiento más desigual de la semana 2. El más ajustado: Soup Kitchen ante Paper Tigers, 5–4.",
+    "Iron Hoopers lidera la clasificación con un balance de 12–5–1. Todas las cifras de esta página las calcula el sitio a partir del archivo de datos de la semana."
+   ]
+  },
+  "stories": [
+   {
+    "label": "EL PARTIDO DE LA SEMANA",
+    "title": "Soup Kitchen se salva por poco",
+    "text": "Soup Kitchen ganó 5–4 a Paper Tigers. Análisis de ejemplo: el redactor explica qué categorías decidieron el partido."
+   },
+   {
+    "label": "ACTUALIDAD DE LA LIGA",
+    "title": "Iron Hoopers marca el ritmo",
+    "text": "Análisis de ejemplo sobre el líder de la liga, Iron Hoopers."
+   }
+  ],
+  "teamNotes": [
+   {
+    "text": "Nota de ejemplo para Lakeside Lynx: de una a tres frases sobre su semana."
+   },
+   {
+    "text": "Nota de ejemplo para Iron Hoopers: de una a tres frases sobre su semana."
+   },
+   {
+    "text": "Nota de ejemplo para Night Shift: de una a tres frases sobre su semana."
+   },
+   {
+    "text": "Nota de ejemplo para Brick City: de una a tres frases sobre su semana."
+   },
+   {
+    "text": "Nota de ejemplo para Coastal Comets: de una a tres frases sobre su semana."
+   },
+   {
+    "text": "Nota de ejemplo para Paper Tigers: de una a tres frases sobre su semana."
+   },
+   {
+    "text": "Nota de ejemplo para Bench Mob: de una a tres frases sobre su semana."
+   },
+   {
+    "text": "Nota de ejemplo para Green Clovers: de una a tres frases sobre su semana."
+   },
+   {
+    "text": "Nota de ejemplo para Glass Cleaners: de una a tres frases sobre su semana."
+   },
+   {
+    "text": "Nota de ejemplo para Mountain Goats: de una a tres frases sobre su semana."
+   },
+   {
+    "text": "Nota de ejemplo para Pick and Rollers: de una a tres frases sobre su semana."
+   },
+   {
+    "text": "Nota de ejemplo para Soup Kitchen: de una a tres frases sobre su semana."
+   },
+   {
+    "text": "Nota de ejemplo para Storm Chasers: de una a tres frases sobre su semana."
+   },
+   {
+    "text": "Nota de ejemplo para Court Jesters: de una a tres frases sobre su semana."
+   }
+  ],
+  "playerNotes": [
+   {
+    "label": "NOTA DE JUGADOR",
+    "text": "Nota de ejemplo sobre Ajay Mitchell: qué pasó esta semana y por qué importa en fantasy."
+   },
+   {
+    "label": "NOTA DE JUGADOR",
+    "text": "Nota de ejemplo sobre Davion Mitchell: qué pasó esta semana y por qué importa en fantasy."
+   },
+   {
+    "label": "NOTA DE JUGADOR",
+    "text": "Nota de ejemplo sobre Matas Buzelis: qué pasó esta semana y por qué importa en fantasy."
+   },
+   {
+    "label": "NOTA DE JUGADOR",
+    "text": "Nota de ejemplo sobre Chet Holmgren: qué pasó esta semana y por qué importa en fantasy."
+   },
+   {
+    "label": "NOTA DE JUGADOR",
+    "text": "Nota de ejemplo sobre Anthony Edwards: qué pasó esta semana y por qué importa en fantasy."
+   }
+  ],
+  "trades": [
+   {
+    "benefitA": "Ejemplo: lo que gana el equipo A.",
+    "benefitB": "Ejemplo: lo que gana el equipo B.",
+    "risk": "Ejemplo: el principal riesgo de este traspaso.",
+    "confidence": "Encaje · condicionado"
+   },
+   {
+    "benefitA": "Ejemplo: lo que gana el equipo A.",
+    "benefitB": "Ejemplo: lo que gana el equipo B.",
+    "risk": "Ejemplo: el principal riesgo de este traspaso.",
+    "confidence": "Encaje · condicionado"
+   },
+   {
+    "benefitA": "Ejemplo: lo que gana el equipo A.",
+    "benefitB": "Ejemplo: lo que gana el equipo B.",
+    "risk": "Ejemplo: el principal riesgo de este traspaso.",
+    "confidence": "Encaje · condicionado"
+   },
+   {
+    "benefitA": "Ejemplo: lo que gana el equipo A.",
+    "benefitB": "Ejemplo: lo que gana el equipo B.",
+    "risk": "Ejemplo: el principal riesgo de este traspaso.",
+    "confidence": "Encaje · condicionado"
+   },
+   {
+    "benefitA": "Ejemplo: lo que gana el equipo A.",
+    "benefitB": "Ejemplo: lo que gana el equipo B.",
+    "risk": "Ejemplo: el principal riesgo de este traspaso.",
+    "confidence": "Encaje · condicionado"
+   },
+   {
+    "benefitA": "Ejemplo: lo que gana el equipo A.",
+    "benefitB": "Ejemplo: lo que gana el equipo B.",
+    "risk": "Ejemplo: el principal riesgo de este traspaso.",
+    "confidence": "Encaje · condicionado"
+   }
+  ],
+  "sources": [
+   {
+    "label": "Datos de ejemplo · liga de ejemplo anonimizada"
+   }
+  ]
+ },
+ "haftalar/hafta-03.json": {
+  "period": "2–8 de noviembre de 2026",
+  "weeks": [
+   {
+    "period": "20–25 de octubre de 2026"
+   },
+   {
+    "period": "26 de octubre – 1 de noviembre de 2026"
+   },
+   {
+    "period": "2–8 de noviembre de 2026"
+   }
+  ],
+  "title": "Soup Kitchen arrolla a Night Shift 7–2",
+  "summary": "Semana 3 de la liga de ejemplo: Soup Kitchen firmó la victoria más amplia, Bench Mob superó por poco a Lakeside Lynx 5–4 y Court Jesters lidera la clasificación con 19–8.",
+  "article": {
+   "byline": "La redacción",
+   "photo": {
+    "caption": "La directiva de Soup Kitchen tras la victoria 7–2 (pie de foto de ejemplo)."
+   },
+   "paragraphs": [
+    "Este es un texto de ejemplo de la liga de demostración. En tu propia liga, la IA escribe este artículo cada semana a partir de los números y, si tu liga está de acuerdo, del chat del grupo.",
+    "Soup Kitchen ganó 7–2 a Night Shift, el enfrentamiento más desigual de la semana 3. El más ajustado: Bench Mob ante Lakeside Lynx, 5–4.",
+    "Court Jesters lidera la clasificación con un balance de 19–8. Todas las cifras de esta página las calcula el sitio a partir del archivo de datos de la semana."
+   ]
+  },
+  "stories": [
+   {
+    "label": "EL PARTIDO DE LA SEMANA",
+    "title": "Bench Mob se salva por poco",
+    "text": "Bench Mob ganó 5–4 a Lakeside Lynx. Análisis de ejemplo: el redactor explica qué categorías decidieron el partido."
+   },
+   {
+    "label": "ACTUALIDAD DE LA LIGA",
+    "title": "Court Jesters marca el ritmo",
+    "text": "Análisis de ejemplo sobre el líder de la liga, Court Jesters."
+   }
+  ],
+  "teamNotes": [
+   {
+    "text": "Nota de ejemplo para Lakeside Lynx: de una a tres frases sobre su semana."
+   },
+   {
+    "text": "Nota de ejemplo para Iron Hoopers: de una a tres frases sobre su semana."
+   },
+   {
+    "text": "Nota de ejemplo para Night Shift: de una a tres frases sobre su semana."
+   },
+   {
+    "text": "Nota de ejemplo para Brick City: de una a tres frases sobre su semana."
+   },
+   {
+    "text": "Nota de ejemplo para Coastal Comets: de una a tres frases sobre su semana."
+   },
+   {
+    "text": "Nota de ejemplo para Paper Tigers: de una a tres frases sobre su semana."
+   },
+   {
+    "text": "Nota de ejemplo para Bench Mob: de una a tres frases sobre su semana."
+   },
+   {
+    "text": "Nota de ejemplo para Green Clovers: de una a tres frases sobre su semana."
+   },
+   {
+    "text": "Nota de ejemplo para Glass Cleaners: de una a tres frases sobre su semana."
+   },
+   {
+    "text": "Nota de ejemplo para Mountain Goats: de una a tres frases sobre su semana."
+   },
+   {
+    "text": "Nota de ejemplo para Pick and Rollers: de una a tres frases sobre su semana."
+   },
+   {
+    "text": "Nota de ejemplo para Soup Kitchen: de una a tres frases sobre su semana."
+   },
+   {
+    "text": "Nota de ejemplo para Storm Chasers: de una a tres frases sobre su semana."
+   },
+   {
+    "text": "Nota de ejemplo para Court Jesters: de una a tres frases sobre su semana."
+   }
+  ],
+  "playerNotes": [
+   {
+    "label": "JUGADOR DE LA SEMANA",
+    "text": "Nota de ejemplo sobre Victor Wembanyama: qué pasó esta semana y por qué importa en fantasy."
+   },
+   {
+    "label": "NOTA DE JUGADOR",
+    "text": "Nota de ejemplo sobre Luka Dončić: qué pasó esta semana y por qué importa en fantasy."
+   },
+   {
+    "label": "NOTA DE JUGADOR",
+    "text": "Nota de ejemplo sobre Austin Reaves: qué pasó esta semana y por qué importa en fantasy."
+   },
+   {
+    "label": "NOTA DE JUGADOR",
+    "text": "Nota de ejemplo sobre Domantas Sabonis: qué pasó esta semana y por qué importa en fantasy."
+   },
+   {
+    "label": "NOTA DE JUGADOR",
+    "text": "Nota de ejemplo sobre Jaren Jackson Jr.: qué pasó esta semana y por qué importa en fantasy."
+   }
+  ],
+  "trades": [
+   {
+    "benefitA": "Ejemplo: lo que gana el equipo A.",
+    "benefitB": "Ejemplo: lo que gana el equipo B.",
+    "risk": "Ejemplo: el principal riesgo de este traspaso.",
+    "confidence": "Encaje · condicionado"
+   },
+   {
+    "benefitA": "Ejemplo: lo que gana el equipo A.",
+    "benefitB": "Ejemplo: lo que gana el equipo B.",
+    "risk": "Ejemplo: el principal riesgo de este traspaso.",
+    "confidence": "Encaje · condicionado"
+   },
+   {
+    "benefitA": "Ejemplo: lo que gana el equipo A.",
+    "benefitB": "Ejemplo: lo que gana el equipo B.",
+    "risk": "Ejemplo: el principal riesgo de este traspaso.",
+    "confidence": "Encaje · condicionado"
+   },
+   {
+    "benefitA": "Ejemplo: lo que gana el equipo A.",
+    "benefitB": "Ejemplo: lo que gana el equipo B.",
+    "risk": "Ejemplo: el principal riesgo de este traspaso.",
+    "confidence": "Encaje · condicionado"
+   },
+   {
+    "benefitA": "Ejemplo: lo que gana el equipo A.",
+    "benefitB": "Ejemplo: lo que gana el equipo B.",
+    "risk": "Ejemplo: el principal riesgo de este traspaso.",
+    "confidence": "Encaje · condicionado"
+   },
+   {
+    "benefitA": "Ejemplo: lo que gana el equipo A.",
+    "benefitB": "Ejemplo: lo que gana el equipo B.",
+    "risk": "Ejemplo: el principal riesgo de este traspaso.",
+    "confidence": "Encaje · condicionado"
+   }
+  ],
+  "sources": [
+   {
+    "label": "Datos de ejemplo · liga de ejemplo anonimizada"
+   }
+  ],
+  "sleepNotes": [
+   {
+    "text": "Ejemplo: Green Clovers dejó jugadores productivos en el banquillo esta semana."
+   }
+  ],
+  "nextWeek": {
+   "period": "9–15 de noviembre de 2026",
+   "matchups": [
+    {
+     "abiNote": "Nota de pronóstico de ejemplo del Hincha."
+    },
+    {
+     "abiNote": "Nota de pronóstico de ejemplo del Hincha."
+    },
+    {
+     "abiNote": "Nota de pronóstico de ejemplo del Hincha."
+    },
+    {
+     "abiNote": "Nota de pronóstico de ejemplo del Hincha."
+    },
+    {
+     "abiNote": "Nota de pronóstico de ejemplo del Hincha."
+    },
+    {
+     "abiNote": "Nota de pronóstico de ejemplo del Hincha."
+    },
+    {
+     "abiNote": "Nota de pronóstico de ejemplo del Hincha."
+    }
+   ]
+  }
+ },
+ "haftalar/hafta-04.json": {
+  "period": "9–15 de noviembre de 2026",
+  "weeks": [
+   {
+    "period": "20–25 de octubre de 2026"
+   },
+   {
+    "period": "26 de octubre – 1 de noviembre de 2026"
+   },
+   {
+    "period": "2–8 de noviembre de 2026"
+   },
+   {
+    "period": "9–15 de noviembre de 2026"
+   }
+  ],
+  "title": "Glass Cleaners arrolla a Night Shift 7–2",
+  "summary": "Semana 4 de la liga de ejemplo: Glass Cleaners firmó la victoria más amplia, Pick and Rollers superó por poco a Soup Kitchen 5–4 y Court Jesters lidera la clasificación con 25–11.",
+  "article": {
+   "byline": "La redacción",
+   "photo": {
+    "caption": "La directiva de Glass Cleaners tras la victoria 7–2 (pie de foto de ejemplo)."
+   },
+   "paragraphs": [
+    "Este es un texto de ejemplo de la liga de demostración. En tu propia liga, la IA escribe este artículo cada semana a partir de los números y, si tu liga está de acuerdo, del chat del grupo.",
+    "Glass Cleaners ganó 7–2 a Night Shift, el enfrentamiento más desigual de la semana 4. El más ajustado: Pick and Rollers ante Soup Kitchen, 5–4.",
+    "Court Jesters lidera la clasificación con un balance de 25–11. Todas las cifras de esta página las calcula el sitio a partir del archivo de datos de la semana."
+   ]
+  },
+  "stories": [
+   {
+    "label": "EL PARTIDO DE LA SEMANA",
+    "title": "Pick and Rollers se salva por poco",
+    "text": "Pick and Rollers ganó 5–4 a Soup Kitchen. Análisis de ejemplo: el redactor explica qué categorías decidieron el partido."
+   },
+   {
+    "label": "ACTUALIDAD DE LA LIGA",
+    "title": "Court Jesters marca el ritmo",
+    "text": "Análisis de ejemplo sobre el líder de la liga, Court Jesters."
+   }
+  ],
+  "teamNotes": [
+   {
+    "text": "Nota de ejemplo para Lakeside Lynx: de una a tres frases sobre su semana."
+   },
+   {
+    "text": "Nota de ejemplo para Iron Hoopers: de una a tres frases sobre su semana."
+   },
+   {
+    "text": "Nota de ejemplo para Night Shift: de una a tres frases sobre su semana."
+   },
+   {
+    "text": "Nota de ejemplo para Brick City: de una a tres frases sobre su semana."
+   },
+   {
+    "text": "Nota de ejemplo para Coastal Comets: de una a tres frases sobre su semana."
+   },
+   {
+    "text": "Nota de ejemplo para Paper Tigers: de una a tres frases sobre su semana."
+   },
+   {
+    "text": "Nota de ejemplo para Bench Mob: de una a tres frases sobre su semana."
+   },
+   {
+    "text": "Nota de ejemplo para Green Clovers: de una a tres frases sobre su semana."
+   },
+   {
+    "text": "Nota de ejemplo para Glass Cleaners: de una a tres frases sobre su semana."
+   },
+   {
+    "text": "Nota de ejemplo para Mountain Goats: de una a tres frases sobre su semana."
+   },
+   {
+    "text": "Nota de ejemplo para Pick and Rollers: de una a tres frases sobre su semana."
+   },
+   {
+    "text": "Nota de ejemplo para Soup Kitchen: de una a tres frases sobre su semana."
+   },
+   {
+    "text": "Nota de ejemplo para Storm Chasers: de una a tres frases sobre su semana."
+   },
+   {
+    "text": "Nota de ejemplo para Court Jesters: de una a tres frases sobre su semana."
+   }
+  ],
+  "playerNotes": [
+   {
+    "label": "JUGADOR DE LA SEMANA",
+    "text": "Nota de ejemplo sobre Victor Wembanyama: qué pasó esta semana y por qué importa en fantasy."
+   },
+   {
+    "label": "NOTA DE JUGADOR",
+    "text": "Nota de ejemplo sobre Stephen Curry: qué pasó esta semana y por qué importa en fantasy."
+   },
+   {
+    "label": "NOTA DE JUGADOR",
+    "text": "Nota de ejemplo sobre Trae Young: qué pasó esta semana y por qué importa en fantasy."
+   },
+   {
+    "label": "NOTA DE JUGADOR",
+    "text": "Nota de ejemplo sobre Mo Bamba: qué pasó esta semana y por qué importa en fantasy."
+   },
+   {
+    "label": "NOTA DE JUGADOR",
+    "text": "Nota de ejemplo sobre Dejounte Murray: qué pasó esta semana y por qué importa en fantasy."
+   }
+  ],
+  "trades": [
+   {
+    "benefitA": "Ejemplo: lo que gana el equipo A.",
+    "benefitB": "Ejemplo: lo que gana el equipo B.",
+    "risk": "Ejemplo: el principal riesgo de este traspaso.",
+    "confidence": "Encaje · condicionado"
+   },
+   {
+    "benefitA": "Ejemplo: lo que gana el equipo A.",
+    "benefitB": "Ejemplo: lo que gana el equipo B.",
+    "risk": "Ejemplo: el principal riesgo de este traspaso.",
+    "confidence": "Encaje · condicionado"
+   },
+   {
+    "benefitA": "Ejemplo: lo que gana el equipo A.",
+    "benefitB": "Ejemplo: lo que gana el equipo B.",
+    "risk": "Ejemplo: el principal riesgo de este traspaso.",
+    "confidence": "Encaje · condicionado"
+   },
+   {
+    "benefitA": "Ejemplo: lo que gana el equipo A.",
+    "benefitB": "Ejemplo: lo que gana el equipo B.",
+    "risk": "Ejemplo: el principal riesgo de este traspaso.",
+    "confidence": "Encaje · condicionado"
+   },
+   {
+    "benefitA": "Ejemplo: lo que gana el equipo A.",
+    "benefitB": "Ejemplo: lo que gana el equipo B.",
+    "risk": "Ejemplo: el principal riesgo de este traspaso.",
+    "confidence": "Encaje · condicionado"
+   },
+   {
+    "benefitA": "Ejemplo: lo que gana el equipo A.",
+    "benefitB": "Ejemplo: lo que gana el equipo B.",
+    "risk": "Ejemplo: el principal riesgo de este traspaso.",
+    "confidence": "Encaje · condicionado"
+   },
+   {
+    "benefitA": "Ejemplo: lo que gana el equipo A.",
+    "benefitB": "Ejemplo: lo que gana el equipo B.",
+    "risk": "Ejemplo: el principal riesgo de este traspaso.",
+    "confidence": "Encaje · condicionado"
+   }
+  ],
+  "sources": [
+   {
+    "label": "Datos de ejemplo · liga de ejemplo anonimizada"
+   }
+  ],
+  "sleepNotes": [
+   {
+    "text": "Ejemplo: Mountain Goats dejó jugadores productivos en el banquillo esta semana."
+   },
+   {
+    "text": "Ejemplo: Night Shift dejó jugadores productivos en el banquillo esta semana."
+   }
+  ],
+  "forecastColumn": {
+   "hoca": "Columna de ejemplo del Analista: lo que espera el modelo para la próxima semana.",
+   "abi": "Columna de ejemplo del Hincha: instinto y pullas."
+  },
+  "nextWeek": {
+   "period": "16–22 de noviembre de 2026",
+   "matchups": [
+    {
+     "abiNote": "Nota de pronóstico de ejemplo del Hincha."
+    },
+    {
+     "abiNote": "Nota de pronóstico de ejemplo del Hincha."
+    },
+    {
+     "abiNote": "Nota de pronóstico de ejemplo del Hincha."
+    },
+    {
+     "abiNote": "Nota de pronóstico de ejemplo del Hincha."
+    },
+    {
+     "abiNote": "Nota de pronóstico de ejemplo del Hincha."
+    },
+    {
+     "abiNote": "Nota de pronóstico de ejemplo del Hincha."
+    },
+    {
+     "abiNote": "Nota de pronóstico de ejemplo del Hincha."
+    }
+   ]
+  }
+ },
+ "gelecek/hafta-02.json": {
+  "nextWeek": {
+   "period": "2–8 de noviembre de 2026",
+   "matchups": [
+    {
+     "abiNote": "Nota de pronóstico de ejemplo del Hincha."
+    },
+    {
+     "abiNote": "Nota de pronóstico de ejemplo del Hincha."
+    },
+    {
+     "abiNote": "Nota de pronóstico de ejemplo del Hincha."
+    },
+    {
+     "abiNote": "Nota de pronóstico de ejemplo del Hincha."
+    },
+    {
+     "abiNote": "Nota de pronóstico de ejemplo del Hincha."
+    },
+    {
+     "abiNote": "Nota de pronóstico de ejemplo del Hincha."
+    },
+    {
+     "abiNote": "Nota de pronóstico de ejemplo del Hincha."
+    }
+   ]
+  }
+ },
+ "nba/hafta-02.json": {
+  "kaynak": "Marcador público de ESPN"
+ },
+ "nba/hafta-03.json": {
+  "kaynak": "Marcador público de ESPN"
+ },
+ "nba/hafta-04.json": {
+  "kaynak": "Marcador público de ESPN"
+ },
+ "ayarlar": {
+  "ligAdi": "Liga de ejemplo",
+  "gazeteAdi": "El Bocinazo",
+  "altBaslik": "Periódico de la liga",
+  "yayinZamani": "lunes a las 14:00",
+  "saatDilimiAdi": "hora de París",
+  "elemeHaftalari": "semanas 20, 21 y 22",
+  "kocDegisimleri": [
+   {
+    "koc": "Nuevo mánager",
+    "not": "Panic Shooters → Green Clovers (nuevo mánager); la liga del sueño se reinicia"
+   }
+  ]
+ }
+}

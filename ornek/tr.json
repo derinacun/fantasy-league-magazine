@@ -1,0 +1,720 @@
+{
+ "haftalar/hafta-01.json": {
+  "period": "20–25 Ekim 2026",
+  "weeks": [
+   {
+    "period": "20–25 Ekim 2026"
+   }
+  ],
+  "title": "Iron Hoopers, Bench Mob karşısında 7–2 ile ezdi geçti",
+  "summary": "Örnek ligin 1. haftası: en farklı galibiyet Iron Hoopers takımının; Mountain Goats, Pick and Rollers karşısında 5–4 ile kıl payı kazandı. Iron Hoopers 7–2 ile zirvede.",
+  "article": {
+   "byline": "Yayın kurulu",
+   "photo": {
+    "caption": "Iron Hoopers yönetimi 7–2 galibiyetinin ardından (örnek fotoğraf altı)."
+   },
+   "paragraphs": [
+    "Bu, örnek ligin örnek metnidir. Kendi liginizde bu yazıyı her hafta yapay zekâ yazar: sayılardan ve lig kabul ederse grup sohbetinden bir hikâye kurar.",
+    "Iron Hoopers, Bench Mob karşısında 7–2 kazandı; 1. haftanın en tek taraflı eşleşmesi buydu. En çekişmeli maçı Mountain Goats, Pick and Rollers karşısında 5–4 ile aldı.",
+    "Iron Hoopers 7–2 kayıtla puan durumunun zirvesinde. Bu sayfadaki her sayıyı site, haftalık veri dosyasından kendisi hesaplar."
+   ]
+  },
+  "stories": [
+   {
+    "label": "HAFTANIN MAÇI",
+    "title": "Mountain Goats kıl payı kurtuldu",
+    "text": "Mountain Goats, Pick and Rollers karşısında 5–4 kazandı. Örnek analiz metni: yazar burada maçı hangi kategorilerin belirlediğini anlatır."
+   },
+   {
+    "label": "LİG GÜNDEMİ",
+    "title": "Tempoyu Iron Hoopers belirliyor",
+    "text": "Lig lideri Iron Hoopers hakkında örnek analiz metni."
+   }
+  ],
+  "teamNotes": [
+   {
+    "text": "Lakeside Lynx için örnek not: takımın haftası hakkında bir ila üç cümle."
+   },
+   {
+    "text": "Iron Hoopers için örnek not: takımın haftası hakkında bir ila üç cümle."
+   },
+   {
+    "text": "Night Shift için örnek not: takımın haftası hakkında bir ila üç cümle."
+   },
+   {
+    "text": "Brick City için örnek not: takımın haftası hakkında bir ila üç cümle."
+   },
+   {
+    "text": "Coastal Comets için örnek not: takımın haftası hakkında bir ila üç cümle."
+   },
+   {
+    "text": "Paper Tigers için örnek not: takımın haftası hakkında bir ila üç cümle."
+   },
+   {
+    "text": "Bench Mob için örnek not: takımın haftası hakkında bir ila üç cümle."
+   },
+   {
+    "text": "Green Clovers için örnek not: takımın haftası hakkında bir ila üç cümle."
+   },
+   {
+    "text": "Glass Cleaners için örnek not: takımın haftası hakkında bir ila üç cümle."
+   },
+   {
+    "text": "Mountain Goats için örnek not: takımın haftası hakkında bir ila üç cümle."
+   },
+   {
+    "text": "Pick and Rollers için örnek not: takımın haftası hakkında bir ila üç cümle."
+   },
+   {
+    "text": "Soup Kitchen için örnek not: takımın haftası hakkında bir ila üç cümle."
+   },
+   {
+    "text": "Storm Chasers için örnek not: takımın haftası hakkında bir ila üç cümle."
+   },
+   {
+    "text": "Court Jesters için örnek not: takımın haftası hakkında bir ila üç cümle."
+   }
+  ],
+  "playerNotes": [
+   {
+    "label": "OYUNCU NOTU",
+    "text": "Ty Jerome hakkında örnek oyuncu notu: bu hafta ne oldu ve fantezi için neden önemli."
+   },
+   {
+    "label": "OYUNCU NOTU",
+    "text": "Anthony Black hakkında örnek oyuncu notu: bu hafta ne oldu ve fantezi için neden önemli."
+   },
+   {
+    "label": "OYUNCU NOTU",
+    "text": "Fred VanVleet hakkında örnek oyuncu notu: bu hafta ne oldu ve fantezi için neden önemli."
+   },
+   {
+    "label": "OYUNCU NOTU",
+    "text": "Shai Gilgeous-Alexander hakkında örnek oyuncu notu: bu hafta ne oldu ve fantezi için neden önemli."
+   },
+   {
+    "label": "OYUNCU NOTU",
+    "text": "Peyton Watson hakkında örnek oyuncu notu: bu hafta ne oldu ve fantezi için neden önemli."
+   }
+  ],
+  "trades": [
+   {
+    "benefitA": "Örnek: A takımının kazancı.",
+    "benefitB": "Örnek: B takımının kazancı.",
+    "risk": "Örnek: bu takasın asıl riski.",
+    "confidence": "İhtiyaç uyumu · koşullu"
+   },
+   {
+    "benefitA": "Örnek: A takımının kazancı.",
+    "benefitB": "Örnek: B takımının kazancı.",
+    "risk": "Örnek: bu takasın asıl riski.",
+    "confidence": "İhtiyaç uyumu · koşullu"
+   },
+   {
+    "benefitA": "Örnek: A takımının kazancı.",
+    "benefitB": "Örnek: B takımının kazancı.",
+    "risk": "Örnek: bu takasın asıl riski.",
+    "confidence": "İhtiyaç uyumu · koşullu"
+   },
+   {
+    "benefitA": "Örnek: A takımının kazancı.",
+    "benefitB": "Örnek: B takımının kazancı.",
+    "risk": "Örnek: bu takasın asıl riski.",
+    "confidence": "İhtiyaç uyumu · koşullu"
+   },
+   {
+    "benefitA": "Örnek: A takımının kazancı.",
+    "benefitB": "Örnek: B takımının kazancı.",
+    "risk": "Örnek: bu takasın asıl riski.",
+    "confidence": "İhtiyaç uyumu · koşullu"
+   },
+   {
+    "benefitA": "Örnek: A takımının kazancı.",
+    "benefitB": "Örnek: B takımının kazancı.",
+    "risk": "Örnek: bu takasın asıl riski.",
+    "confidence": "İhtiyaç uyumu · koşullu"
+   },
+   {
+    "benefitA": "Örnek: A takımının kazancı.",
+    "benefitB": "Örnek: B takımının kazancı.",
+    "risk": "Örnek: bu takasın asıl riski.",
+    "confidence": "İhtiyaç uyumu · koşullu"
+   }
+  ],
+  "sources": [
+   {
+    "label": "Örnek veri · anonim örnek lig"
+   }
+  ]
+ },
+ "haftalar/hafta-02.json": {
+  "period": "26 Ekim – 1 Kasım 2026",
+  "weeks": [
+   {
+    "period": "20–25 Ekim 2026"
+   },
+   {
+    "period": "26 Ekim – 1 Kasım 2026"
+   }
+  ],
+  "title": "Coastal Comets, Pick and Rollers karşısında 6–3 ile ezdi geçti",
+  "summary": "Örnek ligin 2. haftası: en farklı galibiyet Coastal Comets takımının; Soup Kitchen, Paper Tigers karşısında 5–4 ile kıl payı kazandı. Iron Hoopers 12–5 ile zirvede.",
+  "article": {
+   "byline": "Yayın kurulu",
+   "photo": {
+    "caption": "Coastal Comets yönetimi 6–3 galibiyetinin ardından (örnek fotoğraf altı)."
+   },
+   "paragraphs": [
+    "Bu, örnek ligin örnek metnidir. Kendi liginizde bu yazıyı her hafta yapay zekâ yazar: sayılardan ve lig kabul ederse grup sohbetinden bir hikâye kurar.",
+    "Coastal Comets, Pick and Rollers karşısında 6–3 kazandı; 2. haftanın en tek taraflı eşleşmesi buydu. En çekişmeli maçı Soup Kitchen, Paper Tigers karşısında 5–4 ile aldı.",
+    "Iron Hoopers 12–5–1 kayıtla puan durumunun zirvesinde. Bu sayfadaki her sayıyı site, haftalık veri dosyasından kendisi hesaplar."
+   ]
+  },
+  "stories": [
+   {
+    "label": "HAFTANIN MAÇI",
+    "title": "Soup Kitchen kıl payı kurtuldu",
+    "text": "Soup Kitchen, Paper Tigers karşısında 5–4 kazandı. Örnek analiz metni: yazar burada maçı hangi kategorilerin belirlediğini anlatır."
+   },
+   {
+    "label": "LİG GÜNDEMİ",
+    "title": "Tempoyu Iron Hoopers belirliyor",
+    "text": "Lig lideri Iron Hoopers hakkında örnek analiz metni."
+   }
+  ],
+  "teamNotes": [
+   {
+    "text": "Lakeside Lynx için örnek not: takımın haftası hakkında bir ila üç cümle."
+   },
+   {
+    "text": "Iron Hoopers için örnek not: takımın haftası hakkında bir ila üç cümle."
+   },
+   {
+    "text": "Night Shift için örnek not: takımın haftası hakkında bir ila üç cümle."
+   },
+   {
+    "text": "Brick City için örnek not: takımın haftası hakkında bir ila üç cümle."
+   },
+   {
+    "text": "Coastal Comets için örnek not: takımın haftası hakkında bir ila üç cümle."
+   },
+   {
+    "text": "Paper Tigers için örnek not: takımın haftası hakkında bir ila üç cümle."
+   },
+   {
+    "text": "Bench Mob için örnek not: takımın haftası hakkında bir ila üç cümle."
+   },
+   {
+    "text": "Green Clovers için örnek not: takımın haftası hakkında bir ila üç cümle."
+   },
+   {
+    "text": "Glass Cleaners için örnek not: takımın haftası hakkında bir ila üç cümle."
+   },
+   {
+    "text": "Mountain Goats için örnek not: takımın haftası hakkında bir ila üç cümle."
+   },
+   {
+    "text": "Pick and Rollers için örnek not: takımın haftası hakkında bir ila üç cümle."
+   },
+   {
+    "text": "Soup Kitchen için örnek not: takımın haftası hakkında bir ila üç cümle."
+   },
+   {
+    "text": "Storm Chasers için örnek not: takımın haftası hakkında bir ila üç cümle."
+   },
+   {
+    "text": "Court Jesters için örnek not: takımın haftası hakkında bir ila üç cümle."
+   }
+  ],
+  "playerNotes": [
+   {
+    "label": "OYUNCU NOTU",
+    "text": "Ajay Mitchell hakkında örnek oyuncu notu: bu hafta ne oldu ve fantezi için neden önemli."
+   },
+   {
+    "label": "OYUNCU NOTU",
+    "text": "Davion Mitchell hakkında örnek oyuncu notu: bu hafta ne oldu ve fantezi için neden önemli."
+   },
+   {
+    "label": "OYUNCU NOTU",
+    "text": "Matas Buzelis hakkında örnek oyuncu notu: bu hafta ne oldu ve fantezi için neden önemli."
+   },
+   {
+    "label": "OYUNCU NOTU",
+    "text": "Chet Holmgren hakkında örnek oyuncu notu: bu hafta ne oldu ve fantezi için neden önemli."
+   },
+   {
+    "label": "OYUNCU NOTU",
+    "text": "Anthony Edwards hakkında örnek oyuncu notu: bu hafta ne oldu ve fantezi için neden önemli."
+   }
+  ],
+  "trades": [
+   {
+    "benefitA": "Örnek: A takımının kazancı.",
+    "benefitB": "Örnek: B takımının kazancı.",
+    "risk": "Örnek: bu takasın asıl riski.",
+    "confidence": "İhtiyaç uyumu · koşullu"
+   },
+   {
+    "benefitA": "Örnek: A takımının kazancı.",
+    "benefitB": "Örnek: B takımının kazancı.",
+    "risk": "Örnek: bu takasın asıl riski.",
+    "confidence": "İhtiyaç uyumu · koşullu"
+   },
+   {
+    "benefitA": "Örnek: A takımının kazancı.",
+    "benefitB": "Örnek: B takımının kazancı.",
+    "risk": "Örnek: bu takasın asıl riski.",
+    "confidence": "İhtiyaç uyumu · koşullu"
+   },
+   {
+    "benefitA": "Örnek: A takımının kazancı.",
+    "benefitB": "Örnek: B takımının kazancı.",
+    "risk": "Örnek: bu takasın asıl riski.",
+    "confidence": "İhtiyaç uyumu · koşullu"
+   },
+   {
+    "benefitA": "Örnek: A takımının kazancı.",
+    "benefitB": "Örnek: B takımının kazancı.",
+    "risk": "Örnek: bu takasın asıl riski.",
+    "confidence": "İhtiyaç uyumu · koşullu"
+   },
+   {
+    "benefitA": "Örnek: A takımının kazancı.",
+    "benefitB": "Örnek: B takımının kazancı.",
+    "risk": "Örnek: bu takasın asıl riski.",
+    "confidence": "İhtiyaç uyumu · koşullu"
+   }
+  ],
+  "sources": [
+   {
+    "label": "Örnek veri · anonim örnek lig"
+   }
+  ]
+ },
+ "haftalar/hafta-03.json": {
+  "period": "2–8 Kasım 2026",
+  "weeks": [
+   {
+    "period": "20–25 Ekim 2026"
+   },
+   {
+    "period": "26 Ekim – 1 Kasım 2026"
+   },
+   {
+    "period": "2–8 Kasım 2026"
+   }
+  ],
+  "title": "Soup Kitchen, Night Shift karşısında 7–2 ile ezdi geçti",
+  "summary": "Örnek ligin 3. haftası: en farklı galibiyet Soup Kitchen takımının; Bench Mob, Lakeside Lynx karşısında 5–4 ile kıl payı kazandı. Court Jesters 19–8 ile zirvede.",
+  "article": {
+   "byline": "Yayın kurulu",
+   "photo": {
+    "caption": "Soup Kitchen yönetimi 7–2 galibiyetinin ardından (örnek fotoğraf altı)."
+   },
+   "paragraphs": [
+    "Bu, örnek ligin örnek metnidir. Kendi liginizde bu yazıyı her hafta yapay zekâ yazar: sayılardan ve lig kabul ederse grup sohbetinden bir hikâye kurar.",
+    "Soup Kitchen, Night Shift karşısında 7–2 kazandı; 3. haftanın en tek taraflı eşleşmesi buydu. En çekişmeli maçı Bench Mob, Lakeside Lynx karşısında 5–4 ile aldı.",
+    "Court Jesters 19–8 kayıtla puan durumunun zirvesinde. Bu sayfadaki her sayıyı site, haftalık veri dosyasından kendisi hesaplar."
+   ]
+  },
+  "stories": [
+   {
+    "label": "HAFTANIN MAÇI",
+    "title": "Bench Mob kıl payı kurtuldu",
+    "text": "Bench Mob, Lakeside Lynx karşısında 5–4 kazandı. Örnek analiz metni: yazar burada maçı hangi kategorilerin belirlediğini anlatır."
+   },
+   {
+    "label": "LİG GÜNDEMİ",
+    "title": "Tempoyu Court Jesters belirliyor",
+    "text": "Lig lideri Court Jesters hakkında örnek analiz metni."
+   }
+  ],
+  "teamNotes": [
+   {
+    "text": "Lakeside Lynx için örnek not: takımın haftası hakkında bir ila üç cümle."
+   },
+   {
+    "text": "Iron Hoopers için örnek not: takımın haftası hakkında bir ila üç cümle."
+   },
+   {
+    "text": "Night Shift için örnek not: takımın haftası hakkında bir ila üç cümle."
+   },
+   {
+    "text": "Brick City için örnek not: takımın haftası hakkında bir ila üç cümle."
+   },
+   {
+    "text": "Coastal Comets için örnek not: takımın haftası hakkında bir ila üç cümle."
+   },
+   {
+    "text": "Paper Tigers için örnek not: takımın haftası hakkında bir ila üç cümle."
+   },
+   {
+    "text": "Bench Mob için örnek not: takımın haftası hakkında bir ila üç cümle."
+   },
+   {
+    "text": "Green Clovers için örnek not: takımın haftası hakkında bir ila üç cümle."
+   },
+   {
+    "text": "Glass Cleaners için örnek not: takımın haftası hakkında bir ila üç cümle."
+   },
+   {
+    "text": "Mountain Goats için örnek not: takımın haftası hakkında bir ila üç cümle."
+   },
+   {
+    "text": "Pick and Rollers için örnek not: takımın haftası hakkında bir ila üç cümle."
+   },
+   {
+    "text": "Soup Kitchen için örnek not: takımın haftası hakkında bir ila üç cümle."
+   },
+   {
+    "text": "Storm Chasers için örnek not: takımın haftası hakkında bir ila üç cümle."
+   },
+   {
+    "text": "Court Jesters için örnek not: takımın haftası hakkında bir ila üç cümle."
+   }
+  ],
+  "playerNotes": [
+   {
+    "label": "HAFTANIN OYUNCUSU",
+    "text": "Victor Wembanyama hakkında örnek oyuncu notu: bu hafta ne oldu ve fantezi için neden önemli."
+   },
+   {
+    "label": "OYUNCU NOTU",
+    "text": "Luka Dončić hakkında örnek oyuncu notu: bu hafta ne oldu ve fantezi için neden önemli."
+   },
+   {
+    "label": "OYUNCU NOTU",
+    "text": "Austin Reaves hakkında örnek oyuncu notu: bu hafta ne oldu ve fantezi için neden önemli."
+   },
+   {
+    "label": "OYUNCU NOTU",
+    "text": "Domantas Sabonis hakkında örnek oyuncu notu: bu hafta ne oldu ve fantezi için neden önemli."
+   },
+   {
+    "label": "OYUNCU NOTU",
+    "text": "Jaren Jackson Jr. hakkında örnek oyuncu notu: bu hafta ne oldu ve fantezi için neden önemli."
+   }
+  ],
+  "trades": [
+   {
+    "benefitA": "Örnek: A takımının kazancı.",
+    "benefitB": "Örnek: B takımının kazancı.",
+    "risk": "Örnek: bu takasın asıl riski.",
+    "confidence": "İhtiyaç uyumu · koşullu"
+   },
+   {
+    "benefitA": "Örnek: A takımının kazancı.",
+    "benefitB": "Örnek: B takımının kazancı.",
+    "risk": "Örnek: bu takasın asıl riski.",
+    "confidence": "İhtiyaç uyumu · koşullu"
+   },
+   {
+    "benefitA": "Örnek: A takımının kazancı.",
+    "benefitB": "Örnek: B takımının kazancı.",
+    "risk": "Örnek: bu takasın asıl riski.",
+    "confidence": "İhtiyaç uyumu · koşullu"
+   },
+   {
+    "benefitA": "Örnek: A takımının kazancı.",
+    "benefitB": "Örnek: B takımının kazancı.",
+    "risk": "Örnek: bu takasın asıl riski.",
+    "confidence": "İhtiyaç uyumu · koşullu"
+   },
+   {
+    "benefitA": "Örnek: A takımının kazancı.",
+    "benefitB": "Örnek: B takımının kazancı.",
+    "risk": "Örnek: bu takasın asıl riski.",
+    "confidence": "İhtiyaç uyumu · koşullu"
+   },
+   {
+    "benefitA": "Örnek: A takımının kazancı.",
+    "benefitB": "Örnek: B takımının kazancı.",
+    "risk": "Örnek: bu takasın asıl riski.",
+    "confidence": "İhtiyaç uyumu · koşullu"
+   }
+  ],
+  "sources": [
+   {
+    "label": "Örnek veri · anonim örnek lig"
+   }
+  ],
+  "sleepNotes": [
+   {
+    "text": "Örnek: Green Clovers bu hafta verimli oyuncularını yedekte bıraktı."
+   }
+  ],
+  "nextWeek": {
+   "period": "9–15 Kasım 2026",
+   "matchups": [
+    {
+     "abiNote": "Tribün Abi'nin örnek tahmin notu."
+    },
+    {
+     "abiNote": "Tribün Abi'nin örnek tahmin notu."
+    },
+    {
+     "abiNote": "Tribün Abi'nin örnek tahmin notu."
+    },
+    {
+     "abiNote": "Tribün Abi'nin örnek tahmin notu."
+    },
+    {
+     "abiNote": "Tribün Abi'nin örnek tahmin notu."
+    },
+    {
+     "abiNote": "Tribün Abi'nin örnek tahmin notu."
+    },
+    {
+     "abiNote": "Tribün Abi'nin örnek tahmin notu."
+    }
+   ]
+  }
+ },
+ "haftalar/hafta-04.json": {
+  "period": "9–15 Kasım 2026",
+  "weeks": [
+   {
+    "period": "20–25 Ekim 2026"
+   },
+   {
+    "period": "26 Ekim – 1 Kasım 2026"
+   },
+   {
+    "period": "2–8 Kasım 2026"
+   },
+   {
+    "period": "9–15 Kasım 2026"
+   }
+  ],
+  "title": "Glass Cleaners, Night Shift karşısında 7–2 ile ezdi geçti",
+  "summary": "Örnek ligin 4. haftası: en farklı galibiyet Glass Cleaners takımının; Pick and Rollers, Soup Kitchen karşısında 5–4 ile kıl payı kazandı. Court Jesters 25–11 ile zirvede.",
+  "article": {
+   "byline": "Yayın kurulu",
+   "photo": {
+    "caption": "Glass Cleaners yönetimi 7–2 galibiyetinin ardından (örnek fotoğraf altı)."
+   },
+   "paragraphs": [
+    "Bu, örnek ligin örnek metnidir. Kendi liginizde bu yazıyı her hafta yapay zekâ yazar: sayılardan ve lig kabul ederse grup sohbetinden bir hikâye kurar.",
+    "Glass Cleaners, Night Shift karşısında 7–2 kazandı; 4. haftanın en tek taraflı eşleşmesi buydu. En çekişmeli maçı Pick and Rollers, Soup Kitchen karşısında 5–4 ile aldı.",
+    "Court Jesters 25–11 kayıtla puan durumunun zirvesinde. Bu sayfadaki her sayıyı site, haftalık veri dosyasından kendisi hesaplar."
+   ]
+  },
+  "stories": [
+   {
+    "label": "HAFTANIN MAÇI",
+    "title": "Pick and Rollers kıl payı kurtuldu",
+    "text": "Pick and Rollers, Soup Kitchen karşısında 5–4 kazandı. Örnek analiz metni: yazar burada maçı hangi kategorilerin belirlediğini anlatır."
+   },
+   {
+    "label": "LİG GÜNDEMİ",
+    "title": "Tempoyu Court Jesters belirliyor",
+    "text": "Lig lideri Court Jesters hakkında örnek analiz metni."
+   }
+  ],
+  "teamNotes": [
+   {
+    "text": "Lakeside Lynx için örnek not: takımın haftası hakkında bir ila üç cümle."
+   },
+   {
+    "text": "Iron Hoopers için örnek not: takımın haftası hakkında bir ila üç cümle."
+   },
+   {
+    "text": "Night Shift için örnek not: takımın haftası hakkında bir ila üç cümle."
+   },
+   {
+    "text": "Brick City için örnek not: takımın haftası hakkında bir ila üç cümle."
+   },
+   {
+    "text": "Coastal Comets için örnek not: takımın haftası hakkında bir ila üç cümle."
+   },
+   {
+    "text": "Paper Tigers için örnek not: takımın haftası hakkında bir ila üç cümle."
+   },
+   {
+    "text": "Bench Mob için örnek not: takımın haftası hakkında bir ila üç cümle."
+   },
+   {
+    "text": "Green Clovers için örnek not: takımın haftası hakkında bir ila üç cümle."
+   },
+   {
+    "text": "Glass Cleaners için örnek not: takımın haftası hakkında bir ila üç cümle."
+   },
+   {
+    "text": "Mountain Goats için örnek not: takımın haftası hakkında bir ila üç cümle."
+   },
+   {
+    "text": "Pick and Rollers için örnek not: takımın haftası hakkında bir ila üç cümle."
+   },
+   {
+    "text": "Soup Kitchen için örnek not: takımın haftası hakkında bir ila üç cümle."
+   },
+   {
+    "text": "Storm Chasers için örnek not: takımın haftası hakkında bir ila üç cümle."
+   },
+   {
+    "text": "Court Jesters için örnek not: takımın haftası hakkında bir ila üç cümle."
+   }
+  ],
+  "playerNotes": [
+   {
+    "label": "HAFTANIN OYUNCUSU",
+    "text": "Victor Wembanyama hakkında örnek oyuncu notu: bu hafta ne oldu ve fantezi için neden önemli."
+   },
+   {
+    "label": "OYUNCU NOTU",
+    "text": "Stephen Curry hakkında örnek oyuncu notu: bu hafta ne oldu ve fantezi için neden önemli."
+   },
+   {
+    "label": "OYUNCU NOTU",
+    "text": "Trae Young hakkında örnek oyuncu notu: bu hafta ne oldu ve fantezi için neden önemli."
+   },
+   {
+    "label": "OYUNCU NOTU",
+    "text": "Mo Bamba hakkında örnek oyuncu notu: bu hafta ne oldu ve fantezi için neden önemli."
+   },
+   {
+    "label": "OYUNCU NOTU",
+    "text": "Dejounte Murray hakkında örnek oyuncu notu: bu hafta ne oldu ve fantezi için neden önemli."
+   }
+  ],
+  "trades": [
+   {
+    "benefitA": "Örnek: A takımının kazancı.",
+    "benefitB": "Örnek: B takımının kazancı.",
+    "risk": "Örnek: bu takasın asıl riski.",
+    "confidence": "İhtiyaç uyumu · koşullu"
+   },
+   {
+    "benefitA": "Örnek: A takımının kazancı.",
+    "benefitB": "Örnek: B takımının kazancı.",
+    "risk": "Örnek: bu takasın asıl riski.",
+    "confidence": "İhtiyaç uyumu · koşullu"
+   },
+   {
+    "benefitA": "Örnek: A takımının kazancı.",
+    "benefitB": "Örnek: B takımının kazancı.",
+    "risk": "Örnek: bu takasın asıl riski.",
+    "confidence": "İhtiyaç uyumu · koşullu"
+   },
+   {
+    "benefitA": "Örnek: A takımının kazancı.",
+    "benefitB": "Örnek: B takımının kazancı.",
+    "risk": "Örnek: bu takasın asıl riski.",
+    "confidence": "İhtiyaç uyumu · koşullu"
+   },
+   {
+    "benefitA": "Örnek: A takımının kazancı.",
+    "benefitB": "Örnek: B takımının kazancı.",
+    "risk": "Örnek: bu takasın asıl riski.",
+    "confidence": "İhtiyaç uyumu · koşullu"
+   },
+   {
+    "benefitA": "Örnek: A takımının kazancı.",
+    "benefitB": "Örnek: B takımının kazancı.",
+    "risk": "Örnek: bu takasın asıl riski.",
+    "confidence": "İhtiyaç uyumu · koşullu"
+   },
+   {
+    "benefitA": "Örnek: A takımının kazancı.",
+    "benefitB": "Örnek: B takımının kazancı.",
+    "risk": "Örnek: bu takasın asıl riski.",
+    "confidence": "İhtiyaç uyumu · koşullu"
+   }
+  ],
+  "sources": [
+   {
+    "label": "Örnek veri · anonim örnek lig"
+   }
+  ],
+  "sleepNotes": [
+   {
+    "text": "Örnek: Mountain Goats bu hafta verimli oyuncularını yedekte bıraktı."
+   },
+   {
+    "text": "Örnek: Night Shift bu hafta verimli oyuncularını yedekte bıraktı."
+   }
+  ],
+  "forecastColumn": {
+   "hoca": "Analitik Hoca'nın örnek köşesi: model gelecek hafta ne bekliyor.",
+   "abi": "Tribün Abi'nin örnek köşesi: içgüdüler ve laf sokmalar."
+  },
+  "nextWeek": {
+   "period": "16–22 Kasım 2026",
+   "matchups": [
+    {
+     "abiNote": "Tribün Abi'nin örnek tahmin notu."
+    },
+    {
+     "abiNote": "Tribün Abi'nin örnek tahmin notu."
+    },
+    {
+     "abiNote": "Tribün Abi'nin örnek tahmin notu."
+    },
+    {
+     "abiNote": "Tribün Abi'nin örnek tahmin notu."
+    },
+    {
+     "abiNote": "Tribün Abi'nin örnek tahmin notu."
+    },
+    {
+     "abiNote": "Tribün Abi'nin örnek tahmin notu."
+    },
+    {
+     "abiNote": "Tribün Abi'nin örnek tahmin notu."
+    }
+   ]
+  }
+ },
+ "gelecek/hafta-02.json": {
+  "nextWeek": {
+   "period": "2–8 Kasım 2026",
+   "matchups": [
+    {
+     "abiNote": "Tribün Abi'nin örnek tahmin notu."
+    },
+    {
+     "abiNote": "Tribün Abi'nin örnek tahmin notu."
+    },
+    {
+     "abiNote": "Tribün Abi'nin örnek tahmin notu."
+    },
+    {
+     "abiNote": "Tribün Abi'nin örnek tahmin notu."
+    },
+    {
+     "abiNote": "Tribün Abi'nin örnek tahmin notu."
+    },
+    {
+     "abiNote": "Tribün Abi'nin örnek tahmin notu."
+    },
+    {
+     "abiNote": "Tribün Abi'nin örnek tahmin notu."
+    }
+   ]
+  }
+ },
+ "nba/hafta-02.json": {
+  "kaynak": "ESPN herkese açık skor servisi"
+ },
+ "nba/hafta-03.json": {
+  "kaynak": "ESPN herkese açık skor servisi"
+ },
+ "nba/hafta-04.json": {
+  "kaynak": "ESPN herkese açık skor servisi"
+ },
+ "ayarlar": {
+  "ligAdi": "Örnek Lig",
+  "gazeteAdi": "Düdük",
+  "altBaslik": "Lig gazetesi",
+  "yayinZamani": "Pazartesi 14:00",
+  "saatDilimiAdi": "Paris saati",
+  "elemeHaftalari": "20, 21 ve 22. haftalar",
+  "kocDegisimleri": [
+   {
+    "koc": "Yeni koç",
+    "not": "Panic Shooters → Green Clovers (yeni koç); uyku ligi sıfırlanır"
+   }
+  ]
+ }
+}
