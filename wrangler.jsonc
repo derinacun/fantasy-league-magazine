@@ -1,0 +1,22 @@
+{
+  // Cloudflare Workers ayarı: site, `npm run build` ile üretilen dist klasöründen yayınlanır.
+  // 17 Kasım 2026: worker/index.js eklendi (bildirim aboneliği /api/abone ve saatlik yeni sayı bildirimi).
+  // Kurulum (bir kez): Cloudflare'de KV deposu "league-newspaper-subscribers" oluşturulur, kimliği aşağıya yazılır;
+  // Worker'a gizli değişken VAPID_PRIVATE_JWK eklenir. Bunlar yokken site normal çalışır, yalnızca bildirim çalışmaz.
+  "name": "gazete",
+  "main": "worker/index.js",
+  "compatibility_date": "2026-10-01",
+  "assets": {
+    "directory": "./dist",
+    "binding": "ASSETS",
+    "not_found_handling": "404-page",
+    "html_handling": "auto-trailing-slash",
+    "run_worker_first": ["/api/*"]
+  },
+  "kv_namespaces": [
+    { "binding": "ABONELER" }
+  ],
+  "triggers": {
+    "crons": ["7 * * * *"]
+  }
+}

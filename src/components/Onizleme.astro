@@ -1,0 +1,16 @@
+---
+// Önizlemeli açılır bölüm (18 Kasım 2026): kapalıyken 2–3 çarpıcı bilgi ve gerçek içeriğin ilk kısmı (altı solar),
+// altında "Tümünü göster". Bağlantı ya da bölüm çubuğu içeri giderse açılır (site.js). İçerik kısaysa düğme görünmez.
+import { t as _t } from '../i18n/t.js';
+import Ikon from './Ikon.astro';
+interface Props { cipler?: (string | null | undefined | false)[]; acik?: boolean; etiket?: string }
+const { cipler = [], acik = false, etiket = _t('Tümünü göster') } = Astro.props;
+const liste = cipler.filter(Boolean) as string[];
+---
+<div class={`onizleme${acik ? '' : ' kapali'}`} data-onizleme>
+  {liste.length > 0 && <ul class="onizleme-cipler">{liste.map((c) => <li>{c}</li>)}</ul>}
+  <div class="onizleme-icerik"><slot /></div>
+  <button class="onizleme-dugme" type="button" data-onizleme-dugme aria-expanded={acik ? 'true' : 'false'}>
+    <span class="onizleme-goster">{etiket}</span><span class="onizleme-gizle">{_t('Daha az göster')}</span><Ikon ad="asagi" boyut={16} />
+  </button>
+</div>

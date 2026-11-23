@@ -1,0 +1,1335 @@
+{
+ "schemaVersion": 2,
+ "season": 2026,
+ "week": 2,
+ "publishedAt": "2026-11-02T09:20:11.369Z",
+ "period": "Oct 26 – Nov 1, 2026",
+ "chatCounts": {
+  "1": 68,
+  "2": 124,
+  "3": 13,
+  "4": 107,
+  "5": 62,
+  "6": 0,
+  "7": 90,
+  "8": 0,
+  "9": 0,
+  "10": 5,
+  "11": 8,
+  "12": 122,
+  "13": 271,
+  "14": 5
+ },
+ "title": "Coastal Comets rout Pick and Rollers 6–3",
+ "summary": "Week 2 in the demo league: Coastal Comets posted the biggest win, Soup Kitchen edged Paper Tigers 5–4, and Iron Hoopers lead the standings at 12–5.",
+ "article": {
+  "byline": "Editorial board",
+  "photo": {
+   "teamId": "5",
+   "caption": "Coastal Comets after their 6–3 win (sample caption)."
+  },
+  "paragraphs": [
+   "This is sample text from the demo league. In your own league, the AI writer replaces it every week with a story built from the numbers and, if your league agrees, the group chat.",
+   "Coastal Comets won 6–3 against Pick and Rollers, the most one-sided matchup of week 2. The closest game was Soup Kitchen over Paper Tigers, 5–4.",
+   "Iron Hoopers sit at the top of the table with a 12–5–1 record. Every number on this page is computed by the site from the weekly data file."
+  ]
+ },
+ "stories": [
+  {
+   "label": "MATCHUP OF THE WEEK",
+   "title": "Soup Kitchen survive by a hair",
+   "teamIds": [
+    "12",
+    "6"
+   ],
+   "text": "Soup Kitchen beat Paper Tigers 5–4. Sample analysis text: your writer explains which categories decided it."
+  },
+  {
+   "label": "LEAGUE WATCH",
+   "title": "Iron Hoopers set the pace",
+   "teamIds": [
+    "2"
+   ],
+   "text": "Sample analysis text about the league leader, Iron Hoopers."
+  }
+ ],
+ "teamNotes": [
+  {
+   "teamId": "1",
+   "text": "Sample note for Lakeside Lynx: one to three sentences about their week."
+  },
+  {
+   "teamId": "2",
+   "text": "Sample note for Iron Hoopers: one to three sentences about their week."
+  },
+  {
+   "teamId": "3",
+   "text": "Sample note for Night Shift: one to three sentences about their week."
+  },
+  {
+   "teamId": "4",
+   "text": "Sample note for Brick City: one to three sentences about their week."
+  },
+  {
+   "teamId": "5",
+   "text": "Sample note for Coastal Comets: one to three sentences about their week."
+  },
+  {
+   "teamId": "6",
+   "text": "Sample note for Paper Tigers: one to three sentences about their week."
+  },
+  {
+   "teamId": "7",
+   "text": "Sample note for Bench Mob: one to three sentences about their week."
+  },
+  {
+   "teamId": "8",
+   "text": "Sample note for Green Clovers: one to three sentences about their week."
+  },
+  {
+   "teamId": "9",
+   "text": "Sample note for Glass Cleaners: one to three sentences about their week."
+  },
+  {
+   "teamId": "10",
+   "text": "Sample note for Mountain Goats: one to three sentences about their week."
+  },
+  {
+   "teamId": "11",
+   "text": "Sample note for Pick and Rollers: one to three sentences about their week."
+  },
+  {
+   "teamId": "12",
+   "text": "Sample note for Soup Kitchen: one to three sentences about their week."
+  },
+  {
+   "teamId": "13",
+   "text": "Sample note for Storm Chasers: one to three sentences about their week."
+  },
+  {
+   "teamId": "14",
+   "text": "Sample note for Court Jesters: one to three sentences about their week."
+  }
+ ],
+ "standings": [
+  {
+   "id": "2",
+   "name": "Iron Hoopers",
+   "rank": 1,
+   "wins": 12,
+   "losses": 5,
+   "ties": 1
+  },
+  {
+   "id": "14",
+   "name": "Court Jesters",
+   "rank": 2,
+   "wins": 12,
+   "losses": 6,
+   "ties": 0
+  },
+  {
+   "id": "10",
+   "name": "Mountain Goats",
+   "rank": 3,
+   "wins": 11,
+   "losses": 7,
+   "ties": 0
+  },
+  {
+   "id": "12",
+   "name": "Soup Kitchen",
+   "rank": 4,
+   "wins": 11,
+   "losses": 7,
+   "ties": 0
+  },
+  {
+   "id": "13",
+   "name": "Storm Chasers",
+   "rank": 5,
+   "wins": 11,
+   "losses": 7,
+   "ties": 0
+  },
+  {
+   "id": "3",
+   "name": "Night Shift",
+   "rank": 6,
+   "wins": 9,
+   "losses": 8,
+   "ties": 1
+  },
+  {
+   "id": "5",
+   "name": "Coastal Comets",
+   "rank": 7,
+   "wins": 9,
+   "losses": 9,
+   "ties": 0
+  },
+  {
+   "id": "4",
+   "name": "Brick City",
+   "rank": 8,
+   "wins": 9,
+   "losses": 9,
+   "ties": 0
+  },
+  {
+   "id": "7",
+   "name": "Bench Mob",
+   "rank": 9,
+   "wins": 8,
+   "losses": 10,
+   "ties": 0
+  },
+  {
+   "id": "1",
+   "name": "Lakeside Lynx",
+   "rank": 10,
+   "wins": 8,
+   "losses": 10,
+   "ties": 0
+  },
+  {
+   "id": "6",
+   "name": "Paper Tigers",
+   "rank": 11,
+   "wins": 7,
+   "losses": 11,
+   "ties": 0
+  },
+  {
+   "id": "11",
+   "name": "Pick and Rollers",
+   "rank": 12,
+   "wins": 7,
+   "losses": 11,
+   "ties": 0
+  },
+  {
+   "id": "8",
+   "name": "Green Clovers",
+   "rank": 13,
+   "wins": 6,
+   "losses": 12,
+   "ties": 0
+  },
+  {
+   "id": "9",
+   "name": "Glass Cleaners",
+   "rank": 14,
+   "wins": 5,
+   "losses": 13,
+   "ties": 0
+  }
+ ],
+ "teams": [
+  {
+   "id": "1",
+   "name": "Lakeside Lynx",
+   "players": [
+    "Damian Lillard",
+    "Stephon Castle",
+    "Dyson Daniels",
+    "Jaime Jaquez Jr.",
+    "Dillon Brooks",
+    "Aaron Gordon",
+    "Evan Mobley",
+    "Nikola Jokić",
+    "Zaccharie Risacher",
+    "Isaiah Jackson",
+    "Robert Williams III",
+    "Payton Pritchard",
+    "Josh Hart",
+    "Kawhi Leonard",
+    "Nic Claxton",
+    "Kristaps Porziņģis"
+   ]
+  },
+  {
+   "id": "2",
+   "name": "Iron Hoopers",
+   "players": [
+    "Trae Young",
+    "Tyler Herro",
+    "Matisse Thybulle",
+    "Pelle Larsson",
+    "Michael Porter Jr.",
+    "Jayson Tatum",
+    "Wendell Carter Jr.",
+    "Domantas Sabonis",
+    "De'Aaron Fox",
+    "Bobby Portis Jr.",
+    "Sandro Mamukelashvili",
+    "Jerami Grant",
+    "Alex Sarr"
+   ]
+  },
+  {
+   "id": "3",
+   "name": "Night Shift",
+   "players": [
+    "Collin Sexton",
+    "Derrick White",
+    "Kris Dunn",
+    "Scottie Barnes",
+    "John Collins",
+    "AJ Dybantsa",
+    "Walker Kessler",
+    "Brook Lopez",
+    "De'Andre Hunter",
+    "Sam Hauser",
+    "Luguentz Dort",
+    "Herbert Jones",
+    "Ty Jerome",
+    "Kon Knueppel",
+    "Anthony Edwards"
+   ]
+  },
+  {
+   "id": "4",
+   "name": "Brick City",
+   "players": [
+    "Ja'Kobe Walter",
+    "Nickeil Alexander-Walker",
+    "Amen Thompson",
+    "Desmond Bane",
+    "Karl-Anthony Towns",
+    "Paul Reed",
+    "Kel'el Ware",
+    "Donovan Clingan",
+    "Jaxson Hayes",
+    "Jaden McDaniels",
+    "Jared McCain",
+    "Ayo Dosunmu",
+    "Isaiah Joe",
+    "Tobias Harris"
+   ]
+  },
+  {
+   "id": "5",
+   "name": "Coastal Comets",
+   "players": [
+    "Shai Gilgeous-Alexander",
+    "Andrew Nembhard",
+    "De'Anthony Melton",
+    "Anthony Black",
+    "Mikal Bridges",
+    "Bilal Coulibaly",
+    "Myles Turner",
+    "Jarrett Allen",
+    "Brandin Podziemski",
+    "Cameron Johnson",
+    "Anthony Davis",
+    "Daniel Gafford",
+    "Stephen Curry"
+   ]
+  },
+  {
+   "id": "6",
+   "name": "Paper Tigers",
+   "players": [
+    "Anfernee Simons",
+    "RJ Barrett",
+    "Fred VanVleet",
+    "Deni Avdija",
+    "Cameron Boozer",
+    "OG Anunoby",
+    "Isaiah Hartenstein",
+    "Neemias Queta",
+    "Jalen Brunson",
+    "Alperen Şengün",
+    "Aaron Wiggins",
+    "Clint Capela",
+    "Davion Mitchell"
+   ]
+  },
+  {
+   "id": "7",
+   "name": "Bench Mob",
+   "players": [
+    "James Harden",
+    "Austin Reaves",
+    "Darius Garland",
+    "Brandon Miller",
+    "Yaxel Lendeborg",
+    "Tari Eason",
+    "Jabari Smith Jr.",
+    "Victor Wembanyama",
+    "Rui Hachimura",
+    "Miles Bridges",
+    "Dejounte Murray",
+    "Keaton Wagler",
+    "Jalen Smith",
+    "Keegan Murray",
+    "Maxime Raynaud",
+    "Alex Caruso"
+   ]
+  },
+  {
+   "id": "8",
+   "name": "Green Clovers",
+   "players": [
+    "Tyrese Haliburton",
+    "Kevin Durant",
+    "Jaylen Brown",
+    "Matas Buzelis",
+    "Jaren Jackson Jr.",
+    "Jake LaRavia",
+    "Rudy Gobert",
+    "Collin Murray-Boyles",
+    "Jalen Suggs",
+    "Ace Bailey",
+    "Cedric Coward",
+    "Brandon Ingram",
+    "Jimmy Butler III"
+   ]
+  },
+  {
+   "id": "9",
+   "name": "Glass Cleaners",
+   "players": [
+    "Jamal Shead",
+    "VJ Edgecombe",
+    "Jrue Holiday",
+    "Christian Braun",
+    "Kelly Oubre Jr.",
+    "Jalen Johnson",
+    "Jay Huff",
+    "Jakob Poeltl",
+    "Cam Spencer",
+    "Moritz Wagner",
+    "Donovan Mitchell",
+    "Collin Gillespie",
+    "Andrew Wiggins",
+    "Mitchell Robinson",
+    "Ivica Zubac",
+    "Jalen Williams"
+   ]
+  },
+  {
+   "id": "10",
+   "name": "Mountain Goats",
+   "players": [
+    "Darius Acuff Jr.",
+    "Ryan Rollins",
+    "LaMelo Ball",
+    "Derrick Jones Jr.",
+    "Obi Toppin",
+    "Tristan da Silva",
+    "Isaiah Stewart",
+    "Zach Edey",
+    "Dennis Schröder",
+    "Cade Cunningham",
+    "Toumani Camara",
+    "Norman Powell",
+    "Tre Jones",
+    "Draymond Green",
+    "Chet Holmgren",
+    "Mikel Brown Jr.",
+    "Joel Embiid",
+    "Coby White"
+   ]
+  },
+  {
+   "id": "11",
+   "name": "Pick and Rollers",
+   "players": [
+    "Keyonte George",
+    "Keon Ellis",
+    "Jalen Green",
+    "Saddiq Bey",
+    "Lauri Markkanen",
+    "Grayson Allen",
+    "Precious Achiuwa",
+    "Moussa Diabaté",
+    "Dylan Harper",
+    "Zion Williamson",
+    "Kyshawn George",
+    "Josh Giddey",
+    "Cooper Flagg",
+    "Paolo Banchero",
+    "Mark Williams"
+   ]
+  },
+  {
+   "id": "12",
+   "name": "Soup Kitchen",
+   "players": [
+    "Ajay Mitchell",
+    "CJ McCollum",
+    "Trey Murphy III",
+    "Jonathan Kuminga",
+    "Julius Randle",
+    "Julian Champagnie",
+    "Day'Ron Sharpe",
+    "Onyeka Okongwu",
+    "Caleb Wilson",
+    "Quentin Grimes",
+    "Peyton Watson",
+    "Jamal Murray",
+    "Giannis Antetokounmpo",
+    "Reed Sheppard",
+    "Ben Simmons"
+   ]
+  },
+  {
+   "id": "13",
+   "name": "Storm Chasers",
+   "players": [
+    "Tyrese Maxey",
+    "Darryn Peterson",
+    "Immanuel Quickley",
+    "Ausar Thompson",
+    "Bam Adebayo",
+    "Naz Reid",
+    "P.J. Washington",
+    "Pascal Siakam",
+    "Devin Vassell",
+    "Kyle Kuzma",
+    "Kyrie Irving",
+    "Zach LaVine",
+    "Terrence Shannon Jr.",
+    "Yves Missi"
+   ]
+  },
+  {
+   "id": "14",
+   "name": "Court Jesters",
+   "players": [
+    "Devin Booker",
+    "Jeremiah Fears",
+    "Kevin Huerter",
+    "LeBron James",
+    "Karlo Matković",
+    "Franz Wagner",
+    "Joan Beringer",
+    "Derik Queen",
+    "Paul George",
+    "Luka Dončić",
+    "Leonard Miller",
+    "Duncan Robinson",
+    "Khaman Maluach",
+    "Gui Santos",
+    "Ja Morant",
+    "Egor Dëmin",
+    "Jusuf Nurkić",
+    "Jalen Duren"
+   ]
+  }
+ ],
+ "weeks": [
+  {
+   "week": 1,
+   "period": "Oct 20–25, 2026",
+   "matchups": [
+    {
+     "home": {
+      "id": "1",
+      "name": "Lakeside Lynx",
+      "score": {
+       "wins": 4,
+       "losses": 5,
+       "ties": 0
+      },
+      "stats": {
+       "FGM/A": "187/403",
+       "FG%": ".464",
+       "FTM/A": "90/117",
+       "FT%": ".769",
+       "3PTM/A": "57/162",
+       "3PT%": ".352",
+       "PTS": "521",
+       "REB": "218",
+       "AST": "111",
+       "ST": "59",
+       "BLK": "18",
+       "TO": "69"
+      }
+     },
+     "away": {
+      "id": "4",
+      "name": "Brick City",
+      "score": {
+       "wins": 5,
+       "losses": 4,
+       "ties": 0
+      },
+      "stats": {
+       "FGM/A": "180/358",
+       "FG%": ".503",
+       "FTM/A": "75/107",
+       "FT%": ".701",
+       "3PTM/A": "54/140",
+       "3PT%": ".386",
+       "PTS": "489",
+       "REB": "219",
+       "AST": "95",
+       "ST": "39",
+       "BLK": "26",
+       "TO": "62"
+      }
+     },
+     "status": "final"
+    },
+    {
+     "home": {
+      "id": "2",
+      "name": "Iron Hoopers",
+      "score": {
+       "wins": 7,
+       "losses": 2,
+       "ties": 0
+      },
+      "stats": {
+       "FGM/A": "189/383",
+       "FG%": ".493",
+       "FTM/A": "106/127",
+       "FT%": ".835",
+       "3PTM/A": "49/151",
+       "3PT%": ".325",
+       "PTS": "533",
+       "REB": "198",
+       "AST": "161",
+       "ST": "41",
+       "BLK": "12",
+       "TO": "63"
+      }
+     },
+     "away": {
+      "id": "7",
+      "name": "Bench Mob",
+      "score": {
+       "wins": 2,
+       "losses": 7,
+       "ties": 0
+      },
+      "stats": {
+       "FGM/A": "198/465",
+       "FG%": ".426",
+       "FTM/A": "130/161",
+       "FT%": ".807",
+       "3PTM/A": "62/202",
+       "3PT%": ".307",
+       "PTS": "588",
+       "REB": "188",
+       "AST": "115",
+       "ST": "34",
+       "BLK": "32",
+       "TO": "91"
+      }
+     },
+     "status": "final"
+    },
+    {
+     "home": {
+      "id": "3",
+      "name": "Night Shift",
+      "score": {
+       "wins": 6,
+       "losses": 3,
+       "ties": 0
+      },
+      "stats": {
+       "FGM/A": "187/363",
+       "FG%": ".515",
+       "FTM/A": "64/80",
+       "FT%": ".800",
+       "3PTM/A": "55/135",
+       "3PT%": ".407",
+       "PTS": "493",
+       "REB": "154",
+       "AST": "88",
+       "ST": "36",
+       "BLK": "26",
+       "TO": "57"
+      }
+     },
+     "away": {
+      "id": "6",
+      "name": "Paper Tigers",
+      "score": {
+       "wins": 3,
+       "losses": 6,
+       "ties": 0
+      },
+      "stats": {
+       "FGM/A": "192/428",
+       "FG%": ".449",
+       "FTM/A": "114/155",
+       "FT%": ".735",
+       "3PTM/A": "47/137",
+       "3PT%": ".343",
+       "PTS": "545",
+       "REB": "191",
+       "AST": "138",
+       "ST": "29",
+       "BLK": "25",
+       "TO": "71"
+      }
+     },
+     "status": "final"
+    },
+    {
+     "home": {
+      "id": "5",
+      "name": "Coastal Comets",
+      "score": {
+       "wins": 3,
+       "losses": 6,
+       "ties": 0
+      },
+      "stats": {
+       "FGM/A": "152/343",
+       "FG%": ".443",
+       "FTM/A": "93/112",
+       "FT%": ".830",
+       "3PTM/A": "38/124",
+       "3PT%": ".306",
+       "PTS": "435",
+       "REB": "129",
+       "AST": "87",
+       "ST": "33",
+       "BLK": "28",
+       "TO": "55"
+      }
+     },
+     "away": {
+      "id": "12",
+      "name": "Soup Kitchen",
+      "score": {
+       "wins": 6,
+       "losses": 3,
+       "ties": 0
+      },
+      "stats": {
+       "FGM/A": "191/411",
+       "FG%": ".465",
+       "FTM/A": "100/137",
+       "FT%": ".730",
+       "3PTM/A": "56/163",
+       "3PT%": ".344",
+       "PTS": "538",
+       "REB": "177",
+       "AST": "107",
+       "ST": "45",
+       "BLK": "19",
+       "TO": "79"
+      }
+     },
+     "status": "final"
+    },
+    {
+     "home": {
+      "id": "8",
+      "name": "Panic Shooters",
+      "score": {
+       "wins": 3,
+       "losses": 6,
+       "ties": 0
+      },
+      "stats": {
+       "FGM/A": "153/325",
+       "FG%": ".471",
+       "FTM/A": "94/123",
+       "FT%": ".764",
+       "3PTM/A": "34/104",
+       "3PT%": ".327",
+       "PTS": "434",
+       "REB": "190",
+       "AST": "106",
+       "ST": "24",
+       "BLK": "24",
+       "TO": "69"
+      }
+     },
+     "away": {
+      "id": "13",
+      "name": "Storm Chasers",
+      "score": {
+       "wins": 6,
+       "losses": 3,
+       "ties": 0
+      },
+      "stats": {
+       "FGM/A": "239/504",
+       "FG%": ".474",
+       "FTM/A": "109/144",
+       "FT%": ".757",
+       "3PTM/A": "69/204",
+       "3PT%": ".338",
+       "PTS": "656",
+       "REB": "209",
+       "AST": "129",
+       "ST": "40",
+       "BLK": "22",
+       "TO": "78"
+      }
+     },
+     "status": "final"
+    },
+    {
+     "home": {
+      "id": "9",
+      "name": "Glass Cleaners",
+      "score": {
+       "wins": 2,
+       "losses": 7,
+       "ties": 0
+      },
+      "stats": {
+       "FGM/A": "138/310",
+       "FG%": ".445",
+       "FTM/A": "58/81",
+       "FT%": ".716",
+       "3PTM/A": "25/108",
+       "3PT%": ".231",
+       "PTS": "359",
+       "REB": "189",
+       "AST": "100",
+       "ST": "36",
+       "BLK": "21",
+       "TO": "46"
+      }
+     },
+     "away": {
+      "id": "14",
+      "name": "Court Jesters",
+      "score": {
+       "wins": 7,
+       "losses": 2,
+       "ties": 0
+      },
+      "stats": {
+       "FGM/A": "191/414",
+       "FG%": ".461",
+       "FTM/A": "119/148",
+       "FT%": ".804",
+       "3PTM/A": "58/163",
+       "3PT%": ".356",
+       "PTS": "559",
+       "REB": "192",
+       "AST": "125",
+       "ST": "42",
+       "BLK": "13",
+       "TO": "79"
+      }
+     },
+     "status": "final"
+    },
+    {
+     "home": {
+      "id": "10",
+      "name": "Mountain Goats",
+      "score": {
+       "wins": 5,
+       "losses": 4,
+       "ties": 0
+      },
+      "stats": {
+       "FGM/A": "177/426",
+       "FG%": ".415",
+       "FTM/A": "115/139",
+       "FT%": ".827",
+       "3PTM/A": "62/182",
+       "3PT%": ".341",
+       "PTS": "531",
+       "REB": "179",
+       "AST": "143",
+       "ST": "35",
+       "BLK": "27",
+       "TO": "76"
+      }
+     },
+     "away": {
+      "id": "11",
+      "name": "Pick and Rollers",
+      "score": {
+       "wins": 4,
+       "losses": 5,
+       "ties": 0
+      },
+      "stats": {
+       "FGM/A": "197/388",
+       "FG%": ".508",
+       "FTM/A": "116/151",
+       "FT%": ".768",
+       "3PTM/A": "60/151",
+       "3PT%": ".397",
+       "PTS": "570",
+       "REB": "168",
+       "AST": "132",
+       "ST": "40",
+       "BLK": "17",
+       "TO": "79"
+      }
+     },
+     "status": "final"
+    }
+   ]
+  },
+  {
+   "week": 2,
+   "period": "Oct 26 – Nov 1, 2026",
+   "matchups": [
+    {
+     "home": {
+      "id": "1",
+      "name": "Lakeside Lynx",
+      "score": {
+       "wins": 4,
+       "losses": 5,
+       "ties": 0
+      },
+      "stats": {
+       "FGM/A": "166/385",
+       "FG%": ".431",
+       "FTM/A": "92/122",
+       "FT%": ".754",
+       "3PTM/A": "55/160",
+       "3PT%": ".344",
+       "PTS": "479",
+       "REB": "220",
+       "AST": "147",
+       "ST": "47",
+       "BLK": "23",
+       "TO": "70"
+      }
+     },
+     "away": {
+      "id": "14",
+      "name": "Court Jesters",
+      "score": {
+       "wins": 5,
+       "losses": 4,
+       "ties": 0
+      },
+      "stats": {
+       "FGM/A": "198/433",
+       "FG%": ".457",
+       "FTM/A": "102/118",
+       "FT%": ".864",
+       "3PTM/A": "63/178",
+       "3PT%": ".354",
+       "PTS": "561",
+       "REB": "185",
+       "AST": "163",
+       "ST": "41",
+       "BLK": "22",
+       "TO": "85"
+      }
+     },
+     "status": "final"
+    },
+    {
+     "home": {
+      "id": "2",
+      "name": "Iron Hoopers",
+      "score": {
+       "wins": 5,
+       "losses": 3,
+       "ties": 1
+      },
+      "stats": {
+       "FGM/A": "197/418",
+       "FG%": ".471",
+       "FTM/A": "144/183",
+       "FT%": ".787",
+       "3PTM/A": "58/167",
+       "3PT%": ".347",
+       "PTS": "596",
+       "REB": "251",
+       "AST": "147",
+       "ST": "31",
+       "BLK": "24",
+       "TO": "89"
+      }
+     },
+     "away": {
+      "id": "3",
+      "name": "Night Shift",
+      "score": {
+       "wins": 3,
+       "losses": 5,
+       "ties": 1
+      },
+      "stats": {
+       "FGM/A": "200/419",
+       "FG%": ".477",
+       "FTM/A": "85/114",
+       "FT%": ".746",
+       "3PTM/A": "43/149",
+       "3PT%": ".289",
+       "PTS": "528",
+       "REB": "184",
+       "AST": "90",
+       "ST": "46",
+       "BLK": "24",
+       "TO": "64"
+      }
+     },
+     "status": "final"
+    },
+    {
+     "home": {
+      "id": "4",
+      "name": "Brick City",
+      "score": {
+       "wins": 4,
+       "losses": 5,
+       "ties": 0
+      },
+      "stats": {
+       "FGM/A": "220/460",
+       "FG%": ".478",
+       "FTM/A": "78/96",
+       "FT%": ".813",
+       "3PTM/A": "65/179",
+       "3PT%": ".363",
+       "PTS": "583",
+       "REB": "235",
+       "AST": "93",
+       "ST": "37",
+       "BLK": "25",
+       "TO": "77"
+      }
+     },
+     "away": {
+      "id": "13",
+      "name": "Storm Chasers",
+      "score": {
+       "wins": 5,
+       "losses": 4,
+       "ties": 0
+      },
+      "stats": {
+       "FGM/A": "232/534",
+       "FG%": ".434",
+       "FTM/A": "114/142",
+       "FT%": ".803",
+       "3PTM/A": "73/227",
+       "3PT%": ".322",
+       "PTS": "651",
+       "REB": "239",
+       "AST": "150",
+       "ST": "45",
+       "BLK": "13",
+       "TO": "74"
+      }
+     },
+     "status": "final"
+    },
+    {
+     "home": {
+      "id": "5",
+      "name": "Coastal Comets",
+      "score": {
+       "wins": 6,
+       "losses": 3,
+       "ties": 0
+      },
+      "stats": {
+       "FGM/A": "215/444",
+       "FG%": ".484",
+       "FTM/A": "109/135",
+       "FT%": ".807",
+       "3PTM/A": "73/183",
+       "3PT%": ".399",
+       "PTS": "612",
+       "REB": "232",
+       "AST": "137",
+       "ST": "34",
+       "BLK": "32",
+       "TO": "63"
+      }
+     },
+     "away": {
+      "id": "11",
+      "name": "Pick and Rollers",
+      "score": {
+       "wins": 3,
+       "losses": 6,
+       "ties": 0
+      },
+      "stats": {
+       "FGM/A": "196/403",
+       "FG%": ".486",
+       "FTM/A": "96/118",
+       "FT%": ".814",
+       "3PTM/A": "42/134",
+       "3PT%": ".313",
+       "PTS": "530",
+       "REB": "184",
+       "AST": "131",
+       "ST": "40",
+       "BLK": "24",
+       "TO": "74"
+      }
+     },
+     "status": "final"
+    },
+    {
+     "home": {
+      "id": "6",
+      "name": "Paper Tigers",
+      "score": {
+       "wins": 4,
+       "losses": 5,
+       "ties": 0
+      },
+      "stats": {
+       "FGM/A": "233/509",
+       "FG%": ".458",
+       "FTM/A": "126/160",
+       "FT%": ".788",
+       "3PTM/A": "70/197",
+       "3PT%": ".355",
+       "PTS": "662",
+       "REB": "236",
+       "AST": "177",
+       "ST": "43",
+       "BLK": "18",
+       "TO": "75"
+      }
+     },
+     "away": {
+      "id": "12",
+      "name": "Soup Kitchen",
+      "score": {
+       "wins": 5,
+       "losses": 4,
+       "ties": 0
+      },
+      "stats": {
+       "FGM/A": "248/535",
+       "FG%": ".464",
+       "FTM/A": "103/142",
+       "FT%": ".725",
+       "3PTM/A": "80/227",
+       "3PT%": ".352",
+       "PTS": "679",
+       "REB": "248",
+       "AST": "161",
+       "ST": "44",
+       "BLK": "34",
+       "TO": "78"
+      }
+     },
+     "status": "final"
+    },
+    {
+     "home": {
+      "id": "7",
+      "name": "Bench Mob",
+      "score": {
+       "wins": 6,
+       "losses": 3,
+       "ties": 0
+      },
+      "stats": {
+       "FGM/A": "283/614",
+       "FG%": ".461",
+       "FTM/A": "117/138",
+       "FT%": ".848",
+       "3PTM/A": "93/271",
+       "3PT%": ".343",
+       "PTS": "776",
+       "REB": "249",
+       "AST": "141",
+       "ST": "37",
+       "BLK": "37",
+       "TO": "96"
+      }
+     },
+     "away": {
+      "id": "9",
+      "name": "Glass Cleaners",
+      "score": {
+       "wins": 3,
+       "losses": 6,
+       "ties": 0
+      },
+      "stats": {
+       "FGM/A": "181/366",
+       "FG%": ".495",
+       "FTM/A": "68/90",
+       "FT%": ".756",
+       "3PTM/A": "64/164",
+       "3PT%": ".390",
+       "PTS": "494",
+       "REB": "188",
+       "AST": "117",
+       "ST": "34",
+       "BLK": "18",
+       "TO": "62"
+      }
+     },
+     "status": "final"
+    },
+    {
+     "home": {
+      "id": "8",
+      "name": "Panic Shooters",
+      "score": {
+       "wins": 3,
+       "losses": 6,
+       "ties": 0
+      },
+      "stats": {
+       "FGM/A": "103/227",
+       "FG%": ".454",
+       "FTM/A": "67/89",
+       "FT%": ".753",
+       "3PTM/A": "29/82",
+       "3PT%": ".354",
+       "PTS": "302",
+       "REB": "141",
+       "AST": "54",
+       "ST": "24",
+       "BLK": "26",
+       "TO": "50"
+      }
+     },
+     "away": {
+      "id": "10",
+      "name": "Mountain Goats",
+      "score": {
+       "wins": 6,
+       "losses": 3,
+       "ties": 0
+      },
+      "stats": {
+       "FGM/A": "192/425",
+       "FG%": ".452",
+       "FTM/A": "86/110",
+       "FT%": ".782",
+       "3PTM/A": "76/197",
+       "3PT%": ".386",
+       "PTS": "546",
+       "REB": "156",
+       "AST": "146",
+       "ST": "34",
+       "BLK": "13",
+       "TO": "83"
+      }
+     },
+     "status": "final"
+    }
+   ]
+  }
+ ],
+ "playerNotes": [
+  {
+   "name": "Ajay Mitchell",
+   "teamId": "12",
+   "label": "PLAYER NOTE",
+   "text": "Sample player note about Ajay Mitchell: what happened this week and why it matters for fantasy.",
+   "source": "https://www.nba.com/news"
+  },
+  {
+   "name": "Davion Mitchell",
+   "teamId": "6",
+   "label": "PLAYER NOTE",
+   "text": "Sample player note about Davion Mitchell: what happened this week and why it matters for fantasy.",
+   "source": "https://www.nba.com/news"
+  },
+  {
+   "name": "Matas Buzelis",
+   "teamId": "8",
+   "label": "PLAYER NOTE",
+   "text": "Sample player note about Matas Buzelis: what happened this week and why it matters for fantasy.",
+   "source": "https://www.nba.com/news"
+  },
+  {
+   "name": "Chet Holmgren",
+   "teamId": "10",
+   "label": "PLAYER NOTE",
+   "text": "Sample player note about Chet Holmgren: what happened this week and why it matters for fantasy.",
+   "source": "https://www.nba.com/news"
+  },
+  {
+   "name": "Anthony Edwards",
+   "teamId": "3",
+   "label": "PLAYER NOTE",
+   "text": "Sample player note about Anthony Edwards: what happened this week and why it matters for fantasy.",
+   "source": "https://www.nba.com/news"
+  }
+ ],
+ "trades": [
+  {
+   "a": "5",
+   "b": "12",
+   "giveA": "Mikal Bridges",
+   "giveB": "Ajay Mitchell",
+   "benefitA": "Sample: what team A gains.",
+   "benefitB": "Sample: what team B gains.",
+   "risk": "Sample: the main risk of this deal.",
+   "confidence": "Needs fit · conditional",
+   "source": "https://www.nba.com/stats"
+  },
+  {
+   "a": "1",
+   "b": "4",
+   "giveA": "Payton Pritchard",
+   "giveB": "Jaden McDaniels",
+   "benefitA": "Sample: what team A gains.",
+   "benefitB": "Sample: what team B gains.",
+   "risk": "Sample: the main risk of this deal.",
+   "confidence": "Needs fit · conditional",
+   "source": "https://www.nba.com/stats"
+  },
+  {
+   "a": "7",
+   "b": "9",
+   "giveA": "Keaton Wagler",
+   "giveB": "Jrue Holiday",
+   "benefitA": "Sample: what team A gains.",
+   "benefitB": "Sample: what team B gains.",
+   "risk": "Sample: the main risk of this deal.",
+   "confidence": "Needs fit · conditional",
+   "source": "https://www.nba.com/stats"
+  },
+  {
+   "a": "3",
+   "b": "14",
+   "giveA": "John Collins",
+   "giveB": "Jeremiah Fears",
+   "benefitA": "Sample: what team A gains.",
+   "benefitB": "Sample: what team B gains.",
+   "risk": "Sample: the main risk of this deal.",
+   "confidence": "Needs fit · conditional",
+   "source": "https://www.nba.com/stats"
+  },
+  {
+   "a": "6",
+   "b": "8",
+   "giveA": "Davion Mitchell",
+   "giveB": "Matas Buzelis",
+   "benefitA": "Sample: what team A gains.",
+   "benefitB": "Sample: what team B gains.",
+   "risk": "Sample: the main risk of this deal.",
+   "confidence": "Needs fit · conditional",
+   "source": "https://www.nba.com/stats"
+  },
+  {
+   "a": "10",
+   "b": "13",
+   "giveA": "Norman Powell",
+   "giveB": "Naz Reid",
+   "benefitA": "Sample: what team A gains.",
+   "benefitB": "Sample: what team B gains.",
+   "risk": "Sample: the main risk of this deal.",
+   "confidence": "Needs fit · conditional",
+   "source": "https://www.nba.com/stats"
+  }
+ ],
+ "sources": [
+  {
+   "label": "Demo data · anonymized sample league",
+   "url": "https://github.com/",
+   "date": "2026"
+  }
+ ]
+}

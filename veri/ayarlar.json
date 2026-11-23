@@ -1,0 +1,39 @@
+{
+  "siteAdresi": "https://league-newspaper.example.workers.dev",
+  "ligAdi": "Demo League",
+  "gazeteAdi": "The Buzzer",
+  "gazeteAcilimi": [],
+  "altBaslik": "League newspaper",
+  "yayinZamani": "Monday 14:00",
+  "saatDilimi": "Europe/Paris",
+  "saatDilimiAdi": "Paris time",
+  "elemeTakimSayisi": 8,
+  "normalSezonHaftaSayisi": 19,
+  "elemeHaftalari": "weeks 20, 21 and 22",
+  "takasSonGunu": "2027-03-04",
+  "kemerSeridiBaslangic": 5,
+  "elemeOlasiligiBaslangic": 8,
+  "tahminOyunuBaslangic": 6,
+  "kocDegisimleri": [
+    {
+      "takim": "8",
+      "hafta": 4,
+      "koc": "New coach",
+      "not": "Panic Shooters → Green Clovers (new manager); the sleep league resets"
+    }
+  ],
+  "yahooLigAdresi": "https://basketball.fantasysports.yahoo.com/nba/",
+  "aktifYerler": {
+    "PG": 1,
+    "SG": 1,
+    "G": 1,
+    "SF": 1,
+    "PF": 1,
+    "F": 1,
+    "C": 2,
+    "Util": 2
+  },
+  "dil": "en",
+  "veriKaynagi": "Yahoo Fantasy (demo data)",
+  "ornekLig": true
+}

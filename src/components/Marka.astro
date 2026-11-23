@@ -1,0 +1,8 @@
+---
+// Gazetenin adı (ayarlar.json → gazeteAdi). Sondaki ünlem turuncu yazılır.
+interface Props { ad: string; class?: string }
+const { ad, class: sinif = '' } = Astro.props;
+const unlemli = ad.endsWith('!');
+const govde = unlemli ? ad.slice(0, -1) : ad;
+---
+<span class={`marka-yazi ${sinif}`}>{govde}{unlemli && <span class="unlem">!</span>}</span>

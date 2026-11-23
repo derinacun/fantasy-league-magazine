@@ -1,0 +1,101 @@
+---
+// İki takımın 9 kategorisi: seçilen hafta karşılaşsalardı ne olurdu? (sanal eşleşme) ya da sezon toplamı.
+// Seçimler adreste tutulur: ?a=takim-a&b=takim-b&hafta=1  (hafta=sezon: sezon toplamı; varsayılan son hafta)
+import { t as _t } from '../../i18n/t.js';
+import Ikon from '../Ikon.astro';
+import { KATEGORILER, KATEGORI_ADI, kapsamHesapla } from '../../lib/hesap.js';
+import Bilgi from '../Bilgi.astro';
+import { gecmisHesapla, ciftOzetleri } from '../../lib/gecmis.js';
+import { gecmisOku } from '../../lib/okuma.js';
+
+interface Props { sayi: any }
+const { sayi } = Astro.props;
+const ilk = sayi.eslesmeler[0];
+const GR = gecmisHesapla(gecmisOku(), sayi);
+const haftalar = sayi.haftalarHam.map((w: any) => {
+  const k = kapsamHesapla(sayi.hesapTakimlari, [w]);
+  return {
+    hafta: w.week,
+    donem: w.period,
+    ist: k.ist,
+    sira: k.sira,
+    eslesmeler: w.matchups.map((m: any) => ({ ev: m.home.id, dep: m.away.id, evSkor: m.home.score.wins, depSkor: m.away.score.wins, beraber: m.home.score.ties })),
+  };
+});
+const veri = {
+  takimlar: sayi.takimlar.map((t: any) => ({ id: t.id, ad: t.ad, slug: t.slug })),
+  kategoriler: KATEGORILER.map((k) => ({ k, ad: KATEGORI_ADI[k] })),
+  n: sayi.takimlar.length,
+  haftalar,
+  sezon: { ist: sayi.kapsam.sezon.ist, sira: sayi.kapsam.sezon.sira },
+  sonHafta: sayi.hafta,
+  varsayilan: { a: ilk.ev, b: ilk.dep },
+  // Tüm zamanlar (18 Kasım 2026): yalnızca bugünkü koç çiftleri; eski sezonların takım adları maç satırlarında
+  gecmis: GR ? ciftOzetleri(GR.liste, sayi.takimlar.map((t: any) => t.id)) : {},
+  sampiyon: GR?.sampiyon?.id ?? null, // son şampiyon: tarafına altın çerçeve
+  // Koç sicili (18 Kasım 2026): bugünkü koçlar
+  koclar: GR ? Object.fromEntries(GR.tum.satirlar.filter((x: any) => x.bugun).map((x: any) => [x.koc, {
+    sampiyonluk: x.sampiyonluk, final: x.final, eleme: x.eleme, oran: x.oran, sezon: x.sezon,
+    enIyi: x.enIyi ? { sira: x.enIyi.sira, n: x.enIyi.takimSayisi, etiket: x.enIyi.etiket } : null,
+  }])) : {},
+};
+import Atlama from '../Atlama.astro';
+---
+<Atlama etiket={_t('Karşılaştır bölümleri')} bolumler={[{ id: 'kiyas-takimlar', ad: _t('Takımlar') }, { id: 'kiyas-koclar', ad: _t('Koçlar') }]} />
+<h1 class="sayfa-baslik">{_t('İki takım. Dokuz kategori.')}</h1>
+<p class="alt-metin">{_t('Bir hafta seç: iki takım o hafta karşılaşsaydı, o haftanın sayılarıyla skor ne olurdu? Gelecek eşleşme tahmini değildir.')}</p>
+
+<div class="kiyas-secim">
+  <label>
+    <span class="secim-etiket"><span class="renk-nokta a" aria-hidden="true"></span>{_t('Birinci takım')}</span>
+    <select data-kiyas="a">
+      {sayi.takimlar.map((t: any) => <option value={t.slug} selected={t.id === ilk.ev}>{t.ad}</option>)}
+    </select>
+  </label>
+  <button type="button" class="dugme ikincil yer-degistir" data-kiyas-degistir aria-label={_t('Takımların yerini değiştir')}><Ikon ad="karsi" boyut={18} /></button>
+  <label>
+    <span class="secim-etiket"><span class="renk-nokta b" aria-hidden="true"></span>{_t('İkinci takım')}</span>
+    <select data-kiyas="b">
+      {sayi.takimlar.map((t: any) => <option value={t.slug} selected={t.id === ilk.dep}>{t.ad}</option>)}
+    </select>
+  </label>
+  <label class="kiyas-hafta">
+    <span class="secim-etiket"><Ikon ad="saat" boyut={14} />{_t('Hangi hafta?')}</span>
+    <select data-kiyas-hafta>
+      {[...haftalar].reverse().map((h: any) => <option value={String(h.hafta)} selected={h.hafta === sayi.hafta}>{_t('Hafta {0}{1} · {2}', [h.hafta, h.hafta === sayi.hafta ? _t(' (son hafta)') : '', h.donem])}</option>)}
+      <option value="sezon">{_t('Sezon toplamı ({0} hafta)', [haftalar.length])}</option>
+    </select>
+  </label>
+</div>
+
+<section class="panel kiyas" id="kiyas-takimlar" data-kiyas-alan aria-live="polite">
+  <p class="ust-etiket" data-kiyas-baslik></p>
+  <div class="kiyas-bas">
+    <h2 data-kiyas-ad="a"></h2>
+    <p class="kiyas-skor" data-kiyas-skor></p>
+    <h2 data-kiyas-ad="b" class="sag"></h2>
+  </div>
+  <p class="kiyas-resmi" data-kiyas-resmi hidden></p>
+  <p class="kiyas-aciklama">{_t('Değerin yanındaki ● o kategoriyi kazanan tarafı gösterir. Çubuk, takımın o kategoride {0} takım içindeki sırasıdır: uzun çubuk = üst sıra.', [sayi.takimlar.length])}</p>
+  <div class="kiyas-satirlar" data-kiyas-satirlar></div>
+  <p class="dipnot" data-kiyas-dipnot></p>
+
+  <div class="kiyas-koc" id="kiyas-koclar" data-kiyas-tarih>
+    <p class="ust-etiket kiyas-koc-baslik">{_t('Koçlar · tüm zamanlar')}<Bilgi baslik={_t('Koçlar · tüm zamanlar')}>{_t('İki koçun 2022\'den beri sicili: aynı Yahoo yöneticisi, takım adı değişse de. "Birbirine karşı": aralarındaki bütün gerçek eşleşmeler (eleme ve teselli turları, bu sezonun bitmiş haftaları dahil). Çubuk bugünkü {TAKIM} koç içindeki yeri: uzun çubuk = daha iyi. En iyi sezonda küçük sıra kazanır.')}</Bilgi></p>
+    <div class="kiyas-bas kiyas-koc-bas">
+      <p class="kiyas-koc-ad" data-kiyas-koc-ad="a"></p>
+      <p class="kiyas-skor" data-kiyas-koc-skor></p>
+      <p class="kiyas-koc-ad sag" data-kiyas-koc-ad="b"></p>
+    </div>
+    <div class="kiyas-satirlar" data-kiyas-koc-satirlar></div>
+    <p class="kiyas-tarih-ozet" data-kiyas-tarih-ozet></p>
+    <details class="kiyas-tarih-detay" data-kiyas-tarih-detay>
+      <summary>{_t('Bütün karşılaşmalar')}<Ikon ad="sag" boyut={14} class="kg-ok" /></summary>
+      <ol class="kiyas-tarih-liste" data-kiyas-tarih-liste></ol>
+    </details>
+  </div>
+</section>
+
+<noscript><p class="bilgi-notu">{_t('Karşılaştırma için tarayıcıda JavaScript açık olmalı.')}</p></noscript>
+<script type="application/json" id="kiyas-veri" set:html={JSON.stringify(veri)}></script>
+

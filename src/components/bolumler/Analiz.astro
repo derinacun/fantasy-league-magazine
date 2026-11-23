@@ -1,0 +1,324 @@
+---
+// Analiz: veriye gömülmek isteyenler için ayrıntılı istatistik sayfası.
+// Hesaplar src/lib/analiz.js içinde; etkileşim (ipucu, takım vurgulama, grafik kur) site.js içinde.
+import { t as _t, ONDALIK, YEREL, yol, dosyaAdi } from '../../i18n/t.js';
+import Bilgi from '../Bilgi.astro';
+import TakimSimge from '../TakimSimge.astro';
+import KapsamSecici from '../KapsamSecici.astro';
+import AltSekmeler from '../AltSekmeler.astro';
+import Ikon from '../Ikon.astro';
+import { KATEGORILER, KATEGORI_ADI, bicimle, kayit } from '../../lib/hesap.js';
+import { analizHesapla, OLCULER } from '../../lib/analiz.js';
+
+interface Props { sayi: any }
+const { sayi } = Astro.props;
+const A = analizHesapla(sayi);
+const n = sayi.takimlar.length;
+const ad = (id: string) => sayi.takim[id]?.ad ?? id;
+const takimAdresi = (id: string) => sayi.adres('takimlar', sayi.takim[id].slug + '/');
+const isiSinifi = (r: number | null) => (r == null ? '' : `isi-${Math.min(7, Math.ceil((r * 7) / n))}`);
+const ondalik = (v: number, d = 1) => v.toFixed(d).replace('.', ONDALIK);
+const isaretli = (v: number, d = 1) => (v > 0.05 ? '+' : v < -0.05 ? '−' : '±') + ondalik(Math.abs(v), d);
+const farkYaz = (kat: string, a: number, b: number) => (kat.includes('%') ? _t('{0} puan', [ondalik(Math.abs(a - b) * 100)]) : ondalik(Math.abs(a - b), 0));
+const KAPSAMLAR = [
+  { ad: 'hafta', etiket: _t('Son hafta ({0})', [sayi.donem]) },
+  { ad: 'sezon', etiket: _t('Sezon toplamı ({0} hafta)', [sayi.haftaSayisi]) },
+];
+const sonHaftalar = A.haftalik.slice(-8);
+const gucSirasi = sayi.kapsam.hafta.gucSirasi;
+const alfabetik = [...sayi.takimlar].sort((a: any, b: any) => a.ad.localeCompare(b.ad, YEREL));
+const grafikVeri = {
+  takimlar: sayi.takimlar.map((t: any) => ({ id: t.id, ad: t.ad })),
+  olculer: OLCULER,
+  kapsam: { hafta: A.kapsamlar.hafta.nokta, sezon: A.kapsamlar.sezon.nokta },
+};
+const csv = yol(`/tablo/hafta-${sayi.no}-tum-haftalar.csv`);
+const OLCEK = [
+  { s: 'isi-1', e: '1–2' }, { s: 'isi-2', e: '3–4' }, { s: 'isi-3', e: '5–6' }, { s: 'isi-4', e: '7–8' },
+  { s: 'isi-5', e: '9–10' }, { s: 'isi-6', e: '11–12' }, { s: 'isi-7', e: '13–14' },
+];
+// Seyir çizgisi: güç sırası (1 üstte)
+const seyirCizgi = (id: string) => {
+  const d = A.haftalik.map((h: any) => h.takim[id].sira);
+  if (d.length < 2) return null;
+  const en = 96, boy = 28, p = 4;
+  const x = (i: number) => p + (i * (en - 2 * p)) / (d.length - 1);
+  const y = (s: number) => p + ((s - 1) * (boy - 2 * p)) / (n - 1);
+  return { yol: d.map((s: number, i: number) => `${i ? 'L' : 'M'}${x(i).toFixed(1)} ${y(s).toFixed(1)}`).join(' '), sonX: x(d.length - 1), sonY: y(d.at(-1)), en, boy };
+};
+const gercekEslesme = (a: string, b: string) => sayi.eslesmeler.some((e: any) => (e.ev === a && e.dep === b) || (e.ev === b && e.dep === a));
+import Atlama from '../Atlama.astro';
+---
+<AltSekmeler sayi={sayi} aktif="analiz" />
+<Atlama etiket={_t('Analiz bölümleri')} bolumler={[{ id: 'isi', ad: _t('Isı haritası') }, { id: 'matris', ad: _t('Herkese karşı') }, { id: 'seyir', ad: _t('Haftalık seyir') }, { id: 'dagilim', ad: _t('Dağılımlar') }, { id: 'grafik', ad: _t('Grafik kur') }, { id: 'kilpayi', ad: _t('Kıl payı') }, { id: 'rekor', ad: _t('Sezon rekorları') }]} />
+<h1 class="sayfa-baslik">{_t('Sayıların arkasındaki sayılar.')}</h1>
+<p class="alt-metin">{_t('Analiz yapmayı sevenler için: kategori profilleri, herkese karşı matrisi, haftalık seyir ve kendi grafiğin. Bir takımı vurgula; bütün grafiklerde öne çıksın.')}</p>
+
+<div class="analiz-arac">
+  <KapsamSecici haftaSayisi={sayi.haftaSayisi} />
+  <label class="vurgu-sec">
+    <span>{_t('Takım vurgula')}</span>
+    <select data-vurgu>
+      <option value="">{_t('Hiçbiri')}</option>
+      {alfabetik.map((t: any) => <option value={t.slug} data-id={t.id}>{t.ad}</option>)}
+    </select>
+  </label>
+  <a class="dugme ikincil" href={csv} download={dosyaAdi(`hafta-${sayi.no}-tum-haftalar.csv`)}><Ikon ad="indir" boyut={15} /><span>{_t('Ham veri (.csv)')}</span></a>
+</div>
+<nav class="analiz-icindekiler" aria-label={_t('Analiz bölümleri')}>
+  <a href="#isi">{_t('Isı haritası')}</a>
+  <a href="#matris">{_t('Herkese karşı')}</a>
+  <a href={`${sayi.adres('kehanet')}#sans`}>{_t('Şans endeksi (Kehanet)')}</a>
+  <a href="#seyir">{_t('Haftalık seyir')}</a>
+  <a href="#dagilim">{_t('Dağılım')}</a>
+  <a href="#grafik">{_t('Grafik kur')}</a>
+  <a href="#kilpayi">{_t('Kıl payı')}</a>
+  <a href="#rekor">{_t('Rekorlar')}</a>
+</nav>
+
+<!-- Isı haritası -->
+<section class="panel analiz-bolum" id="isi" aria-labelledby="isi-baslik">
+  <h2 id="isi-baslik">{_t('Isı haritası')}<Bilgi baslik={_t('Isı haritası')}>{_t('Satır takım, sütun kategori. Hücredeki sayı o kategorideki sıra: 1 en iyi, {0} en kötü. Mavi üst, kırmızı alt sıralar. Son sütun standart puan: farkın büyüklüğünü de sayar.', [n])}</Bilgi></h2>
+  <p class="alt-metin">{_t('Her hücre, takımın o kategorideki sırası: 1 en iyi, {0} en kötü. Mavi üst sıralar, kırmızı alt sıralar. Standart puan: takımın her kategoride lig ortalamasından kaç standart sapma uzakta olduğunun toplamı (sıradan farklı olarak farkın büyüklüğünü de sayar).', [n])}</p>
+  <p class="renk-olcek" aria-hidden="true">
+    <span class="olcek-etiket">{_t('Sıra')}</span>
+    {OLCEK.map((o) => <span class={`olcek-kutu ${o.s}`}>{o.e}</span>)}
+  </p>
+  {KAPSAMLAR.map((kp) => {
+    const k = sayi.kapsam[kp.ad];
+    const dg = A.kapsamlar[kp.ad].dagilim;
+    return (
+      <div class="tablo-kutu" data-kapsam-icerik={kp.ad} hidden={kp.ad === 'sezon'}>
+        <table class="isi-tablosu">
+          <caption class="gizli">{_t('{0}: kategori sıraları', [kp.etiket])}</caption>
+          <thead>
+            <tr>
+              <th scope="col" class="sabit sabit-2">{_t('Takım')}</th>
+              {KATEGORILER.map((kat) => <th scope="col" class="ortali"><abbr title={KATEGORI_ADI[kat]}>{kat}</abbr></th>)}
+              <th scope="col" class="sayisal">{_t('Güç')}</th>
+              <th scope="col" class="sayisal">{_t('Standart puan')}</th>
+            </tr>
+          </thead>
+          <tbody>
+            {k.gucSirasi.map((id: string) => (
+              <tr data-takim={id}>
+                <th scope="row" class="sabit sabit-2"><a class="takim-bag" href={takimAdresi(id)}><TakimSimge takim={sayi.takim[id]} boyut="kucuk" /><span>{ad(id)}</span></a></th>
+                {KATEGORILER.map((kat) => {
+                  const r = k.sira[id][kat];
+                  const z = dg.standart[id].puanlar[kat];
+                  return (
+                    <td class={`isi-hucre ${isiSinifi(r)}`} data-ipucu={_t('{0}|{1} · {2}|{3}. sıra{4}', [bicimle(k.ist[id][kat], kat), ad(id), KATEGORI_ADI[kat], r ?? '—', z != null ? _t(' · standart puan ') + isaretli(z) : ''])}>{r ?? '—'}</td>
+                  );
+                })}
+                <td class="sayisal"><b>{k.guc[id]}</b></td>
+                <td class="sayisal">{isaretli(dg.standart[id].toplam)}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    );
+  })}
+</section>
+
+<!-- Herkese karşı matrisi -->
+<section class="panel analiz-bolum" id="matris" aria-labelledby="matris-baslik">
+  <h2 id="matris-baslik">{_t('Herkese karşı matrisi')}<Bilgi baslik={_t('Matris')}>{_t('Satırdaki takımın, sütundaki takıma karşı alacağı kategori sayısı (aynı istatistiklerle). 5 ve üstü kazanır. Çerçeveli hücre o haftanın gerçek eşleşmesi.')}</Bilgi></h2>
+  <p class="alt-metin">{_t('Satırdaki takım, sütundaki takımla aynı istatistiklerle eşleşseydi kaç kategori alırdı? Takımlar güç sırasına göre dizili. Çerçeveli hücreler o haftanın gerçek eşleşmeleri.')}</p>
+  <p class="renk-olcek" aria-hidden="true">
+    <span class="olcek-kutu m-g">{_t('Kazanır')}</span><span class="olcek-kutu m-b">{_t('Berabere')}</span><span class="olcek-kutu m-m">{_t('Kaybeder')}</span>
+  </p>
+  {KAPSAMLAR.map((kp) => {
+    const k = sayi.kapsam[kp.ad];
+    const mt = A.kapsamlar[kp.ad].matris;
+    return (
+      <div class="tablo-kutu" data-kapsam-icerik={kp.ad} hidden={kp.ad === 'sezon'}>
+        <table class="matris-tablosu">
+          <caption class="gizli">{_t('{0}: herkese karşı kategori sonuçları, satırdaki takımın gözünden', [kp.etiket])}</caption>
+          <thead>
+            <tr>
+              <th scope="col" class="sabit sabit-2">{_t('Takım')}</th>
+              {mt.sira.map((b: string) => (
+                <th scope="col" class="matris-bas" title={ad(b)}><TakimSimge takim={sayi.takim[b]} boyut="kucuk" /><span class="gizli">{ad(b)}</span></th>
+              ))}
+              <th scope="col" class="sayisal">{_t('Toplam')}</th>
+            </tr>
+          </thead>
+          <tbody>
+            {mt.sira.map((a: string) => (
+              <tr data-takim={a}>
+                <th scope="row" class="sabit sabit-2"><a class="takim-bag" href={takimAdresi(a)}><TakimSimge takim={sayi.takim[a]} boyut="kucuk" /><span>{ad(a)}</span></a></th>
+                {mt.sira.map((b: string) => {
+                  if (a === b) return <td class="m-bos" aria-label={_t('Aynı takım')}>—</td>;
+                  const c = mt.hucre[a][b];
+                  const sinif = c.wins > c.losses ? 'm-g' : c.wins < c.losses ? 'm-m' : 'm-b';
+                  const gercek = kp.ad === 'hafta' && gercekEslesme(a, b);
+                  return (
+                    <td class={`m-hucre ${sinif}${gercek ? ' gercek' : ''}`} data-ipucu={`${c.wins}–${c.losses}${c.ties ? '–' + c.ties : ''}|${ad(a)} – ${ad(b)}${gercek ? _t('|Gerçek eşleşme') : ''}`}>{c.wins}–{c.losses}{c.ties ? <span class="m-ber">–{c.ties}</span> : null}</td>
+                  );
+                })}
+                <td class="sayisal"><b>{kayit(k.herkeseKarsi[a])}</b></td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    );
+  })}
+</section>
+
+<!-- Şans endeksi 17 Kasım 2026'da Kehanet sayfasına taşındı (src/components/bolumler/Kehanet.astro). -->
+
+<!-- Haftalık seyir -->
+<section class="panel analiz-bolum" id="seyir" aria-labelledby="seyir-baslik">
+  <h2 id="seyir-baslik">{_t('Haftalık seyir')}<Bilgi baslik={_t('Haftalık seyir')}>{_t('Hücredeki sayı o haftanın güç sırası. ▲ kazandı, ▼ kaybetti, = berabere; yanında Yahoo kategori skoru.')}</Bilgi></h2>
+  <p class="alt-metin">{_t('Her haftanın güç sırası (yalnızca o haftanın istatistikleriyle) ve Yahoo eşleşme sonucu. Çizgi yukarı gidiyorsa takım sıralamada yükseliyor. {0}', [A.haftalik.length > 8 ? _t('Tabloda son 8 hafta, çizgide bütün sezon var.') : ''])}</p>
+  <div class="tablo-kutu">
+    <table class="seyir-tablosu">
+      <caption class="gizli">{_t('Haftalara göre güç sırası ve eşleşme sonucu')}</caption>
+      <thead>
+        <tr>
+          <th scope="col" class="sabit sabit-2">{_t('Takım')}</th>
+          {sonHaftalar.map((h: any) => <th scope="col">{_t('Hafta {0}', [h.hafta])}</th>)}
+          {A.haftalik.length > 1 && <th scope="col">{_t('Seyir')}</th>}
+        </tr>
+      </thead>
+      <tbody>
+        {gucSirasi.map((id: string) => {
+          const c = seyirCizgi(id);
+          return (
+            <tr data-takim={id}>
+              <th scope="row" class="sabit sabit-2"><a class="takim-bag" href={takimAdresi(id)}><TakimSimge takim={sayi.takim[id]} boyut="kucuk" /><span>{ad(id)}</span></a></th>
+              {sonHaftalar.map((h: any) => {
+                const x = h.takim[id];
+                return (
+                  <td>
+                    <span class="seyir-sira">{x.sira}.</span>
+                    {x.sonuc && <span class={`sonuc sonuc-${x.sonuc}`} data-ipucu={_t('{0}|{1} · rakip {2}|Güç {3} · herkese karşı {4}', [x.skor, x.sonuc === 'G' ? _t('Kazandı') : x.sonuc === 'M' ? _t('Kaybetti') : _t('Berabere'), ad(x.rakip), x.guc, kayit(x.hk)])}><span class="gizli">{x.sonuc === 'G' ? _t('kazandı') : x.sonuc === 'M' ? _t('kaybetti') : _t('berabere')} </span>{x.sonuc === 'G' ? '▲' : x.sonuc === 'M' ? '▼' : '='} {x.skor}</span>}
+                  </td>
+                );
+              })}
+              {c && (
+                <td class="seyir-cizgi-hucre">
+                  <svg class="seyir-cizgi" width={c.en} height={c.boy} viewBox={`0 0 ${c.en} ${c.boy}`} aria-hidden="true">
+                    <path d={c.yol} />
+                    <circle cx={c.sonX} cy={c.sonY} r="3" />
+                  </svg>
+                </td>
+              )}
+            </tr>
+          );
+        })}
+      </tbody>
+    </table>
+  </div>
+
+</section>
+
+<!-- Dağılım -->
+<section class="panel analiz-bolum" id="dagilim" aria-labelledby="dagilim-baslik">
+  <h2 id="dagilim-baslik">{_t('Kategori dağılımları')}</h2>
+  <p class="alt-metin">{_t('Her nokta bir takım; sağ taraf her zaman iyi (top kaybında eksen ters). Dikey çizgi lig ortalaması. Noktalar sıkışıksa kategori çekişmeli, dağınıksa fark açılmış demektir.')}</p>
+  {KAPSAMLAR.map((kp) => {
+    const k = sayi.kapsam[kp.ad];
+    const dg = A.kapsamlar[kp.ad].dagilim;
+    return (
+      <div class="seritler" data-kapsam-icerik={kp.ad} hidden={kp.ad === 'sezon'}>
+        {dg.kategoriler.map((c: any) => {
+          const iyi = c.kat === 'TO' ? c.min : c.max;
+          const kotu = c.kat === 'TO' ? c.max : c.min;
+          const konum = (v: number) => (iyi === kotu ? 50 : ((v - kotu) / (iyi - kotu)) * 100);
+          return (
+            <div class="serit-satir">
+              <p class="serit-ad"><b>{c.kat}</b> <span>{c.ad}</span></p>
+              <div class="serit">
+                <span class="serit-ort" style={`left:${konum(c.ortalama).toFixed(2)}%`} data-ipucu={_t('{0}|Lig ortalaması · {1}', [bicimle(c.ortalama, c.kat), c.ad])}></span>
+                {c.degerler.map((d: any) => (
+                  <span class="serit-nokta" data-takim={d.id} style={`left:${konum(d.v).toFixed(2)}%`} data-deger={bicimle(d.v, c.kat)} data-ipucu={_t('{0}|{1} · {2}|{3}. sıra', [bicimle(d.v, c.kat), ad(d.id), c.ad, k.sira[d.id][c.kat]])}></span>
+                ))}
+              </div>
+              <p class="serit-uclar"><span>{bicimle(kotu, c.kat)}</span><span>{_t('ortalama {0}', [bicimle(c.ortalama, c.kat)])}</span><span>{bicimle(iyi, c.kat)}</span></p>
+            </div>
+          );
+        })}
+      </div>
+    );
+  })}
+</section>
+
+<!-- Kendi grafiğini kur -->
+<section class="panel analiz-bolum" id="grafik" aria-labelledby="grafik-baslik">
+  <h2 id="grafik-baslik">{_t('Kendi grafiğini kur')}</h2>
+  <p class="alt-metin">{_t('İki ölçü seç; her nokta bir takım, çizgiler lig ortalaması. Örnek: üçlük denemesi ile üçlük isabeti. Hacim mi, verim mi?')}</p>
+  <div class="grafik-secim">
+    <label><span class="secim-etiket">{_t('Yatay eksen')}</span>
+      <select data-grafik="x">{OLCULER.map((o) => <option value={o.k} selected={o.k === '3PTA'}>{o.ad}{!['GUC', 'HK'].includes(o.k) ? ` (${o.k})` : ''}</option>)}</select>
+    </label>
+    <button type="button" class="dugme ikincil yer-degistir" data-grafik-degistir aria-label={_t('Eksenlerin yerini değiştir')}><Ikon ad="karsi" boyut={18} /></button>
+    <label><span class="secim-etiket">{_t('Dikey eksen')}</span>
+      <select data-grafik="y">{OLCULER.map((o) => <option value={o.k} selected={o.k === '3PT%'}>{o.ad}{!['GUC', 'HK'].includes(o.k) ? ` (${o.k})` : ''}</option>)}</select>
+    </label>
+  </div>
+  <div class="grafik-alan" data-grafik-alan></div>
+  <p class="dipnot" data-grafik-not>{_t('Grafik için tarayıcıda JavaScript açık olmalı. Aynı değerler İstatistikler tablosunda ve ham veri dosyasında var.')}</p>
+  <script type="application/json" id="grafik-veri" set:html={JSON.stringify(grafikVeri)}></script>
+</section>
+
+<!-- Kıl payı -->
+<section class="panel analiz-bolum" id="kilpayi" aria-labelledby="kil-baslik">
+  <h2 id="kil-baslik">{_t('Kıl payı')}<Bilgi baslik={_t('Kıl payı')}>{_t('Kalın yazılan takım kategoriyi aldı. Top kaybında az olan kazanır. Yakınlık, farkın o kategorideki lig içi yayılıma oranıyla ölçülür.')}</Bilgi></h2>
+  <p class="alt-metin">{_t('{0} eşleşmelerinde en az farkla biten kategoriler. Yakınlık, farkın o kategorideki lig içi yayılıma oranıyla ölçülür; böylece 1 ribaund ile 0,2 puanlık isabet farkı aynı terazide tartılır. Bu hafta {1} eşleşme tek kategori farkla bitti.', [sayi.donem, A.tekFarkla])}</p>
+  <ol class="kil-listesi">
+    {A.kilPayi.slice(0, 8).map((x: any) => (
+      <li>
+        <span class="kil-kat"><abbr title={KATEGORI_ADI[x.kat]}>{x.kat}</abbr></span>
+        <span class="kil-mac">
+          <span class={x.kazanan === x.ev ? 'kazanan' : ''}>{x.kazanan === x.ev && <span class="gizli">{_t('Kazanan:')}{' '}</span>}{ad(x.ev)} <b>{bicimle(x.a, x.kat)}</b></span>
+          <span class="kil-tire" aria-hidden="true">–</span>
+          <span class={x.kazanan === x.dep ? 'kazanan' : ''}>{x.kazanan === x.dep && <span class="gizli">{_t('Kazanan:')}{' '}</span>}<b>{bicimle(x.b, x.kat)}</b> {ad(x.dep)}</span>
+        </span>
+        <span class="kil-fark">{x.kazanan ? _t('fark {0}', [farkYaz(x.kat, x.a, x.b)]) : _t('berabere')}</span>
+      </li>
+    ))}
+  </ol>
+
+</section>
+
+<!-- Rekorlar -->
+<section class="panel analiz-bolum" id="rekor" aria-labelledby="rekor-baslik">
+  <h2 id="rekor-baslik">{_t('Sezon rekorları')}<Bilgi baslik={_t('Sezon rekorları')}>{_t('Her kategoride sezonun en iyi ve en kötü takım-haftası. Hesapların ayrıntısı')}{' '}<a href={sayi.adres('metodoloji')}>{_t('Metodoloji')}</a>{' '}{_t('sayfasında. Bütün takım-haftalar:')}{' '}<a href={csv} download={dosyaAdi(`hafta-${sayi.no}-tum-haftalar.csv`)}>{_t('ham veri (.csv)')}</a>.</Bilgi></h2>
+  <p class="alt-metin">{_t('{0} haftanın en iyi ve en kötü takım-haftaları.', [sayi.haftaSayisi])}</p>
+  <div class="rekor-kutular">
+    {A.enBuyukFark && (
+      <div class="rekor-kutu">
+        <p class="kutu-alt">{_t('En farklı eşleşme')}</p>
+        <p class="rekor-buyuk">{A.enBuyukFark.skor}</p>
+        <p>{ad(A.enBuyukFark.kazanan)} – {ad(A.enBuyukFark.kaybeden)} <span class="soluk">{_t('· Hafta {0}', [A.enBuyukFark.hafta])}</span></p>
+      </div>
+    )}
+    {A.enIyiHk && (
+      <div class="rekor-kutu">
+        <p class="kutu-alt">{_t('En iyi herkese karşı haftası')}</p>
+        <p class="rekor-buyuk">{kayit(A.enIyiHk.hk)}</p>
+        <p>{ad(A.enIyiHk.id)} <span class="soluk">{_t('· Hafta {0}', [A.enIyiHk.hafta])}</span></p>
+      </div>
+    )}
+  </div>
+  <div class="tablo-kutu">
+    <table class="rekor-tablosu">
+      <caption class="gizli">{_t('Kategorilere göre sezonun en iyi ve en kötü haftalık değerleri')}</caption>
+      <thead><tr><th scope="col">{_t('Kategori')}</th><th scope="col">{_t('En iyi hafta')}</th><th scope="col">{_t('En kötü hafta')}</th></tr></thead>
+      <tbody>
+        {A.rekorlar.map((r: any) => (
+          <tr>
+            <th scope="row"><abbr title={r.ad}>{r.kat}</abbr> <span class="soluk">{r.ad}</span></th>
+            <td data-takim={r.en?.id}>{r.en && <><b>{bicimle(r.en.v, r.kat)}</b> {ad(r.en.id)} <span class="soluk">{_t('· Hafta {0}', [r.en.hafta])}</span>{r.en.hafta === sayi.hafta && <span class="durum-etiketi iyi">{_t('Bu hafta')}</span>}</>}</td>
+            <td data-takim={r.son?.id}>{r.son && <><b>{bicimle(r.son.v, r.kat)}</b> {ad(r.son.id)} <span class="soluk">{_t('· Hafta {0}', [r.son.hafta])}</span>{r.son.hafta === sayi.hafta && <span class="durum-etiketi kotu">{_t('Bu hafta')}</span>}</>}</td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  </div>
+
+</section>
+<div class="ipucu" data-ipucu-kutu role="tooltip" hidden></div>

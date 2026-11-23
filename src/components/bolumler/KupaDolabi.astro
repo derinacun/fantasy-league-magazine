@@ -1,0 +1,143 @@
+---
+// Kupa Dolabı (18 Kasım 2026): geçmiş sezonlar için ayrı sayfa, menüde en sonda.
+// Sıra: şampiyonlar duvarı → tüm zamanlar tablosu → rekor kartları → sezon sezon sıralamalar (açılır).
+// Eski koçlar ve eski takım adları burada görünür; Karşılaştır yalnızca bugünkü koçlar. Hesap: src/lib/gecmis.js
+import { t as _t } from '../../i18n/t.js';
+import Bilgi from '../Bilgi.astro';
+import TakimSimge from '../TakimSimge.astro';
+import Ikon from '../Ikon.astro';
+import { gecmisHesapla } from '../../lib/gecmis.js';
+import { gecmisOku } from '../../lib/okuma.js';
+
+interface Props { sayi: any }
+const { sayi } = Astro.props;
+const R = gecmisHesapla(gecmisOku(), sayi);
+const takimAdresi = (id: string) => sayi.adres('takimlar', sayi.takim[id].slug + '/');
+const oran = (v: number) => `%${Math.round(v * 100)}`;
+const kayitYaz = (k: any) => `${k.g}–${k.m}${k.b ? `–${k.b}` : ''}`;
+const haftaYaz = (s: any) => (s.bas === s.son ? _t('{0}. hafta', [s.bas]) : _t('{0}–{1}. hafta', [s.bas, s.son]));
+const etiketYil = (y: number) => `${y}–${String(y + 1).slice(2)}`;
+const rk = R?.tum.rekorlar;
+// Rekor kartları: iri değer ve tek sahip; altta küçük yazıyla 2. ve 3.
+const rekorlar = R ? [
+  { ad: _t('En uzun galibiyet serisi'), tur: 'basari', ikon: 'yukselis', liste: rk.galibiyetSerisi.map((s: any) => ({ deger: _t('{0} hafta', [s.uzunluk]), ad: s.ad, koc: s.koc, alt: `${s.etiket}, ${haftaYaz(s)}` })) },
+  { ad: _t('En iyi normal sezon'), tur: 'basari', ikon: 'tac', liste: rk.enIyiSezon.map((s: any) => ({ deger: s.kayit, ad: s.ad, koc: s.koc, alt: s.etiket })) },
+  { ad: _t('9–0 biten eşleşme'), tur: 'basari', ikon: 'simsek', liste: rk.dokuzSifir.map((s: any) => ({ deger: '9–0', ad: s.adK, koc: s.kazanan, alt: _t('{0}\'a karşı · {1}, {2}. hafta', [s.adY, s.etiket, s.hafta]) })) },
+  { ad: _t('En uzun yenilgi serisi'), tur: 'utanc', ikon: 'yagmur', liste: rk.yenilgiSerisi.map((s: any) => ({ deger: _t('{0} hafta', [s.uzunluk]), ad: s.ad, koc: s.koc, alt: `${s.etiket}, ${haftaYaz(s)}` })) },
+  { ad: _t('En kötü normal sezon'), tur: 'utanc', ikon: 'yagmur', liste: rk.enKotuSezon.map((s: any) => ({ deger: s.kayit, ad: s.ad, koc: s.koc, alt: s.etiket })) },
+  ...R.tum.yahoo.map((r: any) => ({ ad: _t(r.tanim), tur: r.ad === 'TO' && Number(r.deger) === Math.max(...R.tum.yahoo.filter((x: any) => x.ad === 'TO').map((x: any) => Number(x.deger))) ? 'utanc' : 'hafta', ikon: r.ad === 'TO' ? 'fabrika' : 'hedef', kat: r.ad, liste: [{ deger: r.deger, ad: r.takim, koc: r.koc, alt: _t('{0}, {1}. hafta', [etiketYil(r.yil), r.hafta]) }] })),
+] : [];
+const TUR_ADI: Record<string, string> = { basari: _t('Başarı'), utanc: _t('Utanç'), hafta: _t('Haftalık rekor') };
+const bugunMu = (koc: string) => !!sayi.takim[koc];
+import Atlama from '../Atlama.astro';
+import Onizleme from '../Onizleme.astro';
+const CIP_TUM = R ? (() => { const b = R.tum.satirlar.filter((x: any) => x.bugun); const o = [...b].sort((x: any, y: any) => y.oran - x.oran)[0]; const sa = R.tum.satirlar[0]; return [_t('En çok şampiyonluk: {0} ({1})', [sa.ad, sa.sampiyonluk]), _t('En yüksek kazanma: {0} {1}', [o.ad, oran(o.oran)]), _t('{0} koç, {1} sezon', [R.tum.satirlar.length, R.sezonlar.length + 1])]; })() : [];
+const CIP_REKOR = R ? [rk.galibiyetSerisi[0] ? _t('{0} hafta üst üste: {1}', [rk.galibiyetSerisi[0].uzunluk, rk.galibiyetSerisi[0].ad]) : null, rk.yenilgiSerisi[0] ? _t('{0} hafta yenilgi: {1}', [rk.yenilgiSerisi[0].uzunluk, rk.yenilgiSerisi[0].ad]) : null, _t('{0} kez 9–0', [rk.dokuzSifir.length])] : [];
+---
+<Atlama etiket={_t('Kupa Dolabı bölümleri')} bolumler={[{ id: 'sampiyonlar', ad: _t('Şampiyonlar') }, { id: 'tum-zamanlar', ad: _t('Tüm zamanlar') }, { id: 'rekorlar', ad: _t('Rekorlar') }, { id: 'sezonlar', ad: _t('Sezon sezon') }]} />
+<h1 class="sayfa-baslik">{_t('Kupa Dolabı.')}</h1>
+<p class="alt-metin">{_t('2022\'den beri kim kaldırdı, kim dibi gördü. Eski takım adları, ligden ayrılanlar, rekorlar ve bütün sezonların sıralaması.')}</p>
+
+{R ? (
+<>
+  <section class="bolum-hedef kursu-bolum" id="sampiyonlar" aria-labelledby="sampiyonlar-baslik">
+    <h2 id="sampiyonlar-baslik" class="bolum-baslik">{_t('Şampiyonlar.')}{' '}<span>{_t('Her sezonun kürsüsü.')}</span><Bilgi baslik={_t('Şampiyonlar')}>{_t('Yahoo\'daki eski lig sayfalarından bir kez okundu; normal sezon kayıtları Yahoo ile birebir. Koç aynı Yahoo yöneticisidir: takım adı değişse de geçmiş koçla gider; bir takımın yerine gelen yeni koç eskinin geçmişini almaz. Son şampiyonun adı sitenin her yerinde altın renginde.')}</Bilgi></h2>
+    <div class="kupa-izgara">
+      {R.sezonlar.map((s: any, i: number) => {
+        const sam = s.kursu[0];
+        return (
+          <article class={`kart kupa-kart${i === 0 ? ' kupa-kart--son' : ''}`} aria-labelledby={`kupa-${s.yil}`} data-takim={sam.bugun ? sam.koc : undefined}>
+            <span class="kupa-simge" aria-hidden="true"><Ikon ad="kupa" boyut={28} /></span>
+            <p class="kupa-sezon">{s.etiket}{i === 0 && <span class="kupa-son-etiket">{_t('son şampiyon')}</span>}</p>
+            <h3 id={`kupa-${s.yil}`} class="kupa-ad">{sam.ad}</h3>
+            <p class="kupa-alt">{sam.bugun ? (sam.bugunAd !== sam.ad ? <>{_t('bugün')}{' '}<a href={takimAdresi(sam.koc)}>{sam.bugunAd}</a></> : <a href={takimAdresi(sam.koc)}>{_t('takım sayfası')}</a>) : _t('ligden ayrıldı')}</p>
+            {s.final && <p class="kupa-final">{_t('Final {0} {1}–{2} {3}', [s.final.ev.ad, s.final.sa, s.final.sb, s.final.dep.ad])}</p>}
+            <p class="kupa-diger"><span>{_t('Finalist')}{' '}<b>{s.kursu[1].ad}</b></span><span>{_t('Üçüncü')}{' '}<b>{s.kursu[2].ad}</b></span></p>
+          </article>
+        );
+      })}
+    </div>
+  </section>
+
+  <section class="bolum-hedef kursu-bolum" id="tum-zamanlar" aria-labelledby="tum-baslik">
+    <h2 id="tum-baslik" class="bolum-baslik">{_t('Tüm zamanlar.')}{' '}<span>{_t('Koç koç, 2022\'den bugüne.')}</span><Bilgi baslik={_t('Tüm zamanlar')}>{_t('Bütün sezonlar ve bu sezonun bitmiş haftaları. Eşleşme: haftalık eşleşme kazanma, kaybetme, berabere (eleme turu dahil). Kazanma oranında berabere yarım sayılır. Kategori kaydı yalnızca normal sezon. Sıralama: şampiyonluk, sonra kazanma oranı. Ligden ayrılan koçlar son takım adıyla, soluk.')}</Bilgi></h2>
+<Onizleme cipler={CIP_TUM}>
+    <div class="kart seri-kart"><div class="tablo-kutu" tabindex="0" aria-label={_t('Tüm zamanlar tablosu')}>
+      <table class="seri-tablo gecmis-tablo">
+        <caption class="gizli">{_t('Tüm zamanlar tablosu')}</caption>
+        <thead><tr><th scope="col" class="sol">{_t('Koç')}</th><th scope="col">{_t('Sezon')}</th><th scope="col">{_t('Şampiyonluk')}</th><th scope="col">{_t('Final')}</th><th scope="col">{_t('Eleme turu')}</th><th scope="col">{_t('Eşleşme')}</th><th scope="col">{_t('Kazanma oranı')}</th><th scope="col">{_t('Kategori kaydı')}</th></tr></thead>
+        <tbody>
+          {R.tum.satirlar.map((x: any) => (
+            <tr data-takim={x.bugun ? x.koc : undefined} class={x.bugun ? undefined : 'gecmis-eski'}>
+              <th scope="row">{x.bugun ? <a href={takimAdresi(x.koc)}><TakimSimge takim={sayi.takim[x.koc]} boyut="kucuk" />{x.ad}</a> : <span>{x.ad} <span class="soluk">{_t('· ligden ayrıldı')}</span></span>}</th>
+              <td>{x.sezon}</td>
+              <td>{x.sampiyonluk ? <b>{x.sampiyonluk}</b> : <span class="soluk">0</span>}</td>
+              <td>{x.final}</td>
+              <td>{x.eleme}</td>
+              <td>{kayitYaz(x.eslesme)}</td>
+              <td>{oran(x.oran)}</td>
+              <td>{kayitYaz(x.kategori)}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div></div>
+  </Onizleme>
+</section>
+
+  <section class="bolum-hedef kursu-bolum" id="rekorlar" aria-labelledby="rekor-baslik">
+    <h2 id="rekor-baslik" class="bolum-baslik">{_t('Rekorlar.')}{' '}<span>{_t('Kırılmayı bekleyenler.')}</span><Bilgi baslik={_t('Rekorlar')}>{_t('Seriler normal sezonda, sezon içinde art arda kazanılan ya da kaybedilen eşleşmeler (Yahoo\'nun rekor defteri teselli maçlarını da sayar). Takım adı o sezonki adıdır. Haftalık kategori rekorları Yahoo\'nun lig rekor defterinden; bu sezon kırılırsa Yahoo günceller.')}</Bilgi></h2>
+<Onizleme cipler={CIP_REKOR}>
+    <div class="rekor-izgara">
+      {rekorlar.filter((r) => r.liste.length).map((r) => (
+        <article class={`kart rekor-kart rekor-kart--${r.tur}`} data-takim={bugunMu(r.liste[0].koc) ? r.liste[0].koc : undefined}>
+          <div class="rekor-ust">
+            <span class="rekor-simge" aria-hidden="true"><Ikon ad={r.ikon} boyut={18} /></span>
+            <span class="rekor-tur">{TUR_ADI[r.tur]}{r.kat && ` · ${r.kat}`}</span>
+          </div>
+          <h3 class="rekor-ad">{r.ad}</h3>
+          <p class="rekor-deger">{r.liste[0].deger}</p>
+          <p class="rekor-sahip">
+            {bugunMu(r.liste[0].koc) ? <TakimSimge takim={sayi.takim[r.liste[0].koc]} boyut="kucuk" /> : <span class="rekor-eski" aria-hidden="true">?</span>}
+            <span><b>{r.liste[0].ad}</b><span class="soluk">{r.liste[0].alt}{!bugunMu(r.liste[0].koc) && _t(' · ligden ayrıldı')}</span></span>
+          </p>
+          {r.liste.length > 1 && (
+            <ol class="rekor-diger" start="2">
+              {r.liste.slice(1).map((x: any) => <li>{x.deger} · {x.ad} <span class="soluk">{x.alt}</span></li>)}
+            </ol>
+          )}
+        </article>
+      ))}
+    </div>
+  </Onizleme>
+</section>
+
+  <section class="bolum-hedef kursu-bolum" id="sezonlar" aria-labelledby="sezon-baslik">
+    <h2 id="sezon-baslik" class="bolum-baslik">{_t('Sezon sezon.')}{' '}<span>{_t('Bütün sıralamalar, o zamanki adlarıyla.')}</span></h2>
+    <div class="sezon-listesi">
+      {R.sezonlar.map((s: any) => (
+        <details class="kart gecmis-detay sezon-detay">
+          <summary><b>{s.etiket}</b> <span class="soluk">{_t('· {0} takım · şampiyon {1}', [s.takimSayisi, s.kursu[0].ad])}</span><Ikon ad="sag" boyut={14} class="kg-ok" /></summary>
+          <div class="tablo-kutu" tabindex="0" aria-label={_t('{0} sıralaması', [s.etiket])}>
+            <table class="seri-tablo gecmis-tablo">
+              <caption class="gizli">{_t('{0} sezon sonu sıralaması', [s.etiket])}</caption>
+              <thead><tr><th scope="col">{_t('Sıra')}</th><th scope="col" class="sol">{_t('Takım')}</th><th scope="col" class="sol">{_t('Bugün')}</th><th scope="col">{_t('Kategori kaydı')}</th><th scope="col">{_t('Eleme turu')}</th></tr></thead>
+              <tbody>
+                {s.satirlar.map((t: any) => (
+                  <tr data-takim={t.bugun ? t.koc : undefined}>
+                    <td><b>{t.sira}</b></td>
+                    <th scope="row">{t.ad}</th>
+                    <td class="sol">{t.bugun ? <a href={takimAdresi(t.koc)}><TakimSimge takim={sayi.takim[t.koc]} boyut="kucuk" />{t.bugunAd}</a> : <span class="soluk">{_t('ligden ayrıldı')}</span>}</td>
+                    <td>{t.kayit}</td>
+                    <td>{t.eleme ? 'evet' : <span class="soluk">{_t('hayır')}</span>}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </details>
+      ))}
+    </div>
+  </section>
+</>
+) : <p class="soluk">{_t('Geçmiş sezon verisi yok.')}</p>}

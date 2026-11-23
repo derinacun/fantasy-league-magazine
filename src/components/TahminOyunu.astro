@@ -1,0 +1,159 @@
+---
+// Okur tahmin oyunu (18 Kasım 2026): Kehanet sayfasında. Kurallar src/lib/tahmin.js'te.
+// Açık hafta: form (koç, 7 kazanan, haftanın maçının skoru) — /api/tahmin'e gönderilir, kapanışa kadar değiştirilebilir.
+// Kapanıştan sonra: herkesin tahmini (/api/tahmin'den, sayfa açılınca). Sonuçlar ve sezon tablosu sayı dosyalarından (derlemede).
+import { t as _t, YEREL } from '../i18n/t.js';
+import KehanetNot from './KehanetNot.astro';
+import Bilgi from './Bilgi.astro';
+import TakimSimge from './TakimSimge.astro';
+import Madalya from './Madalya.astro';
+import { KATEGORI_SAYISI, SKOR_PUANI, OZEL, skorYaz } from '../lib/tahmin.js';
+
+interface Props { sayi: any; not?: any }
+const { sayi } = Astro.props;
+const T = sayi.tahminOyunu;
+const A = T?.acik ?? null;
+const ad = (id: string) => OZEL[id as keyof typeof OZEL] ?? sayi.takim[id]?.ad ?? id;
+const takimAdresi = (id: string) => sayi.adres('takimlar', sayi.takim[id].slug + '/');
+const enCok = KATEGORI_SAYISI - 2 + SKOR_PUANI; // 7 eşleşme + skor
+const azami = (h: any) => h.eslesmeler.length + SKOR_PUANI;
+const S = T?.sonPuanlanan ?? null;
+const kahinKez = (id: string) => Object.values(T?.haftalar ?? {}).filter((h: any) => h.hafta <= (S?.hafta ?? 0) && h.kahinler.includes(id)).length;
+const seviye = (n: number) => (n >= 3 ? 'altin' : n === 2 ? 'gumus' : 'bronz');
+const takimlar = sayi.takimlar;
+const hm = A ? A.eslesmeler.find((e: any) => e.anahtar === A.haftaninMaci) : null;
+const kapanisYazi = A?.kapanis ? new Intl.DateTimeFormat(YEREL, { weekday: 'long', day: 'numeric', month: 'long', hour: '2-digit', minute: '2-digit', timeZone: sayi.ayarlar.saatDilimi ?? 'UTC' }).format(new Date(A.kapanis)) : '';
+---
+{T && (
+<section class="bolum-hedef kehanet-bolum" id="tahmin" aria-labelledby="tahmin-baslik"
+  data-tahmin data-hafta={A?.hafta} data-kapanis={A?.kapanis} data-haftanin-maci={A?.haftaninMaci}>
+  <h2 id="tahmin-baslik" class="bolum-baslik">{_t('Tahmin oyunu.')}{' '}<span>{_t('Koçlar, Analitik Hoca ve Tribün Abi\'ye karşı.')}</span><Bilgi baslik={_t('Tahmin oyunu')}>{_t('Her hafta {ESLESME} eşleşmenin kazananını seç: doğru olan 1 puan. "Haftanın maçı"nın skorunu da yaz (kategori sayısı; kalan kategoriler berabere): tam tutarsa +{0}. Haftada en fazla {1} puan; berabere biten eşleşme kimseye puan vermez. Tahminler sayının çıktığı gün 23:59\'da (ligin saat diliminde) kapanır, o saate kadar değiştirebilirsin ve kimse göremez. Analitik Hoca modelin favorisini, Tribün Abi içgüdüsünü oynar; madalya yalnızca koçlara. Haftanın birincisi "Haftanın kâhini" madalyasını alır (eşitlikte hepsi), sezon sonunda birinci "Ligin Kâhini" olur.', [SKOR_PUANI, enCok])}</Bilgi></h2>
+  <KehanetNot not={Astro.props.not} />
+
+  {A && (
+    <div class="kart tahmin-kart" data-tahmin-form-kutu>
+      <div class="tahmin-ust">
+        <h3 class="kutu-baslik">{_t('{0}. hafta tahminlerin', [A.hafta])}</h3>
+        <p class="kutu-alt">{_t('Kapanış: {0} ({1})', [kapanisYazi, sayi.ayarlar.saatDilimiAdi])}<span data-tahmin-geri></span></p>
+      </div>
+      <form class="tahmin-form" data-tahmin-form novalidate>
+        <label class="tahmin-koc">
+          <span>{_t('Koç')}</span>
+          <select name="takim" required data-tahmin-takim>
+            <option value="">{_t('Takımını seç')}</option>
+            {takimlar.map((t: any) => <option value={t.id}>{t.ad}</option>)}
+          </select>
+        </label>
+        <ol class="tahmin-liste">
+          {A.eslesmeler.map((e: any) => (
+            <li class={e.anahtar === A.haftaninMaci ? 'tahmin-satir tahmin-satir--mac' : 'tahmin-satir'} data-takim={`${e.ev} ${e.dep}`}>
+              {e.anahtar === A.haftaninMaci && <p class="tahmin-mac-etiket">{_t('Haftanın maçı · skor tam tutarsa +{0}', [SKOR_PUANI])}</p>}
+              <fieldset class="tahmin-ikili">
+                <legend class="gizli">{_t('{0} – {1}: kazanan', [ad(e.ev), ad(e.dep)])}</legend>
+                <label class="tahmin-secim">
+                  <input type="radio" name={`m-${e.anahtar}`} value={e.ev} required />
+                  <TakimSimge takim={sayi.takim[e.ev]} boyut="kucuk" /><span>{ad(e.ev)}</span>
+                </label>
+                <span class="tahmin-vs" aria-hidden="true">–</span>
+                <label class="tahmin-secim tahmin-secim--sag">
+                  <input type="radio" name={`m-${e.anahtar}`} value={e.dep} required />
+                  <span>{ad(e.dep)}</span><TakimSimge takim={sayi.takim[e.dep]} boyut="kucuk" />
+                </label>
+              </fieldset>
+              {e.anahtar === A.haftaninMaci && (
+                <div class="tahmin-skor">
+                  <label><span class="gizli">{_t('{0} kategori', [ad(e.ev)])}</span><input type="number" inputmode="numeric" min="0" max={KATEGORI_SAYISI} name="skor-ev" required data-tahmin-skor /></label>
+                  <span aria-hidden="true">–</span>
+                  <label><span class="gizli">{_t('{0} kategori', [ad(e.dep)])}</span><input type="number" inputmode="numeric" min="0" max={KATEGORI_SAYISI} name="skor-dep" required data-tahmin-skor /></label>
+                  <span class="soluk" data-tahmin-berabere></span>
+                </div>
+              )}
+            </li>
+          ))}
+        </ol>
+        <div class="tahmin-gonder">
+          <button class="dugme" type="submit">{_t('Tahmini gönder')}</button>
+          <p class="tahmin-durum" role="status" aria-live="polite" data-tahmin-durum></p>
+        </div>
+      </form>
+      <p class="tahmin-girenler" data-tahmin-girenler hidden></p>
+    </div>
+  )}
+
+  {A && (
+    <div class="kart tahmin-kart" data-tahmin-acilan hidden>
+      <h3 class="kutu-baslik">{_t('{0}. haftanın tahminleri', [A.hafta])}</h3>
+      <p class="kutu-alt">{_t('Tahminler kapandı. Sonuçlar ve puanlar {0}. sayıda. Sütunlar eşleşmeler; turuncu çerçeveli sütun haftanın maçı.', [A.hafta])}</p>
+      <div class="tablo-kutu" tabindex="0" aria-label={_t('{0}. haftanın tahminleri', [A.hafta])}>
+        <table class="seri-tablo tahmin-tablo">
+          <caption class="gizli">{_t('{0}. haftanın tahminleri', [A.hafta])}</caption>
+          <thead><tr><th scope="col">{_t('Kim')}</th>{A.eslesmeler.map((e: any) => <th scope="col" title={`${ad(e.ev)} – ${ad(e.dep)}`} class={e.anahtar === A.haftaninMaci ? 'tahmin-mac-sutun' : undefined}><span class="tahmin-cift"><TakimSimge takim={sayi.takim[e.ev]} boyut="kucuk" /><TakimSimge takim={sayi.takim[e.dep]} boyut="kucuk" /></span><span class="gizli">{ad(e.ev)} – {ad(e.dep)}{e.anahtar === A.haftaninMaci && _t(', haftanın maçı')}</span></th>)}<th scope="col">{_t('Skor')}</th></tr></thead>
+          <tbody data-tahmin-acilan-govde>
+            {['hoca', 'abi'].filter((k) => A[k]).map((k) => (
+              <tr data-sabit>
+                <th scope="row"><span class="tahmin-ozel">{ad(k)}</span></th>
+                {A.eslesmeler.map((e: any) => <td>{A[k].secimler[e.anahtar] ? <TakimSimge takim={sayi.takim[A[k].secimler[e.anahtar]]} boyut="kucuk" /> : '—'}</td>)}
+                <td>{skorYaz(A[k].skor)}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      <template data-tahmin-simgeler>
+        {takimlar.map((t: any) => <span data-id={t.id} data-ad={t.ad} data-adres={takimAdresi(t.id)}><TakimSimge takim={t} boyut="kucuk" /></span>)}
+      </template>
+    </div>
+  )}
+
+  {S ? (
+    <div class="kart seri-kart tahmin-kart">
+      <h3 class="kutu-baslik">{_t('{0}. hafta sonuçları', [S.hafta])}</h3>
+      <p class="kutu-alt">{_t('{0} koç oynadı.', [S.katilim])}{' '}{S.kahinler.length > 0 && <>{_t('Haftanın kâhini:')}{' '}<b>{S.kahinler.map(ad).join(', ')}</b>{' '}{_t('({0} / {1} puan).', [S.enYuksek, azami(S)])}</>}{' '}{_t('Haftanın maçı {0} bitti.', [skorYaz(S.sonuc[S.haftaninMaci]?.skor)])}</p>
+      <div class="tablo-kutu" tabindex="0" aria-label={_t('{0}. hafta tahmin sonuçları', [S.hafta])}>
+        <table class="seri-tablo tahmin-tablo">
+          <caption class="gizli">{_t('{0}. hafta tahmin sonuçları', [S.hafta])}</caption>
+          <thead><tr><th scope="col">{_t('Kim')}</th><th scope="col">{_t('Puan')}</th><th scope="col">{_t('Doğru kazanan')}</th><th scope="col">{_t('Skor tahmini')}</th></tr></thead>
+          <tbody>
+            {S.satirlar.map((x: any) => (
+              <tr data-takim={x.ozel ? undefined : x.id} class={x.ozel ? 'tahmin-ozel-satir' : undefined}>
+                <th scope="row"><span class="tahmin-kim">{OZEL[x.id as keyof typeof OZEL] ? <span class="tahmin-ozel">{ad(x.id)}</span> : <a href={takimAdresi(x.id)}><TakimSimge takim={sayi.takim[x.id]} boyut="kucuk" />{ad(x.id)}</a>}{S.kahinler.includes(x.id) && <Madalya odul="kahin" ikon="kure" seviye={seviye(kahinKez(x.id))} boyut={22} etiket={_t('Haftanın kâhini')} />}</span></th>
+                <td><b>{x.puan}</b></td>
+                <td>{x.dogru} / {x.sayilan}</td>
+                <td class={x.tam ? 'adil-yukari' : 'soluk'}>{skorYaz(x.tahmin?.skor ?? null)}{x.tam && _t(' · tam')}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  ) : (
+    <p class="kutu-alt tahmin-bos">{_t('İlk puanlar {0}. sayıda bu sayfada.', [T.baslangic])}</p>
+  )}
+
+  {T.tablo.length > 0 && (
+    <div class="kart seri-kart tahmin-kart">
+      <h3 class="kutu-baslik">{T.sezonBitti ? _t('Sezonun kâhinleri') : _t('Sezon tablosu')}</h3>
+      {T.ligKahini.length > 0 && <p class="kutu-alt">{_t('Ligin Kâhini:')}{' '}<b>{T.ligKahini.map(ad).join(', ')}</b></p>}
+      <div class="tablo-kutu" tabindex="0" aria-label={_t('Tahmin oyunu sezon tablosu')}>
+        <table class="seri-tablo tahmin-tablo">
+          <caption class="gizli">{_t('Tahmin oyunu sezon tablosu')}</caption>
+          <thead><tr><th scope="col">{_t('Sıra')}</th><th scope="col" class="sol">{_t('Kim')}</th><th scope="col">{_t('Puan')}</th><th scope="col">{_t('Doğru kazanan')}</th><th scope="col">{_t('Tam skor')}</th><th scope="col">{_t('Kâhin madalyası')}</th><th scope="col">{_t('Hafta')}</th></tr></thead>
+          <tbody>
+            {T.tablo.map((x: any) => (
+              <tr data-takim={x.ozel ? undefined : x.id} class={x.ozel ? 'tahmin-ozel-satir' : undefined}>
+                <td><b>{x.sira}</b></td>
+                <th scope="row">{OZEL[x.id as keyof typeof OZEL] ? <span class="tahmin-ozel">{ad(x.id)}</span> : <a href={takimAdresi(x.id)}><TakimSimge takim={sayi.takim[x.id]} boyut="kucuk" />{ad(x.id)}</a>}</th>
+                <td><b>{x.puan}</b></td>
+                <td>{x.dogru}</td>
+                <td>{x.tam}</td>
+                <td>{x.ozel ? '—' : x.kahin}</td>
+                <td>{x.hafta}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  )}
+</section>
+)}

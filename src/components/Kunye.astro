@@ -1,0 +1,20 @@
+---
+// Ön sayfa künyesi: yalnızca gazetenin adı (büyük) ve açılımı (küçük).
+// Sayı numarası ve tarih manşet kartının üst etiketinde, sayı seçici sağ üstteki menü panelinde.
+import { t as _t } from '../i18n/t.js';
+import Marka from './Marka.astro';
+
+interface Props { sayi: any }
+const { sayi } = Astro.props;
+const { ayarlar } = sayi;
+const acilim: string[] = ayarlar.gazeteAcilimi ?? [];
+---
+<header class="kunye">
+  <p class="kunye-ad"><Marka ad={ayarlar.gazeteAdi} /></p>
+  {acilim.length > 0 && (
+    <p class="kunye-acilim">
+      <span class="gizli">{_t('Açılımı:')}{' '}</span>
+      {acilim.map((s) => <span><b>{s.slice(0, 1)}</b>{s.slice(1)}</span>)}
+    </p>
+  )}
+</header>

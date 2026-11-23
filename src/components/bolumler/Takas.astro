@@ -1,0 +1,125 @@
+---
+import { t as _t, YEREL } from '../../i18n/t.js';
+import Bilgi from '../Bilgi.astro';
+import Ikon from '../Ikon.astro';
+import OyuncuAdlari from '../OyuncuAdlari.astro';
+import TakimSimge from '../TakimSimge.astro';
+import { KATEGORI_ADI, bicimle } from '../../lib/hesap.js';
+import { kisaTarih } from '../../lib/kadroGorunum.js';
+interface Props { sayi: any }
+const { sayi } = Astro.props;
+const ad = (id: string) => sayi.takim[id]?.ad ?? id;
+const slug = (id: string) => sayi.takim[id]?.slug ?? id;
+// Takas son günü (ayarlar.json → takasSonGunu): sayının yayın gününe göre kalan gün
+const sonGun = sayi.ayarlar.takasSonGunu ? new Date(sayi.ayarlar.takasSonGunu + 'T23:59:00') : null;
+const kalanGun = sonGun ? Math.ceil((sonGun.getTime() - new Date(sayi.yayin).getTime()) / 86400000) : null;
+const L = sayi.ligTakaslari ?? [];
+const takimAdresi = (id: string) => sayi.adres('takimlar', slug(id) + '/');
+const oyuncuAdresi = (takimId: string, oyuncuId: string) => `${takimAdresi(takimId)}#oyuncu-${oyuncuId}`;
+const sonGunYazi = sonGun ? sonGun.toLocaleDateString(YEREL, { day: 'numeric', month: 'long', year: 'numeric' }) : '';
+import Atlama from '../Atlama.astro';
+---
+<Atlama etiket={_t('Takas bölümleri')} bolumler={[{ id: 'masalar', ad: _t('Takas Masaları') }, { id: 'lig-takaslari', ad: _t('Ligdeki takaslar') }]} />
+<h1 class="sayfa-baslik">{_t('Takas Masaları.')}</h1>
+<nav class="oyuncu-gezinme" aria-label={_t('Takas bölümleri')}>
+  <a href="#masalar">{_t('Takas Masaları')}</a>
+  <a href="#lig-takaslari">{_t('Ligdeki takaslar{0}', [L.length ? ` (${L.length})` : ''])}</a>
+</nav>
+<p class="alt-metin" id="masalar">{_t('Tüm lig için fikirler. Her paket ayrı bir görüşme başlangıcıdır; kabul garantisi veya otomatik takas değildir. Bir haftalık kategori zayıflığı kalıcı ihtiyaç olmayabilir; eşit değer ve güncel rol doğrulanmadan teklif gönderilmemeli.')}</p>
+
+{sonGun && (
+  <p class="takas-son-gun"><b>{_t('Takas son günü: {0}.', [sonGunYazi])}</b> {kalanGun > 0 ? _t('Bu sayının yayınlandığı günden {0} gün kaldı.', [kalanGun]) : _t('Takas dönemi kapandı.')}</p>
+)}
+
+<div class="arac-cubugu">
+  <label class="secim">
+    <span class="gizli">{_t('Takıma göre süz')}</span>
+    <select data-takas-filtre>
+      <option value="">{_t('Tüm takımlar')}</option>
+      {[...sayi.takimlar].sort((a: any, b: any) => a.ad.localeCompare(b.ad, YEREL)).map((t: any) => <option value={t.slug}>{t.ad}</option>)}
+    </select>
+  </label>
+  <p class="soluk" data-takas-sayac>{_t('{0} Takas Masası', [sayi.takaslar.length])}</p>
+</div>
+
+<div class="iki-izgara" data-takas-liste>
+  {sayi.takaslar.map((t: any) => (
+    <article class="panel takas" data-taraflar={`${slug(t.a)} ${slug(t.b)}`} data-takim={`${t.a} ${t.b}`}>
+      <div class="takas-ust">
+        <p class="ust-etiket vurgu">{_t('Takas Masası {0}', [Number(t.no)])}</p>
+        <p class="durum-etiketi uyari">{t.confidence}</p>
+      </div>
+      <div class="takas-oyuncular">
+        <div><a class="soluk" href={sayi.adres('takimlar', slug(t.a) + '/')}>{ad(t.a)}</a><h2><OyuncuAdlari sayi={sayi} takimId={t.a} metin={t.giveA} /></h2></div>
+        <Ikon ad="karsi" boyut={22} />
+        <div><a class="soluk" href={sayi.adres('takimlar', slug(t.b) + '/')}>{ad(t.b)}</a><h2><OyuncuAdlari sayi={sayi} takimId={t.b} metin={t.giveB} /></h2></div>
+      </div>
+      <div class="takas-kazanc">
+        <p><b>{_t('{0} ne kazanır?', [ad(t.a)])}</b>{t.benefitA}</p>
+        <p><b>{_t('{0} ne kazanır?', [ad(t.b)])}</b>{t.benefitB}</p>
+      </div>
+      <p class="risk"><b>{_t('Denge ve risk:')}</b> {t.risk}</p>
+      <p class="takas-alt">
+        <a href={`${sayi.adres('karsilastir')}?a=${slug(t.a)}&b=${slug(t.b)}`}>{_t('İki takımı karşılaştır')}{' '}<Ikon ad="ileri" boyut={14} /></a>
+        <a class="dis-bag" href={t.source} target="_blank" rel="noopener noreferrer">{_t('Değerlendirme kaynağı')}{' '}<Ikon ad="dis" boyut={14} /><span class="gizli">{' '}{_t('(yeni sekmede açılır)')}</span></a>
+      </p>
+    </article>
+  ))}
+</div>
+<p class="bilgi-notu" data-takas-bos hidden>{_t('Bu takım için Takas Masası yok.')}</p>
+
+<section class="oyuncu-bolum" id="lig-takaslari" aria-labelledby="lig-takas-baslik">
+  <h2 id="lig-takas-baslik" class="bolum-baslik">{_t('Ligdeki takaslar.')}{' '}<span>{_t('Yapılan takaslar ve karneleri.')}</span><Bilgi baslik={_t('Takas karnesi')}>{_t('Karne, takastan sonraki günlerde iki tarafın aldığı oyuncuların bütün maçlarını toplar (yedekte oynadıkları dahil: ölçülen oyuncunun değeri, koçun dizilişi değil) ve 9 kategoriyi eşleşme gibi sayar. Kaynak: ESPN maç kâğıtları. Ayrıntı')}{' '}<a href={sayi.adres('metodoloji')}>{_t('Metodoloji')}</a>{' '}{_t('sayfasında.')}</Bilgi></h2>
+  {L.length === 0 ? (
+    <p class="panel bilgi-notu">{_t('Bu sezon ligde henüz takas yapılmadı. Masada fikir çok, el sıkışan yok. İlk takas gelince burada listelenir; karnesi her pazartesi güncellenir.')}</p>
+  ) : (
+    <div class="iki-izgara">
+      {L.map((x: any) => {
+        const K = x.karne;
+        return (
+          <article class="panel takas lig-takas" data-takim={`${x.a} ${x.b}`}>
+            <div class="takas-ust">
+              <p class="ust-etiket vurgu">{kisaTarih(x.tarih)}</p>
+              {K && <p class={`durum-etiketi${K.erken ? ' uyari' : ''}`}>{K.erken ? _t('Erken karne · {0} gün', [x.gun]) : _t('{0} haftalık karne', [x.hafta])}</p>}
+            </div>
+            <div class="takas-oyuncular">
+              <div>
+                <a class="soluk" href={takimAdresi(x.a)}>{_t('{0} aldı', [ad(x.a)])}</a>
+                <h2>{x.bVerdi.map((o: any, i: number) => <>{i > 0 && ', '}<a class="oyuncu-bag" href={oyuncuAdresi(x.a, o.id)}>{o.ad}</a></>)}</h2>
+              </div>
+              <Ikon ad="karsi" boyut={22} />
+              <div>
+                <a class="soluk" href={takimAdresi(x.b)}>{_t('{0} aldı', [ad(x.b)])}</a>
+                <h2>{x.aVerdi.map((o: any, i: number) => <>{i > 0 && ', '}<a class="oyuncu-bag" href={oyuncuAdresi(x.b, o.id)}>{o.ad}</a></>)}</h2>
+              </div>
+            </div>
+            {K ? (
+              <>
+                <p class="karne-ozet">
+                  <span class={K.kazanan === x.a ? 'kazanan' : undefined}><TakimSimge takim={sayi.takim[x.a]} boyut="kucuk" /> {ad(x.a)} <b>{K.a}</b></span>
+                  <span class="soluk">–</span>
+                  <span class={K.kazanan === x.b ? 'kazanan' : undefined}><b>{K.b}</b> {ad(x.b)} <TakimSimge takim={sayi.takim[x.b]} boyut="kucuk" /></span>
+                </p>
+                <p class="kutu-alt">{_t('Takastan sonra gelen oyuncuların üretimi, 9 kategoride kafa kafaya ({0} – {1} maç). {2}{3}', [x.aAldi.mac, x.bAldi.mac, K.kazanan ? _t('Şimdilik {0} önde.', [ad(K.kazanan)]) : _t('Şimdilik başa baş.'), K.erken ? _t(' Dört haftadan kısa: hüküm için erken.') : ''])}</p>
+                <details class="gelecek-detay">
+                  <summary>{_t('Kategori kategori')}<Ikon ad="sag" boyut={14} class="kg-ok" /></summary>
+                  <ul class="gelecek-kategoriler">
+                    {K.satirlar.map((r: any) => (
+                      <li>
+                        <span class={`gk-deger${r.kazanan === 'a' ? ' ustun' : ''}`}>{r.a == null ? '—' : bicimle(r.a, r.k)}</span>
+                        <abbr class="gk-kat" title={KATEGORI_ADI[r.k]}>{r.k}</abbr>
+                        <span class={`gk-deger sag${r.kazanan === 'b' ? ' ustun' : ''}`}>{r.b == null ? '—' : bicimle(r.b, r.k)}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </details>
+              </>
+            ) : <p class="kutu-alt">{_t('Karne gelecek pazartesi: takastan sonra henüz maç oynanmadı.')}</p>}
+          </article>
+        );
+      })}
+    </div>
+  )}
+
+</section>
+

@@ -1,0 +1,10 @@
+---
+// "Son hafta / Sezon toplamı" seçici. Seçim adreste ?kapsam=sezon olarak tutulur.
+import { t as _t } from '../i18n/t.js';
+interface Props { haftaSayisi: number }
+const { haftaSayisi } = Astro.props;
+---
+<div class="bolumlu" role="group" aria-label={_t('Kapsam')}>
+  <button type="button" data-kapsam="hafta" aria-pressed="true">{_t('Son hafta')}</button>
+  <button type="button" data-kapsam="sezon" aria-pressed="false">{_t('Sezon toplamı{0}', [haftaSayisi > 1 ? _t(' ({0} hafta)', [haftaSayisi]) : ''])}</button>
+</div>

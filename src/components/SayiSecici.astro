@@ -1,0 +1,12 @@
+---
+// Sayı seçici: başka bir sayının aynı bölümüne gider (site.js → data-hafta-sec).
+import { t as _t } from '../i18n/t.js';
+interface Props { secenekler: { adres: string; etiket: string; secili: boolean }[]; class?: string }
+const { secenekler, class: sinif = '' } = Astro.props;
+---
+<label class={`hafta-sec ${sinif}`}>
+  <span class="gizli">{_t('Sayı seç')}</span>
+  <select data-hafta-sec>
+    {secenekler.map((h) => <option value={h.adres} selected={h.secili}>{h.etiket}</option>)}
+  </select>
+</label>

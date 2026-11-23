@@ -1,0 +1,33 @@
+---
+// Takım sayfası, Kadro bölümü (18 Kasım 2026): bu kadrodaki draft oyuncularından en büyük sürpriz ve en büyük hayal kırıklığı.
+// Hesap src/lib/draft.js (draft sırası − Yahoo sezon sırası; şu an kadrosunda olanın hanesine).
+import { t as _t, YEREL } from '../i18n/t.js';
+import Bilgi from './Bilgi.astro';
+import { farkYazDraft } from '../lib/draft.js';
+interface Props { sayi: any; takimId: string }
+const { sayi, takimId } = Astro.props;
+const D = sayi.draft;
+const T = D?.takimlar?.[takimId];
+const ad = (id: string) => sayi.takim[id]?.ad ?? id;
+const tarih = D?.tarih ? new Date(D.tarih + 'T12:00:00Z').toLocaleDateString(YEREL, { day: 'numeric', month: 'long' }) : '';
+const kartlar = T ? [
+  { tur: 'surpriz', etiket: _t('Draftın sürprizi'), o: T.surpriz },
+  { tur: 'hayal', etiket: _t('Draftın hayal kırıklığı'), o: T.hayal },
+].filter((k) => k.o) : [];
+---
+{kartlar.length > 0 && (
+  <div class="draft-kartlar">
+    <p class="draft-kart-baslik">{_t('Draft karnesi')}<Bilgi baslik={_t('Draft karnesi')}>{_t('Draft sırası (genel seçim numarası) ile Yahoo\'nun bu sezonki sırası karşılaştırılır; Yahoo sırası 9 kategoriye göre, {0} itibarıyla. Artı: draft yerinden yukarıda, eksi: aşağıda. Oyuncu şu an kimin kadrosundaysa onun hanesine yazılır. Sezonun maçlarının üçte birinden azında oynayanlar sayılmaz (sakat ya da yeni dönen).', [tarih])}</Bilgi></p>
+    <div class="draft-kart-izgara">
+      {kartlar.map((k) => (
+        <a class={`draft-kart draft-kart--${k.tur}`} href={`#oyuncu-${k.o.id}`}>
+          <span class="draft-kart-etiket">{k.etiket}</span>
+          <b class="draft-kart-ad">{k.o.ad}</b>
+          <span class="draft-kart-sayi"><span>{_t('{0}. tur, {1}. seçim', [k.o.tur, k.o.secim])}</span><span>{_t('Yahoo\'da {0}.', [k.o.sira])}</span><b>{farkYazDraft(k.o.fark)}</b></span>
+          {k.o.draftEden !== takimId && <small>{_t('{0} draft etti', [ad(k.o.draftEden)])}</small>}
+        </a>
+      ))}
+    </div>
+    {T.oynamayan.length > 0 && <p class="draft-oynamayan">{_t('Sahaya çıkamayan draft oyuncuları: {0}', [T.oynamayan.map((x: any) => _t('{0} ({1}. seçim)', [x.ad, x.secim])).join(', ')])}</p>}
+  </div>
+)}

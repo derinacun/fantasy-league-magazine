@@ -1,0 +1,9 @@
+---
+// Lucide simgeleri (ISC lisansı), satır içi SVG olarak.
+interface Props { ad: string; boyut?: number; class?: string; }
+import { YOLLAR } from '../lib/ikonlar.js';
+const { ad, boyut = 18, class: sinif = '' } = Astro.props;
+
+const ic = (YOLLAR as Record<string, string>)[ad] ?? '';
+---
+<svg class={`ikon ${sinif}`} width={boyut} height={boyut} viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" set:html={ic}></svg>

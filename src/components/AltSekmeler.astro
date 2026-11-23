@@ -1,0 +1,10 @@
+---
+// İstatistikler bölümünün alt sekmeleri: Tablo | Analiz
+import { t as _t } from '../i18n/t.js';
+interface Props { sayi: any; aktif: 'tablo' | 'analiz' }
+const { sayi, aktif } = Astro.props;
+---
+<nav class="alt-sekmeler" aria-label={_t('İstatistik görünümleri')}>
+  <a href={sayi.adres('istatistikler')} aria-current={aktif === 'tablo' ? 'page' : undefined}>{_t('Tablo')}</a>
+  <a href={sayi.adres('istatistikler', 'analiz/')} aria-current={aktif === 'analiz' ? 'page' : undefined}>{_t('Analiz')}</a>
+</nav>

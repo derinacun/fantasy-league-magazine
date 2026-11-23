@@ -1,0 +1,45 @@
+---
+// Oyuncular sayfasındaki sıralama tablosu (haftanın en iyileri / serbest oyuncu fırsatları). Hesap: src/lib/oyuncu.js
+import { t as _t, ONDALIK } from '../i18n/t.js';
+import { KATEGORILER, KATEGORI_ADI, bicimle } from '../lib/hesap.js';
+interface Props { sayi: any; oyuncular: any[]; serbest?: boolean; baslik: string }
+const { sayi, oyuncular, serbest = false, baslik } = Astro.props;
+const takimAdresi = (id: string) => sayi.adres('takimlar', sayi.takim[id].slug + '/') + '#kadro';
+const YUZDE_PAY: Record<string, [string, string]> = { 'FG%': ['FGM', 'FGA'], 'FT%': ['FTM', 'FTA'], '3PT%': ['3PTM', '3PTA'] };
+const puanYaz = (v: number) => (v > 0 ? '+' : v < 0 ? '−' : '') + Math.abs(v).toFixed(1).replace('.', ONDALIK);
+---
+<div class="tablo-kutu">
+  <table class="oyuncu-tablosu">
+    <caption class="gizli">{baslik}</caption>
+    <thead>
+      <tr>
+        <th scope="col" class="sabit sabit-1">#</th>
+        <th scope="col" class="sabit sabit-2">{_t('Oyuncu')}</th>
+        <th scope="col" class="sayisal">{_t('Puan')}</th>
+        <th scope="col" class="sayisal">{_t('Maç')}</th>
+        {KATEGORILER.map((k) => <th scope="col" class="sayisal"><abbr title={KATEGORI_ADI[k]}>{k}</abbr></th>)}
+      </tr>
+    </thead>
+    <tbody>
+      {oyuncular.map((o: any, i: number) => (
+        <tr data-takim={!serbest ? o.takimId : undefined}>
+          <td class="sabit sabit-1 soluk">{String(i + 1).padStart(2, '0')}</td>
+          <th scope="row" class="sabit sabit-2">
+            <span class="oyuncu-ad">{o.name}</span>
+            <span class="oyuncu-alt">
+              {[o.nbaTeam, o.positions?.replace(/,/g, ', ')].filter(Boolean).join(' · ')}
+              {serbest ? (o.ownedPct != null && <>{' '}{_t('· %{0} sahiplik', [String(o.ownedPct).replace('.', ONDALIK)])}</>) : sayi.takim[o.takimId] && <> · <a href={takimAdresi(o.takimId)}>{sayi.takim[o.takimId].ad}</a></>}
+            </span>
+            {o.enIyi.length > 0 && <span class="oyuncu-notlar">{o.enIyi.map((k: string) => <span class="kadro-etiket geldi">{KATEGORI_ADI[k]}</span>)}</span>}
+          </th>
+          <td class="sayisal"><b>{puanYaz(o.puan)}</b></td>
+          <td class="sayisal">{o.games}</td>
+          {KATEGORILER.map((k) => (
+            <td class="sayisal">{bicimle(o.ist[k], k)}{YUZDE_PAY[k] && <small>{o.stats[YUZDE_PAY[k][0]]}/{o.stats[YUZDE_PAY[k][1]]}</small>}</td>
+          ))}
+        </tr>
+      ))}
+    </tbody>
+  </table>
+</div>
+

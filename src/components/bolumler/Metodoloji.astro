@@ -1,0 +1,135 @@
+---
+import { t as _t } from '../../i18n/t.js';
+import Ikon from '../Ikon.astro';
+import { KATEGORILER, KATEGORI_ADI } from '../../lib/hesap.js';
+import { ODUL_TANIMLARI } from '../../lib/oduller.js';
+interface Props { sayi: any }
+const { sayi } = Astro.props;
+const n = sayi.takimlar.length;
+import Atlama from '../Atlama.astro';
+---
+<Atlama etiket={_t('Metodoloji bölümleri')} bolumler={[{ id: 'okuma', ad: _t('Okuma') }, { id: 'puan-durumu', ad: _t('Puan durumu') }, { id: 'kemerler', ad: _t('Kemerler') }, { id: 'oduller', ad: _t('Ödüller') }, { id: 'tahmin-oyunu', ad: _t('Tahmin oyunu') }, { id: 'draft-karnesi', ad: _t('Draft karnesi') }, { id: 'kadro', ad: _t('Kadro') }, { id: 'gelecek', ad: _t('Gelecek hafta') }, { id: 'karsilastir', ad: _t('Karşılaştır') }, { id: 'analiz', ad: _t('Analiz') }, { id: 'kategoriler', ad: _t('Kategoriler') }, { id: 'kaynaklar', ad: _t('Kaynaklar') }]} />
+<h1 class="sayfa-baslik">{_t('Şeffaf veri, açık yöntem.')}</h1>
+
+<section class="panel duzyazi metodoloji-sss">
+  <details class="sss" id="okuma" open>
+    <summary><h2>{_t('Verileri nasıl okumalısın?')}</h2><Ikon ad="asagi" boyut={18} class="sss-ok" /></summary>
+    <div class="sss-icerik">
+  <p>{_t('Lig: {0} takım, kafa kafaya (head-to-head) 9 kategori. Takım istatistikleri Yahoo\'nun aktif fantezi kadro toplamlarıdır; kadrodaki tüm NBA oyuncularının toplamı değildir. Eşleşme sonuçları ve puan durumu Yahoo\'dan alınır. Özel görüşmeler yayımlanmaz.', [n])}</p>
+  <p><b>{_t('Güç puanı:')}</b>{' '}{_t('her kategoride birinci {0}, sonuncu 1 puan alır; eşit değerler aynı sırayı paylaşır. En yüksek puan {1}. Resmî sıralama veya gelecek tahmini değildir.', [n, n * 9])}</p>
+  <p><b>{_t('Herkese karşı (all-play):')}</b>{' '}{_t('aynı dönemin istatistikleri {RAKIP} rakibin her biriyle karşılaştırılır; kategorilerin çoğunu alan eşleşmeyi kazanır.')}</p>
+  <p><b>{_t('Sezon toplamı:')}</b>{' '}{_t('sayım kategorileri toplanır; yüzdelerde haftalık yüzdeler ortalanmaz, toplam isabet toplam denemeye bölünür.')}</p>
+  <p><b>{_t('Değişim:')}</b>{' '}{_t('son tamamlanan hafta, önceki haftaların toplamından türetilen haftalık ortalamayla karşılaştırılır. İlk hafta değişim gösterilmez. Eksik veri sıfır sayılmaz.')}</p>
+  <p><b>{_t('Takas önerileri')}</b>{' '}{_t('niteliksel editoryal değerlendirmedir: sakatlık, rol, örneklem büyüklüğü ve pozisyon dengesi dikkate alınır. Teklif değildir.')}</p>
+  <p><b>{_t('Yayın:')}</b>{' '}{_t('her {0} ({1}). Sayfanın altındaki "Son veri" zamanı, verinin ne zaman alındığını gösterir.', [sayi.ayarlar.yayinZamani, sayi.ayarlar.saatDilimiAdi])}</p>
+    </div>
+  </details>
+
+
+  <details class="sss" id="puan-durumu" open>
+    <summary><h2>{_t('Puan durumu')}</h2><Ikon ad="asagi" boyut={18} class="sss-ok" /></summary>
+    <div class="sss-icerik">
+  <p>{_t('Yahoo\'nun kategori kaydı (kazanılan–kaybedilen–berabere) ve sırası olduğu gibi kullanılır; eşitlikte Yahoo\'nun sırası geçerlidir.')}{' '}<b>{_t('Fark:')}</b>{' '}{_t('öndeki takımla aradaki kategori farkının yarısıdır, (öndekinin kazandığı − bunun kazandığı + bunun kaybettiği − öndekinin kaybettiği) ÷ 2. İlk {0} takım eleme turuna ({1}) kalır; normal sezon {2} hafta. "Elemeyi garantiledi" ya da "elendi" hesabı yapılmaz.', [sayi.ayarlar.elemeTakimSayisi ?? 8, sayi.ayarlar.elemeHaftalari ?? _t('eleme haftaları'), sayi.ayarlar.normalSezonHaftaSayisi ?? 19])}</p>
+    </div>
+  </details>
+
+
+  <details class="sss" id="kemerler">
+    <summary><h2>{_t('Kemerler ve seriler')}</h2><Ikon ad="asagi" boyut={18} class="sss-ok" /></summary>
+    <div class="sss-icerik">
+  <p>{_t('Her hafta 12 seri izlenir: galibiyet, yenilgi, uyku (uyku puanı 5 ve üstü) ve her kategori için o kategoride haftanın ilk 3\'ünde olmak. Beraberlik galibiyet ve yenilgi serisini bitirir; uyku verisi olmayan hafta uyku serisini bitirir.')}{' '}<b>{_t('Kemer')}</b>{_t(', devam eden en uzun serinin sahibindedir; seri en az 3 hafta sürmelidir, eşit uzunluktaki seriler kemeri paylaşır. Seri bitince kemer o an en uzun aktif seriye geçer; öyle bir seri yoksa kemer boşa düşer. Galibiyet, yenilgi ve uyku kemerleri el değiştirince ön sayfada şerit çıkar. Hepsi Kürsü sayfasında.')}</p>
+    </div>
+  </details>
+
+  <details class="sss" id="oduller">
+    <summary><h2>{_t('Haftanın ödülleri')}</h2><Ikon ad="asagi" boyut={18} class="sss-ok" /></summary>
+    <div class="sss-icerik">
+  <p>{_t('Her hafta yalnızca o haftanın sayılarından otomatik verilir; eşitlikte o haftanın güç puanı yüksek olan alır (Haftanın kâhini hariç: eşitlikte hepsi alır). Madalya rengi, takımın o ödülü kaçıncı kez aldığını gösterir: ilk kez bronz, ikinci kez gümüş, üçüncü kez ve sonrası altın.')}</p>
+  <dl class="sozluk odul-sozluk">
+    {ODUL_TANIMLARI.map((o) => <div><dt>{o.ad}</dt><dd>{o.tanim}</dd></div>)}
+  </dl>
+    </div>
+  </details>
+
+
+  <details class="sss" id="tahmin-oyunu">
+    <summary><h2>{_t('Tahmin oyunu')}</h2><Ikon ad="asagi" boyut={18} class="sss-ok" /></summary>
+    <div class="sss-icerik">
+  <p>{_t('Yalnızca {TAKIM} koç oynar; koç seçtiği takımla tanınır. Her hafta {ESLESME} eşleşmenin kazananı seçilir (doğru olan 1 puan) ve "Haftanın maçı"nın skoru yazılır: ev sahibinin aldığı kategori, deplasmanın aldığı kategori; kalanlar berabere. Skor tam tutarsa +2; haftada en fazla 9 puan. Berabere biten eşleşme kimseye puan vermez. Tahminler sayının çıktığı gün 23:59\'da (ligin saat diliminde) kapanır, o saate kadar değiştirilebilir ve gizlidir; sonra herkese açılır. Analitik Hoca modelin favorisini (Gelecek hafta bölümündeki kategori karşılaştırması) ve favori olduğu kategori sayısını skor olarak oynar; Tribün Abi kendi seçimlerini. İkisi tabloda yer alır ama madalya almaz. Haftanın en yüksek puanı Haftanın kâhini madalyasını alır (eşitlikte hepsi); sezon tablosunda eşitlikte tam skor sayısı öne geçer. Normal sezonun sonunda birinci Ligin Kâhini olur.')}</p>
+    </div>
+  </details>
+
+
+  <details class="sss" id="draft-karnesi">
+    <summary><h2>{_t('Draft karnesi')}</h2><Ikon ad="asagi" boyut={18} class="sss-ok" /></summary>
+    <div class="sss-icerik">
+  <p>{_t('Draft sırası (genel seçim numarası, {TAKIM} takım × 13 tur) ile Yahoo\'nun bu sezonki sırası ("Current", 9 kategori) karşılaştırılır: fark = seçim numarası − Yahoo sırası. Artı, oyuncunun draft yerinden yukarıda oynadığını; eksi, aşağıda kaldığını gösterir. Yalnızca şu an bir kadroda olan draft oyuncuları sayılır ve oyuncu şu an kimdeyse onun hanesine yazılır. Sezonun maçlarının üçte birinden azında oynayanlar sayılmaz; sakatlık hayal kırıklığı sayılmaz, ayrıca "sahaya çıkamayanlar" diye yazılır. Yahoo sırası her sayıda yeniden okunur.')}</p>
+    </div>
+  </details>
+  <details class="sss" id="kadro">
+    <summary><h2>{_t('Kadro ve oyuncular')}</h2><Ikon ad="asagi" boyut={18} class="sss-ok" /></summary>
+    <div class="sss-icerik">
+  <p>{_t('Kadrolar, işlemler ve serbest oyuncular Yahoo\'dan alınır ve haftanın son gününün kapanışını gösterir; pazartesi güncellenir. Anlık kadro ve oyuncu istatistikleri için Yahoo\'ya bakılır: sitede oyuncu istatistik tablosu yayımlanmaz. Kadrodaki ve serbest oyuncu listesindeki')}{' '}<b>{_t('Yahoo')}</b>{' '}{_t('bağlantısı oyuncunun Yahoo Sports sayfasını açar (istatistikler, maç maç performans, haberler).')}</p>
+  <p><b>{_t('NBA maç kâğıtları:')}</b>{' '}{_t('Her hafta, haftanın her günü için hangi NBA takımının maç yaptığı ve lig kadrolarındaki oyuncuların maç istatistikleri ESPN\'in herkese açık skor servisinden alınır; oyuncular Yahoo kadrosundaki adlarıyla eşlenir. Kontrol: her takımın aktif yerde (yedek ve sakatlar listesi dışında) oynanan maçlarının toplamı, takımın Yahoo toplamıyla karşılaştırılır; NBA\'in sonradan yaptığı istatistik düzeltmeleri küçük farklar doğurabilir.')}</p>
+  <p><b>{_t('Uyuyan koçlar:')}</b>{' '}{_t('her gün için iki şey ölçülür.')}{' '}<b>{_t('Yedekte kalan maç:')}</b>{' '}{_t('o gün süre alan oyuncularla (sakatlar listesindekiler hariç) pozisyon kurallarına uyarak en fazla kaç aktif yer doldurulabilirdi, gerçekte aktif yerde kaç oyuncu oynadı; farkı, yedekte oynayıp takıma sayılmayan maçtır.')}{' '}<b>{_t('İlk beşte yatan gün:')}</b>{' '}{_t('aktif yerde duran oyuncunun NBA takımı maç yaptığı hâlde oynamadığı günler; maç kâğıdında "Out" yazıyorsa ya da hafta içinde en az iki gün böyleyse sayılır, tek günlük dinlenme sayılmaz.')}{' '}<b>{_t('Uyku puanı')}</b>{' '}{_t('ikisinin toplamıdır: 5 ve üstü uyuyan, 2–4 uyukluyor. Hesap geriye dönüktür: maç saatinde belli olmayan son dakika kararları da girer. Bırak-al sayısı gösterilir ama uyku ölçüsü değildir.')}</p>
+  <p><b>{_t('Haftanın oyuncusu ve faciası:')}</b>{' '}{_t('yalnızca oyuncunun takıma sayılan maçları (aktif yer) toplanır. Puan, 9 kategorinin standart puanlarının toplamıdır; yüzdelerde isabet hacmi kullanılır (isabet − lig oranı × deneme), top kaybında az olan iyidir. Ölçek o hafta lig kadrolarında aktif yerde oynayan bütün oyunculardır. Facia için en az iki maç gerekir.')}</p>
+  <p><b>{_t('Ligdeki takaslar ve karne:')}</b>{' '}{_t('takaslar Yahoo işlem kaydından gelir; aynı gün aynı iki takım arasındaki satırlar tek takas sayılır. Karne, takas gününden sonraki maçlarda iki tarafın aldığı oyuncuların toplam üretimini 9 kategoride eşleşme gibi karşılaştırır (yüzdeler toplam isabet ÷ toplam deneme). Oyuncunun yedekte oynadığı maçlar da sayılır: ölçülen oyuncunun değeridir, koçun dizilişi değil. Dört haftadan kısa karneler "erken" diye işaretlenir.')}</p>
+  <p><b>{_t('Benim takımım:')}</b>{' '}{_t('seçilen takım yalnızca o tarayıcıda saklanır, hiçbir yere gönderilmez. Manşet değişmez; skor tahtası, puan durumu, gelecek hafta, uyuyan koçlar ve tablolarda o takım öne çıkar.')}</p>
+  <p><b>{_t('Takım sayfasındaki kadro:')}</b>{' '}{_t('haftanın herhangi bir gününde takımda bulunan herkes listelenir.')}{' '}<b>{_t('Kadroda')}</b>{' '}{_t('ve')}{' '}<b>{_t('Sakatlar listesinde')}</b>{' '}{_t('grupları hafta sonundaki kadrodur; sakatlar listesi, oyuncunun haftanın son günü Yahoo\'da sakatlar listesi yerinde olması demektir.')}{' '}<b>{_t('Bu hafta ayrılanlar')}</b>{' '}{_t('hafta içinde bırakılan ya da takasla gidenlerdir. Etiketlerdeki tarih, işlemin yapıldığı gündür.')}{' '}<b>{_t('Sezon geçmişi')}</b>{' '}{_t('yayımlanmış haftalık kadro kayıtlarından oluşur: sonradan gelenler ve ayrılanlar, takımda bulundukları haftalarla birlikte listelenir; bir haftanın kaydı yoksa bu açıkça yazılır.')}</p>
+  <p><b>{_t('Oyuncu bul:')}</b>{' '}{_t('haftanın kapanışında oyuncunun hangi takımda olduğunu ya da serbest olduğunu ve o haftaki bütün ekleme, bırakma ve takaslarını gösterir. Aramada aksanlar önemsizdir (jokic yazmak Jokić\'i bulur).')}{' '}<b>{_t('Serbest oyuncular')}</b>{' '}{_t('listesi Yahoo sahiplik oranına göre sıralanır.')}</p>
+    </div>
+  </details>
+
+
+  <details class="sss" id="gelecek">
+    <summary><h2>{_t('Gelecek hafta ve iddia defteri')}</h2><Ikon ad="asagi" boyut={18} class="sss-ok" /></summary>
+    <div class="sss-icerik">
+  <p><b>{_t('Favori:')}</b>{' '}{_t('iki takımın sezon ortalaması kategori kategori karşılaştırılır. Sayım kategorileri hafta başına ortalamadır; yüzdelerde haftalık yüzdeler ortalanmaz, toplam isabet toplam denemeye bölünür. Üstün tarafın aldığı kategoriler sayılır (ör. 6–3). Fark, o kategorideki haftalık takım değerlerinin standart sapmasının dörtte birinden küçükse')}{' '}<b>{_t('başa baş')}</b>{_t(', dörtte üçünden büyükse')}{' '}<b>{_t('net')}</b>{' '}{_t('sayılır. Fikstür, maç sayısı ve sakatlıklar hesaba katılmaz: tahmin değil, eğilimdir.')}</p>
+  <p><b>{_t('İddia defteri:')}</b>{' '}{_t('Analitik Hoca\'nın tahmini bu modelin favorisidir (kategori sayısı eşitse farkı büyük olan taraf); Tribün Abi kendi seçer. Hafta bitince ikisi de gerçek sonuçla karşılaştırılır: doğru tahmin 1 puan, berabere biten eşleşme kimseye puan vermez. Puan tablosu sezon boyunca birikir.')}</p>
+    </div>
+  </details>
+
+
+  <details class="sss" id="karsilastir">
+    <summary><h2>{_t('Karşılaştır: sanal eşleşme')}</h2><Ikon ad="asagi" boyut={18} class="sss-ok" /></summary>
+    <div class="sss-icerik">
+  <p>{_t('Seçilen haftada iki takım gerçek rakipleri yerine birbirleriyle eşleşseydi ne olurdu: o haftanın toplam istatistikleri olduğu gibi karşılaştırılır. Kadro, oynanan maç sayısı ve rakibin savunması değişmez kabul edilir. Bu bir tahmin değil, aynı haftanın sayılarıyla yapılan karşılaştırmadır.')}</p>
+    </div>
+  </details>
+
+
+  <details class="sss" id="analiz">
+    <summary><h2>{_t('Analiz sekmesi')}</h2><Ikon ad="asagi" boyut={18} class="sss-ok" /></summary>
+    <div class="sss-icerik">
+  <p><b>{_t('Isı haritası:')}</b>{' '}{_t('her kategoride sıra (1 en iyi).')}{' '}<b>{_t('Standart puan:')}</b>{' '}{_t('takımın değeri lig ortalamasından kaç standart sapma uzakta; 9 kategorinin toplamı. Top kaybında işaret terstir (az top kaybı artı yazar). Güç puanı yalnızca sırayı sayar, standart puan farkın büyüklüğünü de sayar.')}</p>
+  <p><b>{_t('Herkese karşı matrisi:')}</b>{' '}{_t('iki takımın aynı dönemdeki istatistikleri karşılaştırılır; hücre, satırdaki takımın aldığı ve verdiği kategori sayısıdır.')}</p>
+  <p><b>{_t('Şans endeksi:')}</b>{' '}{_t('her hafta, takımın {RAKIP} rakibin her birine karşı alacağı kategori sayısının ortalaması "beklenen" sayılır (beraberlik yarım). Gerçek eşleşmede alınan kategori sayısından çıkarılır ve sezon boyunca toplanır. Artı değer fikstürün yardım ettiğini gösterir.')}{' '}<b>{_t('Rakiplerin gücü:')}</b>{' '}{_t('eşleşilen rakiplerin o hafta herkese karşı kazanacağı eşleşme oranının ortalaması.')}</p>
+  <p><b>{_t('Haftalık seyir:')}</b>{' '}{_t('her haftanın güç sırası yalnızca o haftanın istatistikleriyle hesaplanır.')}</p>
+  <p><b>{_t('Kıl payı:')}</b>{' '}{_t('gerçek eşleşmelerdeki kategori farkı, o kategorideki haftalık lig değerlerinin standart sapmasına bölünür; en küçük oranlar listelenir.')}</p>
+  <p><b>{_t('Ham veri:')}</b>{' '}{_t('Analiz sekmesindeki ".csv" dosyası her takımın her haftasını bir satır olarak verir (isabet ve deneme sayıları dahil).')}</p>
+    </div>
+  </details>
+
+
+  <details class="sss" id="kategoriler">
+    <summary><h2>{_t('Kategoriler')}</h2><Ikon ad="asagi" boyut={18} class="sss-ok" /></summary>
+    <div class="sss-icerik">
+  <dl class="sozluk">
+    {KATEGORILER.map((k) => <div><dt>{k}</dt><dd>{KATEGORI_ADI[k]}{k === 'TO' ? _t(' (düşük değer iyidir)') : ''}</dd></div>)}
+    <div><dt>{_t('Kategori kaydı')}</dt><dd>{_t('Yahoo\'nun kazanılan–kaybedilen–berabere kategori sayısı')}</dd></div>
+  </dl>
+    </div>
+  </details>
+
+
+  <details class="sss" id="kaynaklar">
+    <summary><h2>{_t('Bu sayının kaynakları')}</h2><Ikon ad="asagi" boyut={18} class="sss-ok" /></summary>
+    <div class="sss-icerik">
+  <ul class="kaynaklar">
+    {sayi.kaynaklar.map((k: any) => (
+      <li><a class="dis-bag" href={k.url} target="_blank" rel="noopener noreferrer">{k.label} <Ikon ad="dis" boyut={14} /><span class="gizli">{' '}{_t('(yeni sekmede açılır)')}</span></a> <span class="soluk">· {k.date}</span></li>
+    ))}
+  </ul>
+    </div>
+  </details>
+</section>

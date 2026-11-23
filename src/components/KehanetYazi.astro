@@ -1,0 +1,21 @@
+---
+// Analitik Hoca ile Tribün Abi'nin kısa değerlendirmesi (Kehanet sayfası ve ön sayfa özeti).
+// Metin: sayı dosyasındaki forecastColumn { hoca, abi }; yoksa src/lib/kehanet.js'teki hazır cümleler.
+import { KOSE_YAZARLARI } from '../lib/model.js';
+import { kehanetHazirMetin } from '../lib/kehanet.js';
+interface Props { sayi: any; K: any }
+const { sayi, K } = Astro.props;
+const hazir = kehanetHazirMetin(sayi, K);
+const yazi = { hoca: sayi.kehanetYazisi?.hoca || hazir.hoca, abi: sayi.kehanetYazisi?.abi || hazir.abi };
+const { hoca, abi } = KOSE_YAZARLARI;
+---
+<div class="kehanet-yazilar">
+  <figure class="kehanet-yazi">
+    <figcaption><span class="kose-simge kose-simge--hoca" aria-hidden="true">{hoca.harf}</span><span><b>{hoca.ad}</b><span class="soluk">{hoca.tanim}</span></span></figcaption>
+    <blockquote>{yazi.hoca}</blockquote>
+  </figure>
+  <figure class="kehanet-yazi">
+    <figcaption><span class="kose-simge kose-simge--abi" aria-hidden="true">{abi.harf}</span><span><b>{abi.ad}</b><span class="soluk">{abi.tanim}</span></span></figcaption>
+    <blockquote>{yazi.abi}</blockquote>
+  </figure>
+</div>

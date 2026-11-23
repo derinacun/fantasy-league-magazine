@@ -1,0 +1,10 @@
+---
+import { t as _t } from '../i18n/t.js';
+interface Props { n: number }
+const { n } = Astro.props;
+---
+<p class="isi-aciklama">
+  <span class="isi iyi">{_t('ilk 4')}</span>
+  <span class="isi kotu">{_t('son 4')}</span>
+  <span>{_t('Renk ve işaret, değerin {0} takım içindeki sırasını gösterir. Top kaybında (TO) düşük değer iyidir.', [n])}</span>
+</p>

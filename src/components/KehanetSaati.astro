@@ -1,0 +1,56 @@
+---
+// Kehanet Saati (18 Kasım 2026): ön sayfada Analitik Hoca ile Tribün Abi'nin soru-cevap söyleşisi.
+// Basılı söyleşi/podcast dökümü gibi: bölüm numarası, "Bu bölümde" konuları, 3–5 soru-cevap (önerilen 4).
+// Soru da bilgi taşır; soran ve cevaplayan sırayla değişebilir. Metin: sayı dosyasındaki forecastHour.
+// Telefonda yalnızca ilk soru görünür, cevabı silikleşerek kesilir; "Devamını oku" hepsini açar (site.js).
+// Kehanet bölümünün yerine geçer (iddia defteri skoru ve şans satırı üstte kalır). Karakterler kurgudur.
+import { t as _t, YEREL, ONDALIK } from '../i18n/t.js';
+import Ikon from './Ikon.astro';
+import Bilgi from './Bilgi.astro';
+import { KOSE_YAZARLARI } from '../lib/model.js';
+import { kehanetHesapla } from '../lib/kehanet.js';
+interface Props { sayi: any }
+const { sayi } = Astro.props;
+const S = sayi.kehanetSaati;
+const K = kehanetHesapla(sayi);
+const p = sayi.defter.puan;
+const ad = (id: string) => sayi.takim[id]?.ad ?? id;
+const ondalik = (v: number) => v.toFixed(1).replace('.', ONDALIK);
+const isaretli = (v: number) => (v > 0.05 ? '+' : v < -0.05 ? '−' : '±') + ondalik(Math.abs(v));
+const Y = KOSE_YAZARLARI;
+---
+<section class="haberler bolum-hedef" id="kehanet" aria-labelledby="kehanet-baslik">
+  <h2 id="kehanet-baslik" class="bolum-baslik">{_t('Kehanet Saati.')}{' '}<span>{_t('Analitik Hoca ile Tribün Abi · Bölüm {0}', [sayi.hafta])}</span><Bilgi baslik={_t('Kehanet Saati')}>{_t('Her sayıda Analitik Hoca (Excel ve yapay zekâ) ile Tribün Abi (pota altı ve tribün) haftayı, tahminleri ve grubun gündemini soru-cevapla konuşur. İddia defteri: her hafta ikisi de her maç için bir takım seçer; doğru tahmin 1 puan. İkisi de uydurma karakter. Gelecek hafta, tahmin oyunu ve bütün tablolar Kehanet sayfasında.')}</Bilgi></h2>
+  <article class="kart kehanet-saati" aria-label={_t('Kehanet Saati, bölüm {0}', [sayi.hafta])}>
+    <header class="ks-ust">
+      <p class="defter-skor" aria-label={_t('İddia defteri: Analitik Hoca {0}, Tribün Abi {1}', [p.hoca, p.abi])}>
+        <span class="kemer-alt-baslik">{_t('İddia defteri')}</span>
+        <span class={`defter-kisi${p.hoca > p.abi ? ' onde' : ''}`}><span class="defter-ad">{_t('Hoca')}</span><b>{p.hoca}</b></span>
+        <span class="defter-ayrac" aria-hidden="true">–</span>
+        <span class={`defter-kisi${p.abi > p.hoca ? ' onde' : ''}`}><b>{p.abi}</b><span class="defter-ad">{_t('Abi')}</span></span>
+      </p>
+      <p class="kehanet-satir" data-takim={`${K.sansli.id} ${K.sanssiz.id}`}>{_t('En şanslı')}{' '}<b>{ad(K.sansli.id)}</b>{' '}{_t('{0} · en şanssız', [isaretli(K.sansli.fark)])}{' '}<b>{ad(K.sanssiz.id)}</b>{' '}{_t('{0} · adil sırada lider', [isaretli(K.sanssiz.fark)])}{' '}<b>{ad(K.adil[0].id)}</b></p>
+    </header>
+    {S.konular.length > 0 && (
+      <p class="ks-konular"><span class="ks-konular-etiket">{_t('Bu bölümde')}</span>{S.konular.map((k: string) => <span class="ks-konu">{k}</span>)}</p>
+    )}
+    <div class="ks-dokum" data-ks-katla>
+      {S.sorular.map((q: any) => (
+        <div class="ks-soru-cevap">
+          <p class={`ks-soru ks-soru--${q.soran}`}>
+            <span class={`kose-simge kose-simge--${q.soran}`} aria-hidden="true">{Y[q.soran].harf}</span>
+            <span><b class="ks-kim">{Y[q.soran].ad}</b> {q.soru}</span>
+          </p>
+          <p class={`ks-cevap ks-cevap--${q.cevaplayan}`}>
+            <span class={`kose-simge kose-simge--${q.cevaplayan}`} aria-hidden="true">{Y[q.cevaplayan].harf}</span>
+            <span><b class="ks-kim">{Y[q.cevaplayan].ad}</b> {q.cevap}</span>
+          </p>
+        </div>
+      ))}
+    </div>
+    <footer class="ks-alt">
+      <p class="kutu-not">{_t('{0}: {1}. {2}: {3}. İkisi de uydurma karakter.', [Y.hoca.ad, Y.hoca.tanim.toLocaleLowerCase(YEREL), Y.abi.ad, Y.abi.tanim.toLocaleLowerCase(YEREL)])}</p>
+      <a class="metin-bag" href={sayi.adres('kehanet')}>{_t('Gelecek hafta, tahmin oyunu ve tablolar')}{' '}<Ikon ad="sag" boyut={15} /></a>
+    </footer>
+  </article>
+</section>

@@ -1,0 +1,207 @@
+---
+// Gazete ön sayfası: atlama çubuğu, manşet ve haftanın yazısı, skor tahtası, puan durumu,
+// haftanın ödülleri, lig analizleri ve diğer bölümlere çağrılar. ("Tablo ile Tribün" sohbeti 2 Kasım 2026'da kaldırıldı.)
+// Künye (gazetenin adı ve açılımı) Kabuk.astro → Kunye.astro içinde.
+// Telefonda ana yazı site.js ile katlanır (ilk 2 paragraf, gerisi "Devamını oku"); lig analizleri tam metin, manşet alanından sonra gelir.
+import { t as _t } from '../../i18n/t.js';
+import Bilgi from '../Bilgi.astro';
+import Ikon from '../Ikon.astro';
+import TakimSimge from '../TakimSimge.astro';
+import PuanDurumu from '../PuanDurumu.astro';
+import OdulKart from '../OdulKart.astro';
+import TahminCagri from '../TahminCagri.astro';
+import KehanetOzet from '../KehanetOzet.astro';
+import KehanetSaati from '../KehanetSaati.astro';
+import OyuncuAdlari from '../OyuncuAdlari.astro';
+import UyuyanKoclar from '../UyuyanKoclar.astro';
+import BenimTakim from '../BenimTakim.astro';
+import OnSayfaKursu from '../OnSayfaKursu.astro';
+import KemerSeridi from '../KemerSeridi.astro';
+import { haftaOdulleri } from '../../lib/oduller.js';
+
+interface Props { sayi: any }
+const { sayi } = Astro.props;
+const k = sayi.kapsam.hafta;
+const ad = (id: string) => sayi.takim[id]?.ad ?? id;
+const takimAdresi = (id: string) => sayi.adres('takimlar', sayi.takim[id].slug + '/');
+const ilkBes = k.gucSirasi.slice(0, 5);
+const notlar = sayi.oyuncuNotlari.slice(0, 2);
+const takaslar = sayi.takaslar.slice(0, 2);
+const yaziVar = sayi.yazi.length > 0;
+const karsilastirAdresi = (a: string, b: string) => `${sayi.adres('karsilastir')}?a=${sayi.takim[a].slug}&b=${sayi.takim[b].slug}`;
+const bitti = sayi.eslesmeler.every((e: any) => e.durum === 'final');
+const oduller = haftaOdulleri(sayi);
+const atlamalar = [
+  { id: 'manset', ad: _t('Manşet') },
+  { id: 'skor', ad: _t('Skorlar') },
+  { id: 'puan', ad: _t('Puan durumu') },
+  ...(sayi.uyuyan ? [{ id: 'uyuyan', ad: _t('Uyuyan koçlar') }] : []),
+  ...(sayi.haberler.length ? [{ id: 'analizler', ad: _t('Lig analizleri') }] : []),
+  ...(oduller.length || sayi.seriler?.kemerler?.length ? [{ id: 'oduller', ad: _t('Kürsü') }] : []),
+  { id: 'kehanet', ad: _t('Kehanet') },
+  { id: 'dahasi', ad: _t('Dahası') },
+];
+---
+<nav class="atlama cam" aria-label={_t('Ön sayfa bölümleri')} data-atlama>
+  {atlamalar.map((a) => <a href={`#${a.id}`} data-atla={a.id}>{a.ad}</a>)}
+</nav>
+
+<KemerSeridi sayi={sayi} />
+
+{sayi.sonDakika && (
+  <aside class="son-dakika" aria-labelledby="son-dakika-baslik">
+    <p class="son-dakika-etiket"><span class="son-dakika-nokta" aria-hidden="true"></span>{sayi.sonDakika.etiket}</p>
+    <div class="son-dakika-govde">
+      <h2 id="son-dakika-baslik" class="son-dakika-baslik">{sayi.sonDakika.baslik}</h2>
+      {sayi.sonDakika.metin && <p class="son-dakika-metin">{sayi.sonDakika.metin}</p>}
+      {sayi.sonDakika.takimlar.length > 0 && (
+        <p class="son-dakika-takimlar">
+          {sayi.sonDakika.takimlar.map((id: string) => <a href={takimAdresi(id)}><TakimSimge takim={sayi.takim[id]} boyut="kucuk" />{ad(id)}</a>)}
+        </p>
+      )}
+    </div>
+  </aside>
+)}
+
+<div class="on-izgara">
+  <article class="kart manset bolum-hedef" id="manset" aria-labelledby="manset-baslik">
+    <p class="ust-etiket">{_t('{0}. sayı', [sayi.hafta])}{' '}<span aria-hidden="true">·</span> {sayi.donem}</p>
+    <h1 id="manset-baslik" class="manset-baslik">{sayi.baslik}</h1>
+    <p class="spot">{sayi.spot}</p>
+    {sayi.mansetFoto && (
+      <figure class="manset-foto">
+        <a class="manset-foto-cerceve" href={takimAdresi(sayi.mansetFoto.takim.id)} style={`--foto: url('${sayi.mansetFoto.src}')`}>
+          <img src={sayi.mansetFoto.src} width={sayi.mansetFoto.en} height={sayi.mansetFoto.boy} alt={sayi.mansetFoto.alt} fetchpriority="high" decoding="async" />
+        </a>
+        <figcaption>{sayi.mansetFoto.altYazi} <span class="foto-kunye">{_t('Fotoğraf: {0}', [sayi.mansetFoto.kunye])}</span></figcaption>
+      </figure>
+    )}
+    {yaziVar && sayi.yazar && <p class="yazar"><span class="yazar-simge" aria-hidden="true"><Ikon ad="kalem" boyut={14} /></span>{sayi.yazar}</p>}
+    {yaziVar && (
+      <div class="yazi" id="yazi" data-katla="2" data-katla-etiket="paragraf">
+        {sayi.yazi.map((p: string) => <p>{p}</p>)}
+      </div>
+    )}
+    {!yaziVar && (
+      <div class="sayi-numarasi" aria-hidden="true" data-no={sayi.no}>
+        <small>{_t('Haftalık maç raporu')}</small>
+      </div>
+    )}
+    <p class="manset-alt">
+      <a class="koyu-dugme" href={sayi.adres('istatistikler')}>{_t('Rakamların içine gir')}{' '}<Ikon ad="ileri" boyut={16} /></a>
+      <a class="metin-bag" href={sayi.adres('istatistikler', 'analiz/')}>{_t('Analiz')}{' '}<Ikon ad="sag" boyut={15} /></a>
+    </p>
+  </article>
+
+  <aside class="yan-sutun" aria-label={_t('Benim takımım, skor tahtası ve puan durumu')}>
+    <BenimTakim sayi={sayi} />
+    <section class="kart kutu bolum-hedef" id="skor" aria-labelledby="skor-baslik">
+      <div class="kutu-bas">
+        <h2 id="skor-baslik" class="kutu-baslik">{_t('Skor tahtası')}<Bilgi baslik={_t('Skor tahtası')}>{_t('Bu haftanın Yahoo eşleşmeleri; kalın yazılan kazandı. Sayı: alınan kategori (9 kategori; berabere kalan sayılmaz). Eşleşmeye dokununca iki takımın 9 kategorisi yan yana açılır.')}</Bilgi></h2>
+        <p class="kutu-alt"><span class={`nokta${bitti ? '' : ' canli'}`} aria-hidden="true"></span>{_t('{0} eşleşme · {1}', [sayi.eslesmeler.length, bitti ? _t('sonuçlandı') : _t('sürüyor')])}</p>
+      </div>
+      <ol class="skorlar" data-benim-one>
+        {sayi.eslesmeler.map((e: any) => (
+          <li data-takim={`${e.ev} ${e.dep}`}>
+            <a href={karsilastirAdresi(e.ev, e.dep)} aria-label={_t('{0} {1}, {2} {3}. Kategori karşılaştırmasını aç', [ad(e.ev), e.evSkor, ad(e.dep), e.depSkor])}>
+              {[[e.ev, e.evSkor], [e.dep, e.depSkor]].map(([id, skor]) => (
+                <span class={`skor-satir${e.kazanan === id ? ' kazanan' : ''}`}>
+                  <TakimSimge takim={sayi.takim[id]} boyut="kucuk" />
+                  <span class="skor-ad">{ad(id)}</span>
+                  <b class="skor-no">{skor}</b>
+                </span>
+              ))}
+            </a>
+          </li>
+        ))}
+      </ol>
+    </section>
+
+    <PuanDurumu sayi={sayi} />
+
+  </aside>
+</div>
+
+<UyuyanKoclar sayi={sayi} />
+
+{sayi.haberler.length > 0 && (
+  <section class="haberler bolum-hedef" id="analizler" aria-labelledby="analiz-baslik">
+    <h2 id="analiz-baslik" class="bolum-baslik">{_t('Lig analizleri.')}{' '}<span>{_t('Tablonun arkasındaki hikâyeler.')}</span></h2>
+    <div class="haber-izgara lig-yazilari">
+      {sayi.haberler.map((h: any) => (
+        <article class="kart haber" data-takim={(h.teamIds || []).join(' ') || undefined}>
+          {h.teamIds?.length > 0 && (
+            <div class="haber-yuzler" aria-hidden="true">
+              {h.teamIds.map((id: string) => <TakimSimge takim={sayi.takim[id]} boyut="orta" />)}
+            </div>
+          )}
+          <p class="ust-etiket">{h.label}</p>
+          <h3>{h.title}</h3>
+          <p>{h.text}</p>
+          {h.teamIds?.length > 0 && (
+            <p class="haber-takimlar">
+              {h.teamIds.map((id: string) => <a href={takimAdresi(id)}>{ad(id)}</a>)}
+            </p>
+          )}
+        </article>
+      ))}
+    </div>
+  </section>
+)}
+
+<OnSayfaKursu sayi={sayi} />
+
+<TahminCagri sayi={sayi} />
+
+{sayi.kehanetSaati ? <KehanetSaati sayi={sayi} /> : <KehanetOzet sayi={sayi} />}
+
+<section class="haberler bolum-hedef" id="dahasi" aria-labelledby="dahasi-baslik">
+  <h2 id="dahasi-baslik" class="bolum-baslik">{_t('Dahası.')}{' '}<span>{_t('Sıralama, oyuncular ve takaslar.')}</span></h2>
+  <div class="alt-izgara kaydirmali">
+    <section class="kart" aria-labelledby="guc-baslik">
+      <h3 id="guc-baslik" class="kutu-baslik">{_t('Güç sıralaması')}</h3>
+      <p class="kutu-alt">{_t('Fikstürden bağımsız: 9 kategorinin toplam gücü')}</p>
+      <ol class="mini-siralama">
+        {ilkBes.map((id: string) => (
+          <li data-takim={id}>
+            <a href={takimAdresi(id)}>
+              <TakimSimge takim={sayi.takim[id]} />
+              <span>{ad(id)}</span>
+              <b>{k.guc[id]}</b>
+            </a>
+          </li>
+        ))}
+      </ol>
+      <p class="bag-satiri">
+        <a class="metin-bag" href={sayi.adres('istatistikler')}>{_t('Tam tablo')}{' '}<Ikon ad="sag" boyut={15} /></a>
+        <a class="metin-bag" href={sayi.adres('istatistikler', 'analiz/')}>{_t('Analiz')}{' '}<Ikon ad="sag" boyut={15} /></a>
+      </p>
+    </section>
+
+    <section class="kart" aria-labelledby="oyuncu-baslik">
+      <h3 id="oyuncu-baslik" class="kutu-baslik">{_t('Oyuncu notları')}</h3>
+      {notlar.map((n: any) => (
+        <article class="kisa-haber">
+          <p class="ust-etiket">{n.label}</p>
+          <h4>{n.name}</h4>
+          <p class="soluk">{n.teamId ? ad(n.teamId) : _t('Serbest oyuncu')}</p>
+          <p>{n.text.split(/(?<=[.!?])\s/)[0]}</p>
+        </article>
+      ))}
+      <p class="bag-satiri"><a class="metin-bag" href={sayi.adres('oyuncular')}>{_t('Tüm notlar ({0})', [sayi.oyuncuNotlari.length])}{' '}<Ikon ad="sag" boyut={15} /></a></p>
+    </section>
+
+    <section class="kart" aria-labelledby="takas-baslik">
+      <h3 id="takas-baslik" class="kutu-baslik">{_t('Takas Masaları')}</h3>
+      {takaslar.map((t: any) => (
+        <article class="kisa-haber">
+          <p class="ust-etiket">{_t('Takas Masası {0}', [Number(t.no)])}{' '}<span class="durum-etiketi">{t.confidence}</span></p>
+          <h4><OyuncuAdlari sayi={sayi} takimId={t.a} metin={t.giveA} /> <span class="soluk" aria-label={_t('karşılığında')}>⇄</span> <OyuncuAdlari sayi={sayi} takimId={t.b} metin={t.giveB} /></h4>
+          <p class="soluk">{ad(t.a)} – {ad(t.b)}</p>
+        </article>
+      ))}
+      <p class="bag-satiri"><a class="metin-bag" href={sayi.adres('takas')}>{_t('Tüm Takas Masaları ({0})', [sayi.takaslar.length])}{' '}<Ikon ad="sag" boyut={15} /></a></p>
+    </section>
+  </div>
+</section>
+

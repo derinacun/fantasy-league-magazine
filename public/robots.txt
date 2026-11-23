@@ -1,0 +1,4 @@
+# Site arama motorlarında görünmez: her sayfa "noindex" etiketi taşır.
+# Taramaya izin veriliyor ki bağlantı önizlemeleri (WhatsApp, Telegram vb.) ve noindex etiketi okunabilsin.
+User-agent: *
+Allow: /

@@ -1,0 +1,56 @@
+---
+// "Benim takımım" (ön sayfa yan sütunu, manşetin yanında). Okur takımını bir kez seçer, tarayıcı hatırlar (site.js → ln-takim).
+// Manşet değişmez; seçili takım bu kartta özetlenir ve diğer bölümlerde [data-takim] taşıyan satırlar öne çıkar.
+// JavaScript yoksa kart görünmez (hidden), site JavaScript ile açar.
+import { t as _t, YEREL } from '../i18n/t.js';
+import TakimSimge from './TakimSimge.astro';
+import Ikon from './Ikon.astro';
+import { puanDurumu } from '../lib/puan.js';
+
+interface Props { sayi: any }
+const { sayi } = Astro.props;
+const P = puanDurumu(sayi);
+const k = sayi.kapsam.hafta;
+const ad = (id: string) => sayi.takim[id]?.ad ?? id;
+const takimAdresi = (id: string) => sayi.adres('takimlar', sayi.takim[id].slug + '/');
+const SEVIYE = { uyuyan: _t('Uyuyan koç'), uyukluyor: _t('Uyukluyor'), uyanik: _t('Uyanık') } as Record<string, string>;
+const satirlar = [...sayi.takimlar].sort((a: any, b: any) => a.ad.localeCompare(b.ad, YEREL)).map((t: any) => {
+  const e = sayi.eslesmeler.find((m: any) => m.ev === t.id || m.dep === t.id);
+  const rakip = e ? (e.ev === t.id ? e.dep : e.ev) : null;
+  const ben = e ? (e.ev === t.id ? e.evSkor : e.depSkor) : null;
+  const o = e ? (e.ev === t.id ? e.depSkor : e.evSkor) : null;
+  const sonuc = !e ? null : e.kazanan === t.id ? 'kazandı' : e.kazanan == null ? 'berabere' : 'kaybetti';
+  const g = sayi.gelecek?.eslesmeler.find((m: any) => m.a === t.id || m.b === t.id) ?? null;
+  const gRakip = g ? (g.a === t.id ? g.b : g.a) : null;
+  const gBen = g ? (g.a === t.id ? g.skorA : g.skorB) : null;
+  const gO = g ? (g.a === t.id ? g.skorB : g.skorA) : null;
+  const uyku = sayi.uyuyan?.satirlar.find((s: any) => s.takimId === t.id) ?? null;
+  return { t, rakip, ben, o, sonuc, sira: P.takim?.[t.id]?.sira ?? null, guc: k.gucSirasi.indexOf(t.id) + 1, gRakip, gBen, gO, uyku, not: sayi.takimNotu[t.id] };
+});
+---
+<section class="kart kutu benim-kart" aria-labelledby="benim-baslik" data-benim-kart hidden>
+  <div class="kutu-bas">
+    <h2 id="benim-baslik" class="kutu-baslik">{_t('Benim takımım')}</h2>
+    <label class="benim-sec">
+      <span class="gizli">{_t('Takımını seç')}</span>
+      <select data-benim-sec>
+        <option value="">{_t('Takımını seç')}</option>
+        {satirlar.map((s) => <option value={s.t.id}>{s.t.ad}</option>)}
+      </select>
+    </label>
+  </div>
+  <p class="kutu-alt" data-benim-bos>{_t('Takımını seç: skorun, sıran ve gelecek haftan burada durur; sitede takımın öne çıkar. Seçim yalnızca bu tarayıcıda saklanır.')}</p>
+  {satirlar.map((s) => (
+    <div class="benim-icerik" data-benim-icerik={s.t.id} hidden>
+      <a class="benim-takim" href={takimAdresi(s.t.id)}><TakimSimge takim={s.t} boyut="orta" /><b>{s.t.ad}</b><Ikon ad="sag" boyut={15} /></a>
+      <dl class="benim-liste">
+        {s.rakip && <div><dt>{_t('Bu hafta')}</dt><dd><b class={`benim-sonuc ${s.sonuc === 'kazandı' ? 'iyi' : s.sonuc === 'kaybetti' ? 'kotu' : ''}`}>{s.ben}–{s.o} {_t(s.sonuc)}</b> · {ad(s.rakip)}</dd></div>}
+        {s.sira && <div><dt>{_t('Puan durumu')}</dt><dd><b>{s.sira}.</b>{' '}{_t('sıra{0}', [s.sira <= (P.N || 0) ? _t(' · eleme hattının içinde') : P.N ? _t(' · eleme hattının dışında') : ''])}</dd></div>}
+        <div><dt>{_t('Haftalık güç')}</dt><dd><b>{s.guc}.</b>{' '}{_t('sıra · {0} puan', [k.guc[s.t.id]])}</dd></div>
+        {s.uyku && <div><dt>{_t('Uyku karnesi')}</dt><dd><b>{SEVIYE[s.uyku.seviye]}</b>{s.uyku.uyku > 0 && _t(' · {0} puan', [s.uyku.uyku])}</dd></div>}
+        {s.gRakip && <div><dt>{_t('Gelecek hafta')}</dt><dd>{_t('{0} · sezon ortalamasıyla', [ad(s.gRakip)])}{' '}<b>{s.gBen}–{s.gO}</b>{s.gBen > s.gO ? _t(' favori') : s.gBen < s.gO ? ' geride' : _t(' başa baş')}</dd></div>}
+      </dl>
+      {s.not && <p class="benim-not">{s.not}</p>}
+    </div>
+  ))}
+</section>

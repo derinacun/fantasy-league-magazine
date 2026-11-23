@@ -1,0 +1,175 @@
+---
+// Oyuncular: önce haftalık içerik (notlar, bırak-al karnesi, serbest oyuncular), en sonda başvuru aracı (Oyuncu bul).
+// Oyuncu istatistik tablosu yok (4 Kasım 2026 kararı; Yahoo gösteriyor). Takım takım kadro dökümü takım sayfalarında.
+// "Haftanın oyuncusu / faciası" (6 Kasım 2026): yalnızca türetilmiş tek satır; kaynak veri/nba/hafta-NN.json (ESPN maç kâğıtları).
+import { t as _t, YEREL, yuzdeYaz } from '../../i18n/t.js';
+import Bilgi from '../Bilgi.astro';
+import Ikon from '../Ikon.astro';
+import { KATEGORI_ADI, bicimle } from '../../lib/hesap.js';
+import TakimSimge from '../TakimSimge.astro';
+import { serbestSahiplik, hareketOzeti } from '../../lib/oyuncu.js';
+import { oyuncuBulListesi, oyuncuAdresi, oyuncuAlt, kisaTarih, tarihte } from '../../lib/kadroGorunum.js';
+interface Props { sayi: any }
+const { sayi } = Astro.props;
+const ad = (id: string) => sayi.takim[id]?.ad ?? id;
+const SS = serbestSahiplik(sayi.kadro);
+const H = hareketOzeti(sayi.kadro);
+const B = oyuncuBulListesi(sayi);
+const takimSayfasi = (id: string) => sayi.adres('takimlar', sayi.takim[id].slug + '/');
+const oyuncuSatiri = (takimId: string, oyuncuId: string) => `${takimSayfasi(takimId)}#oyuncu-${oyuncuId}`;
+const yuzde = (v: number) => yuzdeYaz(String(Math.round(v)));
+const HO = sayi.haftaninOyunculari;
+const katlar = (liste: string[]) => liste.map((k) => KATEGORI_ADI[k]).join(', ');
+const satirOzeti = (o: any) => _t('{0} maç · {1} sayı, {2} ribaund, {3} asist', [o.games, o.stats.PTS, o.stats.REB, o.stats.AST]) + (o.stats.FGA ? _t(' · saha içi {0}', [bicimle(o.ist['FG%'], 'FG%')]) : '') + (o.stats.TO ? _t(' · {0} top kaybı', [o.stats.TO]) : '');
+const kapanis = B?.kapanis ? kisaTarih(B.kapanis) : _t('{0}. hafta', [sayi.hafta]);
+import Atlama from '../Atlama.astro';
+import Onizleme from '../Onizleme.astro';
+import DraftKarnesi from '../DraftKarnesi.astro';
+const CIP_HAREKET = H ? [_t('{0} ekleme, {1} bırakma', [H.ekleme, H.birakma]), (() => { const x = [...H.satirlar].sort((a: any, b: any) => b.toplam - a.toplam)[0]; return x ? _t('En hareketli: {0} ({1})', [ad(x.id), x.toplam]) : null; })()] : [];
+const CIP_SERBEST = SS.length ? [_t('Havuzda {0} oyuncu', [SS.length]), SS[0]?.name ? _t('En iyisi: {0}', [SS[0].name]) : null] : [];
+---
+<Atlama etiket={_t('Oyuncular bölümleri')} bolumler={[{ id: 'haftanin-oyuncusu', ad: _t('Haftanın oyuncusu') }, ...(sayi.draft ? [{ id: 'draft', ad: _t('Draft karnesi') }] : []), { id: 'oyuncu-notlari', ad: _t('Oyuncu notları') }, { id: 'hareketler', ad: _t('Bırak-al') }, { id: 'serbest', ad: _t('Serbest oyuncular') }, { id: 'oyuncu-bul', ad: _t('Oyuncu bul') }]} />
+<h1 class="sayfa-baslik">{_t('Form, fırsat ve belirsizlik.')}</h1>
+<p class="alt-metin">{HO ? _t('{0}. hafta · {1}. Haftanın oyuncusu ve faciası, oyuncu notları, haftanın bırak-al hareketleri, serbest oyuncular ve oyuncu arama. Pazartesi güncellenir.', [sayi.hafta, sayi.donem]) : _t('{0}. hafta · {1}. Oyuncu notları, haftanın bırak-al hareketleri, serbest oyuncular ve oyuncu arama. Pazartesi güncellenir.', [sayi.hafta, sayi.donem])}</p>
+
+{HO && (
+  <section class="oyuncu-bolum ilk" id="haftanin-oyuncusu" aria-labelledby="ho-baslik">
+    <h2 id="ho-baslik" class="bolum-baslik">{_t('Haftanın oyuncusu ve faciası.')}{' '}<span>{_t('Yalnızca takıma sayılan maçlar.')}</span><Bilgi baslik={_t('Puan')}>{_t('Puan: oyuncunun takıma sayılan maçlarındaki 9 kategorinin standart puanları toplamı (yüzdelerde isabet hacmi hesaba girer, top kaybında az olan iyi). Yedekte ya da sakatlar listesinde oynanan maçlar sayılmaz. Kaynak: ESPN maç kâğıtları; takım toplamları Yahoo\'yla karşılaştırılır. Ayrıntı')}{' '}<a href={sayi.adres('metodoloji')}>{_t('Metodoloji')}</a>{' '}{_t('sayfasında.')}</Bilgi></h2>
+    <div class="iki-izgara">
+      {[{ o: HO.oyuncusu, etiket: _t('Haftanın oyuncusu'), sinif: 'iyi', katBaslik: _t('Taşıdığı kategoriler'), kat: HO.oyuncusu?.enIyi },
+        { o: HO.faciasi, etiket: _t('Haftanın faciası'), sinif: 'kotu', katBaslik: _t('Batırdığı kategoriler'), kat: HO.faciasi?.enKotu }].filter((x) => x.o).map((x) => (
+        <article class={`panel ho-kart ho-${x.sinif}`} data-takim={x.o.takimId}>
+          <p class="ust-etiket vurgu">{x.etiket}</p>
+          <h3><a class="oyuncu-bag" href={oyuncuSatiri(x.o.takimId, x.o.id)}>{x.o.name}</a></h3>
+          <p class="soluk"><a href={takimSayfasi(x.o.takimId)}>{ad(x.o.takimId)}</a>{oyuncuAlt(x.o) && ` · ${oyuncuAlt(x.o)}`}</p>
+          <p>{satirOzeti(x.o)}</p>
+          {x.kat?.length > 0 && <p class="etiketler">{x.kat.map((k: string) => <span class={`etiket${x.sinif === 'kotu' ? ' zayif' : ''}`}>{KATEGORI_ADI[k]}</span>)}</p>}
+          <a class="dis-bag" href={`https://sports.yahoo.com/nba/players/${x.o.id}/`} target="_blank" rel="noopener noreferrer">{_t('Yahoo\'da maç maç')}{' '}<Ikon ad="dis" boyut={14} /><span class="gizli">{' '}{_t('(yeni sekmede açılır)')}</span></a>
+        </article>
+      ))}
+    </div>
+    <div class="panel">
+      <p class="alt-metin">{_t('Takım takım: her takımın en iyisi ve en kötüsü (facia için en az iki maç). Oyuncu adına dokun: takımın kadrosunda o oyuncu açılır.')}</p>
+      <div class="tablo-kutu">
+        <table class="hareket-tablosu ho-tablo">
+          <caption class="gizli">{_t('Her takımın haftanın oyuncusu ve haftanın faciası')}</caption>
+          <thead><tr><th scope="col" class="sabit sabit-2">{_t('Takım')}</th><th scope="col">{_t('Haftanın oyuncusu')}</th><th scope="col">{_t('Haftanın faciası')}</th></tr></thead>
+          <tbody>
+            {[...HO.takimlar].sort((a: any, b: any) => ad(a.id).localeCompare(ad(b.id), YEREL)).map((t: any) => (
+              <tr data-takim={t.id}>
+                <th scope="row" class="sabit sabit-2"><a href={takimSayfasi(t.id)}>{ad(t.id)}</a></th>
+                <td>{t.oyuncusu ? <><a href={oyuncuSatiri(t.id, t.oyuncusu.id)}>{t.oyuncusu.name}</a>{t.oyuncusu.enIyi.length > 0 && <small class="soluk"> · {katlar(t.oyuncusu.enIyi)}</small>}</> : '—'}</td>
+                <td>{t.faciasi ? <><a href={oyuncuSatiri(t.id, t.faciasi.id)}>{t.faciasi.name}</a>{t.faciasi.enKotu.length > 0 && <small class="soluk"> · {katlar(t.faciasi.enKotu)}</small>}</> : '—'}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </section>
+)}
+
+<DraftKarnesi sayi={sayi} />
+
+<div class="iki-izgara" id="oyuncu-notlari">
+  {sayi.oyuncuNotlari.map((n: any) => {
+    const bag = n.teamId ? oyuncuAdresi(sayi, n.teamId, n.name) : null;
+    return (
+      <article class="panel not-kart">
+        <p class="ust-etiket vurgu">{n.label}</p>
+        <h2>{bag ? <a class="oyuncu-bag" href={bag}>{n.name}</a> : n.name}</h2>
+        <p class="soluk">{n.teamId ? <a href={takimSayfasi(n.teamId)}>{ad(n.teamId)}</a> : _t('Serbest oyuncu')}</p>
+        <p>{n.text}</p>
+        <a class="dis-bag" href={n.source} target="_blank" rel="noopener noreferrer">{_t('Kaynak')}{' '}<Ikon ad="dis" boyut={14} /><span class="gizli">{' '}{_t('(yeni sekmede açılır)')}</span></a>
+      </article>
+    );
+  })}
+</div>
+
+{H && (
+  <section class="oyuncu-bolum" id="hareketler" aria-labelledby="hareket-baslik">
+    <h2 id="hareket-baslik" class="bolum-baslik">{_t('Bırak-al karnesi.')}{' '}<span>{_t('{0}: {1} ekleme, {2} bırakma.', [sayi.donem, H.ekleme, H.birakma])}</span><Bilgi baslik={_t('Bırak-al karnesi')}>{_t('Her satır bir takımın bu haftaki eklemeleri ve bırakmaları; en hareketli takım en üstte. Oyuncu adına dokununca takımın kadrosunda o oyuncu açılır. Bırak-al sayısı uyku ölçüsü değildir.')}</Bilgi></h2>
+<Onizleme cipler={CIP_HAREKET}>
+    <div class="panel">
+      <p class="alt-metin">{_t('Takım takım haftanın hareketleri; en hareketli takım en üstte. Oyuncu adına dokun: takımın kadrosunda o oyuncu açılır.')}{' '}{H.satirlar[0] && sayi.takim[H.satirlar[0].id] && <>{_t('Haftanın en yoğun bırak-al trafiği:')}{' '}<b>{sayi.takim[H.satirlar[0].id].ad}</b>{_t(', {0} hareket.', [H.satirlar[0].toplam])}</>}</p>
+      <div class="tablo-kutu">
+        <table class="hareket-tablosu">
+          <caption class="gizli">{_t('Haftanın ekleme ve bırakma hareketleri, takım takım')}</caption>
+          <thead><tr><th scope="col" class="sabit sabit-2">{_t('Takım')}</th><th scope="col" class="sayisal">{_t('Ekleme')}</th><th scope="col" class="sayisal">{_t('Bırakma')}</th><th scope="col">{_t('Gelenler')}</th><th scope="col">{_t('Gidenler')}</th></tr></thead>
+          <tbody>
+            {H.satirlar.map((t: any) => (
+              <tr data-takim={t.id}>
+                <th scope="row" class="sabit sabit-2">{sayi.takim[t.id] ? <a href={`${takimSayfasi(t.id)}#kadro`}>{sayi.takim[t.id].ad}</a> : t.id}</th>
+                <td class="sayisal">{t.ekleme.length}</td>
+                <td class="sayisal">{t.birakma.length}</td>
+                {[t.ekleme, t.birakma].map((liste: any[]) => (
+                  <td class="hareket-adlar">{liste.length ? liste.map((x: any, i: number) => <>{i > 0 && ', '}{sayi.takim[t.id] ? <a href={oyuncuSatiri(t.id, x.playerId)}>{x.name}</a> : x.name}</>) : '—'}</td>
+                ))}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </Onizleme>
+</section>
+)}
+
+{SS.length > 0 && (
+  <section class="oyuncu-bolum" id="serbest" aria-labelledby="serbest-baslik">
+    <h2 id="serbest-baslik" class="bolum-baslik">{_t('Serbest oyuncular.')}{' '}<span>{_t('{0}. hafta sonundaki havuz.', [sayi.hafta])}</span></h2>
+<Onizleme cipler={CIP_SERBEST}>
+    <div class="panel">
+      <p class="alt-metin">{_t('{0} haftasının sonunda hiçbir takımın kadrosunda olmayan oyuncular, Yahoo sahiplik oranına göre. Pazartesi yayımlanan bu liste sonraki işlemleri içermez.', [sayi.donem])}</p>
+      <ol class="oyuncu-satirlari">
+        {SS.map((o: any, i: number) => (
+          <li class="oyuncu-satiri">
+            <span class="os-sira">{i + 1}</span>
+            <span class="kadro-oyuncu"><b>{o.name}</b>{oyuncuAlt(o) && <small>{oyuncuAlt(o)}</small>}</span>
+            <span class={`os-deger ${o.ownedPct >= 30 ? 'yuksek' : o.ownedPct >= 15 ? 'orta' : 'dusuk'}`}><b>{yuzde(o.ownedPct)}</b><small>{_t('sahiplik')}</small></span>
+            <a class="yahoo-bag" href={`https://sports.yahoo.com/nba/players/${o.id}/`} target="_blank" rel="noopener noreferrer" aria-label={_t('{0}: Yahoo\'da istatistikler (yeni sekmede açılır)', [o.name])}>{_t('Yahoo')}<Ikon ad="dis" boyut={12} /></a>
+            {o.sonBirakma && sayi.takim[o.sonBirakma.teamId] && <span class="os-not"><span class="os-birakti">{_t('Bırakıldı')}</span><a href={oyuncuSatiri(o.sonBirakma.teamId, o.id)}>{sayi.takim[o.sonBirakma.teamId].ad}</a> <span class="soluk">{_t('{0} bıraktı', [tarihte(o.sonBirakma.date)])}</span></span>}
+          </li>
+        ))}
+      </ol>
+    </div>
+  </Onizleme>
+</section>
+)}
+
+{B && (
+  <section class="oyuncu-bolum" id="oyuncu-bul" data-oyuncu-bul aria-labelledby="bul-baslik">
+    <h2 id="bul-baslik" class="bolum-baslik">{_t('Oyuncu bul.')}{' '}<span>{_t('Kim kimde, kim serbest.')}</span></h2>
+    <div class="panel">
+      <p class="alt-metin">{_t('{0} kapanışı: {1} oyuncu takımlarda, {2} oyuncu serbest. Bu haftanın bütün ekleme ve bırakmaları satırda yazar. Anlık durum için Yahoo.', [kapanis, B.kadroda, B.serbest])}</p>
+      <label class="bul-ara">{_t('Oyuncu ara')}<input type="search" data-bul-ara placeholder={_t('Örneğin Jokic')} autocomplete="off" enterkeyhint="search" /></label>
+      <div class="bul-filtreler" role="group" aria-label={_t('Hızlı filtreler (bu hafta)')}>
+        {B.sakatBilgisi && <button type="button" aria-pressed="false" data-bul-filtre="il">{_t('Sakatlar listesinde')}{' '}<span>{B.sakat}</span></button>}
+        <button type="button" aria-pressed="false" data-bul-filtre="eklendi">{_t('Eklenenler')}{' '}<span>{B.eklendi}</span></button>
+        <button type="button" aria-pressed="false" data-bul-filtre="birakildi">{_t('Bırakılanlar')}{' '}<span>{B.birakildi}</span></button>
+      </div>
+      <p class="soluk bul-ipucu" data-bul-ipucu>{_t('Bir oyuncu adı yaz ya da bir filtre seç. Filtreler {0}. haftaya ait.', [sayi.hafta])}</p>
+      <p class="soluk bul-sayac" data-bul-sayac aria-live="polite"></p>
+      <ul class="bul-liste">
+        {B.satirlar.map((o: any) => (
+          <li class="bul-satir" data-bul-satir data-ad={o.ara} data-il={o.il ? '1' : '0'} data-eklendi={o.eklendi ? '1' : '0'} data-birakildi={o.birakildi ? '1' : '0'} hidden>
+            <span class="kadro-oyuncu"><b>{o.name}</b>{o.alt && <small>{o.alt}</small>}</span>
+            <span class="bul-sahip">{o.sahip && sayi.takim[o.sahip]
+              ? <a class="takim-bag" href={oyuncuSatiri(o.sahip, o.id)}><TakimSimge takim={sayi.takim[o.sahip]} boyut="kucuk" /><span>{ad(o.sahip)}</span></a>
+              : <span class="kadro-etiket">{_t('Serbest')}</span>}</span>
+            {(o.il || o.hareketler.length > 0 || (!o.sahip && o.ownedPct != null)) && (
+              <span class="kadro-notlar">
+                {o.il && <span class="kadro-etiket sakat">{_t('Sakatlar listesinde')}</span>}
+                {o.hareketler.map((h: string) => <span class="kadro-etiket">{h}</span>)}
+                {!o.sahip && o.ownedPct != null && <span class="kadro-etiket">{_t('Yahoo\'da sahiplik {0}', [yuzde(o.ownedPct)])}</span>}
+              </span>
+            )}
+          </li>
+        ))}
+      </ul>
+      <p class="bilgi-notu" data-bul-bos hidden>{_t('Bu aramaya uyan oyuncu yok. Listede yalnızca {0}. haftanın kadrolarındaki ve serbest listesindeki oyuncular var.', [sayi.hafta])}</p>
+      <noscript><style is:inline>{`[data-bul-satir][hidden]{display:grid!important}.bul-ipucu,.bul-filtreler,.bul-ara{display:none!important}`}</style></noscript>
+    </div>
+  </section>
+)}

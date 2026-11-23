@@ -1,0 +1,70 @@
+---
+// Takım sayfasındaki kadro: haftanın kapanışına göre gruplar ve açılır sezon geçmişi.
+// Oyuncu istatistiği yok (Yahoo'da). Her satırın kimliği "oyuncu-<Yahoo kimliği>": notlar, takas masaları
+// ve bırak-al karnesi buraya bağlanır. Takımlar ve Oyuncular sayfalarında bu bölüm yok (4 Kasım 2026).
+import { t as _t } from '../i18n/t.js';
+import Ikon from './Ikon.astro';
+import { farkYazDraft } from '../lib/draft.js';
+import { takimKadrosu, sezonGecmisi, kisaTarih } from '../lib/kadroGorunum.js';
+interface Props { sayi: any; takimId: string; id?: string }
+const { sayi, takimId, id = 'kadro' } = Astro.props;
+const k = takimKadrosu(sayi, takimId);
+const G = k ? sezonGecmisi(sayi, takimId) : null;
+const anaListe = new Set(k ? [...k.kadroda, ...k.sakat, ...k.ayrilan].map((o: any) => String(o.id)) : []);
+const gruplar = k ? [
+  { anahtar: 'kadroda', baslik: _t('Kadroda'), liste: k.kadroda },
+  { anahtar: 'sakat', baslik: _t('Sakatlar listesinde'), liste: k.sakat, aciklama: _t('Haftanın son günü Yahoo\'da sakatlar listesi yerindeydi.') },
+  { anahtar: 'ayrilan', baslik: _t('Bu hafta ayrılanlar'), liste: k.ayrilan },
+].filter((g) => g.liste.length) : [];
+const DO = sayi.draft?.takimlar?.[takimId]?.oyuncular ?? {}; // draft bilgisi (18 Kasım 2026)
+const hareketMetni = k ? [k.ekleme && _t('{0} ekleme', [k.ekleme]), k.birakma && _t('{0} bırakma', [k.birakma]), k.takas && _t('{0} takas', [k.takas])].filter(Boolean).join(', ') : '';
+---
+{k && (
+  <section class="kadro-bolum" id={id} aria-labelledby={`${id}-baslik`}>
+    <h2 class="bolum-baslik" id={`${id}-baslik`}>{_t('Kadro.')}{' '}<span>{_t('{0}. haftanın kapanışı.', [sayi.hafta])}</span></h2>
+    <p class="alt-metin">{_t('{0}. Pazartesi güncellenir; anlık kadro Yahoo\'da. Oyuncunun yanındaki Yahoo bağlantısı istatistiklerini ve maç maç performansını açar.', [k.kapanis ? _t('{0} akşamki kadro', [kisaTarih(k.kapanis)]) : sayi.donem])}</p>
+    <div class="panel kadro-panel">
+      <p class="kadro-ozet"><b>{k.oyuncu}</b>{' '}{_t('oyuncu')}{k.sakatBilgisi && k.sakat.length > 0 && <>{' '}{_t('· sakatlar listesinde')}{' '}<b>{k.sakat.length}</b></>}{' '}{_t('· bu hafta {0}', [hareketMetni || _t('hareket yok')])}</p>
+      {gruplar.map((g) => (
+        <section class={`kadro-grup kadro-grup--${g.anahtar}`} aria-labelledby={`${id}-${g.anahtar}`}>
+          <h3 class="kadro-grup-baslik" id={`${id}-${g.anahtar}`}>{g.baslik} <span class="kadro-sayi">{g.liste.length}</span></h3>
+          {g.aciklama && <p class="kutu-alt">{g.aciklama}</p>}
+          <ul class="kadro-liste">
+            {g.liste.map((o: any) => (
+              <li class="kadro-satir" id={`oyuncu-${o.id}`}>
+                <span class="kadro-oyuncu"><b>{o.name}</b>{o.alt && <small>{o.alt}</small>}{DO[String(o.id)] && <small class={`kadro-draft ${DO[String(o.id)].fark > 0 ? 'iyi' : DO[String(o.id)].fark < 0 ? 'kotu' : ''}`}>{_t('Draft {0}. · Yahoo\'da {1}.', [DO[String(o.id)].secim, DO[String(o.id)].sira])}{' '}<b>{farkYazDraft(DO[String(o.id)].fark)}</b></small>}</span>
+                <a class="yahoo-bag" href={`https://sports.yahoo.com/nba/players/${o.id}/`} target="_blank" rel="noopener noreferrer" aria-label={_t('{0}: Yahoo\'da istatistikler (yeni sekmede açılır)', [o.name])}>{_t('Yahoo')}<Ikon ad="dis" boyut={12} /></a>
+                {o.notlar.length > 0 && <span class="kadro-notlar">{o.notlar.map((n: any) => <span class={`kadro-etiket ${n.tur}`}>{n.metin}</span>)}</span>}
+              </li>
+            ))}
+          </ul>
+        </section>
+      ))}
+      {G && (
+        <details class="kadro-gecmis">
+          <summary>
+            <span class="kg-baslik">{_t('Sezon geçmişi')}</span>
+            <span class="soluk">{_t('Bu sezon gelip gidenler: {0} oyuncu', [G.gelipGidenler.length])}</span>
+            <Ikon ad="sag" boyut={16} class="kg-ok" />
+          </summary>
+          <p class="kutu-alt">{_t('{0} Listede sonradan gelenler ve ayrılanlar var; en son hareket en üstte.', [G.eksikHaftalar.includes(G.ilkHafta) ? _t('Sezonun ilk haftasının kadro kaydı yok; sezon başından beri kadroda olanlar ayrılamıyor.') : _t('{0} oyuncu sezon başından beri kadroda.', [G.basindan])])}</p>
+          {G.eksikHaftalar.length > 0 && <p class="bilgi-notu">{_t('Kadro kaydı eksik: {0}. O haftaların hareketleri bu listede yok.', [G.eksikHaftalar.map((h: number) => _t('{0}. hafta', [h])).join(', ')])}</p>}
+          {G.gelipGidenler.length > 0 ? (
+            <ul class="kadro-liste">
+              {G.gelipGidenler.map((o: any) => (
+                <li class="kadro-satir" id={anaListe.has(o.id) ? undefined : `oyuncu-${o.id}`}>
+                  <span class="kadro-oyuncu"><b>{o.name}</b><small>{o.alt && `${o.alt} · `}<span class="tek-satir">{_t('Takımda: {0}', [o.haftalar])}</span></small></span>
+                  <a class="yahoo-bag" href={`https://sports.yahoo.com/nba/players/${o.id}/`} target="_blank" rel="noopener noreferrer" aria-label={_t('{0}: Yahoo\'da istatistikler (yeni sekmede açılır)', [o.name])}>{_t('Yahoo')}<Ikon ad="dis" boyut={12} /></a>
+                  <span class="kadro-notlar">
+                    {o.guncel && <span class="kadro-etiket">{_t('Kadroda')}</span>}
+                    {o.hareketler.map((n: any) => <span class={`kadro-etiket ${n.tur}`}>{n.metin}</span>)}
+                  </span>
+                </li>
+              ))}
+            </ul>
+          ) : <p class="soluk">{_t('Bu sezon kadroda değişiklik olmadı.')}</p>}
+        </details>
+      )}
+    </div>
+  </section>
+)}

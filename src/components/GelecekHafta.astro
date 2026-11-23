@@ -1,0 +1,110 @@
+---
+// Ön sayfa: gelecek haftanın eşleşmeleri, sezon ortalamasına göre kategori kategori favoriler ve iddia defteri
+// (Analitik Hoca = modelin favorisi, Tribün Abi = sayı dosyasındaki tahmin). Hesap: src/lib/gelecek.js
+import { t as _t, sorguAdi, sorguDegeri } from '../i18n/t.js';
+import KehanetNot from './KehanetNot.astro';
+import Bilgi from './Bilgi.astro';
+import TakimSimge from './TakimSimge.astro';
+import Ikon from './Ikon.astro';
+import { KATEGORI_ADI, bicimle } from '../lib/hesap.js';
+
+interface Props { sayi: any; kapali?: boolean; not?: any }
+const { sayi, kapali = false } = Astro.props; // Kehanet'te kapalı başlar (18 Kasım 2026)
+const { gelecek, defter } = sayi;
+const ad = (id: string) => sayi.takim[id]?.ad ?? id;
+const kiyas = (a: string, b: string) => `${sayi.adres('karsilastir')}?a=${sayi.takim[a].slug}&b=${sayi.takim[b].slug}&${sorguAdi('hafta')}=${sorguDegeri('sezon')}`;
+const p = defter.puan;
+const defterHafta = new Set(defter.sonuclar.map((s: any) => s.hafta)).size;
+const onde = p.hoca > p.abi ? 'hoca' : p.abi > p.hoca ? 'abi' : null;
+const GUC = { net: 'net', hafif: 'hafif', basabas: _t('başa baş') } as Record<string, string>;
+import Onizleme from './Onizleme.astro';
+const CIP_GELECEK = (() => { const e = gelecek.eslesmeler; const net = [...e].sort((x: any, y: any) => Math.abs(y.skorA - y.skorB) - Math.abs(x.skorA - x.skorB))[0]; const bb = [...e].sort((x: any, y: any) => Math.abs(x.toplamZ) - Math.abs(y.toplamZ))[0]; const ayri = e.filter((x: any) => x.abi && x.hoca && x.abi !== x.hoca).length; return [net && net.skorA !== net.skorB ? _t('En net favori: {0} {1}–{2}', [ad(net.skorA > net.skorB ? net.a : net.b), Math.max(net.skorA, net.skorB), Math.min(net.skorA, net.skorB)]) : null, bb ? _t('Başa baş: {0} – {1}', [ad(bb.a), ad(bb.b)]) : null, ayri ? _t('Hoca ile Abi {0} maçta ayrı düştü', [ayri]) : null]; })();
+---
+<section class="haberler bolum-hedef" id="gelecek" aria-labelledby="gelecek-baslik">
+  <h2 id="gelecek-baslik" class="bolum-baslik">{_t('Gelecek hafta.')}{' '}<span>{_t('{0}: sezon ortalamasına göre favoriler.', [gelecek.donem])}</span><Bilgi baslik={_t('Favori')}>{_t('Favori: iki takımın sezon ortalaması kategori kategori karşılaştırılır (sayılar haftalık ortalama, yüzdeler toplam isabet ÷ toplam deneme). Kartta "9 kategoriyi gör" değerleri açar: kalın değer üstün taraf, soluk satırlar başa baş. {0} haftalık örneklem, tahmin değil eğilim. Ayrıntı', [sayi.haftaSayisi])}{' '}<a href={sayi.adres('metodoloji')}>{_t('Metodoloji')}</a>{' '}{_t('sayfasında.')}</Bilgi></h2>
+  <KehanetNot not={Astro.props.not} />
+<Onizleme cipler={CIP_GELECEK} acik={!kapali}>
+
+  <div class="defter kart" aria-labelledby="defter-baslik">
+    <div class="defter-bas">
+      <h3 id="defter-baslik" class="kutu-baslik">{_t('İddia defteri')}</h3>
+      <p class="defter-skor" aria-label={_t('Analitik Hoca {0}, Tribün Abi {1}', [p.hoca, p.abi])}>
+        <span class={`defter-kisi${onde === 'hoca' ? ' onde' : ''}`}><span class="defter-ad">{_t('Analitik Hoca')}</span><b>{p.hoca}</b></span>
+        <span class="defter-ayrac" aria-hidden="true">–</span>
+        <span class={`defter-kisi${onde === 'abi' ? ' onde' : ''}`}><b>{p.abi}</b><span class="defter-ad">{_t('Tribün Abi')}</span></span>
+      </p>
+    </div>
+    {defter.sonHaftaSonuclari.length > 0 ? (
+      <>
+        <p class="kutu-alt">{_t('{0}. haftanın tahminleri · skor: {1} haftada {2} maçın toplamı · doğru tahmin 1 puan', [defter.sonHafta, defterHafta, p.mac])}</p>
+        <ul class="defter-liste">
+          {defter.sonHaftaSonuclari.map((s: any) => (
+            <li>
+              <span class="defter-mac"><span class={s.kazanan === s.ev ? 'kazanan' : undefined}>{ad(s.ev)}</span> {s.evSkor}–{s.depSkor} <span class={s.kazanan === s.dep ? 'kazanan' : undefined}>{ad(s.dep)}</span></span>
+              <span class={`defter-sonuc ${s.hocaDogru ? 'dogru' : 'yanlis'}`}>{_t('Hoca {0}', [s.hocaDogru ? _t('bildi') : _t('bilemedi')])}</span>
+              <span class={`defter-sonuc ${s.abiDogru ? 'dogru' : 'yanlis'}`}>{_t('Abi {0}', [s.abiDogru ? _t('bildi') : _t('bilemedi')])}</span>
+            </li>
+          ))}
+        </ul>
+      </>
+    ) : (
+      <p class="kutu-alt">{_t('İlk tahminler bu sayıda. Analitik Hoca sezon ortalamasının favorisini seçer, Tribün Abi içgüdüsünü. Sonuçlar gelecek sayıda bu deftere işlenir.')}</p>
+    )}
+  </div>
+
+  <div class="gelecek-izgara kaydirmali" data-benim-one>
+    {gelecek.eslesmeler.map((e: any) => {
+      const favori = e.skorA === e.skorB ? null : e.skorA > e.skorB ? e.a : e.b;
+      return (
+        <article class="kart gelecek-kart" aria-label={`${ad(e.a)} – ${ad(e.b)}`} data-takim={`${e.a} ${e.b}`}>
+          {/* Üstte simge · skor · simge (skor her zaman ortada, simgelerle aynı hizada); altta iki ad, yarım genişlikte. */}
+          <div class="gelecek-taraflar">
+            <div class="gelecek-ust">
+              <TakimSimge takim={sayi.takim[e.a]} boyut="orta" />
+              <span class="gelecek-skorlar">
+                <span class="gizli">{_t('Kategori skoru: {0} {1}, {2} {3}', [ad(e.a), e.skorA, ad(e.b), e.skorB])}</span>
+                <b class={`gelecek-skor${favori === e.a ? ' favori' : ''}`} aria-hidden="true">{e.skorA}</b>
+                <span class="gelecek-ayrac" aria-hidden="true">–</span>
+                <b class={`gelecek-skor${favori === e.b ? ' favori' : ''}`} aria-hidden="true">{e.skorB}</b>
+              </span>
+              <TakimSimge takim={sayi.takim[e.b]} boyut="orta" />
+            </div>
+            <div class="gelecek-adlar">
+              <span class={`gelecek-ad${favori === e.a ? ' favori' : ''}`}>{ad(e.a)}</span>
+              <span class={`gelecek-ad sag${favori === e.b ? ' favori' : ''}`}>{ad(e.b)}</span>
+            </div>
+          </div>
+          <p class="gelecek-ozet">{favori ? <>{_t('Sezon ortalamasıyla')}{' '}<b>{ad(favori)}</b>{' '}{_t('favori')}</> : <>{_t('Kâğıt üstünde')}{' '}<b>{_t('başa baş')}</b></>}{e.basabas > 0 && <span class="soluk">{' '}{_t('· {0} kategori başa baş', [e.basabas])}</span>}</p>
+          <details class="gelecek-detay">
+          <summary>{_t('9 kategoriyi gör')}<Ikon ad="sag" boyut={14} class="kg-ok" /></summary>
+          <ul class="gelecek-kategoriler">
+            {e.kategoriler.map((x: any) => (
+              <li class={x.guc === 'basabas' ? 'basabas' : undefined}>
+                <span class={`gk-deger${x.favori === e.a && x.guc !== 'basabas' ? ' ustun' : ''}`}>{bicimle(x.a, x.k)}</span>
+                <abbr class="gk-kat" title={`${KATEGORI_ADI[x.k]}${x.guc ? ' · ' + GUC[x.guc] : ''}`}>{x.k}</abbr>
+                <span class={`gk-deger sag${x.favori === e.b && x.guc !== 'basabas' ? ' ustun' : ''}`}>{bicimle(x.b, x.k)}</span>
+              </li>
+            ))}
+          </ul>
+          </details>
+          <div class="gelecek-iddia">
+            <p><span class="iddia-kim">{_t('Analitik Hoca')}</span> <b>{e.hoca ? ad(e.hoca) : _t('çekimser')}</b></p>
+            {e.abi && <p><span class="iddia-kim">{_t('Tribün Abi')}</span> <b>{ad(e.abi)}</b>{e.abiNot && <span class="iddia-not">"{e.abiNot}"</span>}</p>}
+          </div>
+          {e.haber && (
+            <aside class="gelecek-iddia" aria-label={e.haber.title}>
+              <h3 class="kutu-baslik">{e.haber.title}</h3>
+              <p class="kutu-alt">{_t('{0} · WhatsApp mesajları', [e.haber.author])}</p>
+              {e.haber.messages.map((mesaj: string) => (
+                <p class="iddia-not">“{mesaj}”</p>
+              ))}
+            </aside>
+          )}
+          <a class="metin-bag" href={kiyas(e.a, e.b)}>{_t('Sezon toplamını karşılaştır')}{' '}<Ikon ad="sag" boyut={15} /></a>
+        </article>
+      );
+    })}
+  </div>
+
+</Onizleme>
+</section>

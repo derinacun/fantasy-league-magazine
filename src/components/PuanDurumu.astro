@@ -1,0 +1,48 @@
+---
+// Puan durumu (ön sayfa yan sütunu): Yahoo kategori kaydı, lidere fark, eleme çizgisi.
+import { t as _t } from '../i18n/t.js';
+import Bilgi from './Bilgi.astro';
+import TakimSimge from './TakimSimge.astro';
+import { puanDurumu, farkYaz, oranYaz } from '../lib/puan.js';
+import { kayit } from '../lib/hesap.js';
+
+interface Props { sayi: any }
+const { sayi } = Astro.props;
+const P = puanDurumu(sayi);
+const ad = (id: string) => sayi.takim[id]?.ad ?? id;
+const takimAdresi = (id: string) => sayi.adres('takimlar', sayi.takim[id].slug + '/');
+const { ayarlar } = sayi;
+---
+<section class="kart kutu bolum-hedef" id="puan" aria-labelledby="puan-baslik">
+  <div class="kutu-bas">
+    <h2 id="puan-baslik" class="kutu-baslik">{_t('Puan durumu')}<Bilgi baslik={_t('Puan durumu')}>{_t('Yahoo\'nun resmî sıralaması. Kayıt: sezon boyunca kazanılan–kaybedilen–berabere kategori sayısı. Fark: lidere olan fark; iki kategori bir fark eder. {0} Kayda dokun: kazanma oranı ve eşleşme sonuçları.', [P.N > 0 ? _t('Turuncu çizgi eleme hattı: ilk {0} takım {1} kalır.', [P.N, ayarlar.elemeHaftalari ?? _t('eleme turuna')]) : ''])}</Bilgi></h2>
+    <p class="kutu-alt">
+      {P.N ? _t('İlk {0} takım elemeye kalır', [P.N]) : _t('Yahoo kategori kaydı')}{P.kalanHafta > 0 ? _t(' · {0} hafta kaldı ({1} kategori)', [P.kalanHafta, P.kalanKategori]) : ''}
+    </p>
+  </div>
+  {P.satirlar.length > 0 ? (
+    <table class="puan-tablosu">
+      <caption class="gizli">{_t('Puan durumu: sıra, takım, kategori kaydı ve lidere fark{0}', [P.N ? _t('; ilk {0} sıra eleme turuna kalır', [P.N]) : ''])}</caption>
+      <thead>
+        <tr>
+          <th scope="col" class="sayisal">#</th>
+          <th scope="col">{_t('Takım')}</th>
+          <th scope="col" class="sayisal"><abbr title={_t('Kategori kaydı: kazanılan–kaybedilen–berabere')}>{_t('Kayıt')}</abbr></th>
+          <th scope="col" class="sayisal"><abbr title={_t('Lidere fark, kategori cinsinden (iki kategori = bir fark)')}>{_t('Fark')}</abbr></th>
+        </tr>
+      </thead>
+      <tbody>
+        {P.satirlar.map((s: any) => (
+          <tr class={P.N && s.sira === P.N ? 'cizgi-ustu' : undefined} data-takim={s.id}>
+            <td class="sayisal soluk">{s.sira}</td>
+            <th scope="row">
+              <a class="takim-bag" href={takimAdresi(s.id)}><TakimSimge takim={sayi.takim[s.id]} boyut="kucuk" /><span>{ad(s.id)}</span></a>
+            </th>
+            <td class="sayisal" data-ipucu={_t('{0}|Kategori kaydı · kazanma oranı {1}|Eşleşmeler {2}–{3}{4}', [kayit({ wins: s.wins, losses: s.losses, ties: s.ties }), oranYaz(s.oran), s.mac.G, s.mac.M, s.mac.B ? '–' + s.mac.B : ''])}>{s.wins}–{s.losses}{s.ties ? `–${s.ties}` : ''}</td>
+            <td class="sayisal">{farkYaz(s.lidereFark)}</td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  ) : <p class="soluk">{_t('Puan durumu bu sayıda yok.')}</p>}
+</section>

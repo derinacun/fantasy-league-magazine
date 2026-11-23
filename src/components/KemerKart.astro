@@ -1,0 +1,87 @@
+---
+// Kürsü'deki kemer kartı (17 Kasım 2026):
+// kapalıyken sahibi ve süresi ("4 haftadır kazanıyor") + kemerin peşindeki ilk takım; "Ayrıntı" açılınca
+// peşindeki diğerleri, serisi bitenler, kemerin geçtiği eller ve sezon rekoru.
+// Kemer boşsa sahip kısmı boş kalır; altında en son sahibi ve serisi yazar.
+import { t as _t } from '../i18n/t.js';
+import TakimSimge from './TakimSimge.astro';
+import Ikon from './Ikon.astro';
+import KemerSimge from './KemerSimge.astro';
+import { KEMER_ESIGI, sureYaz, kemerCapa } from '../lib/seriler.js';
+
+interface Props { sayi: any; kemer: any }
+const { sayi, kemer } = Astro.props;
+const ad = (id: string) => sayi.takim[id]?.ad ?? id;
+const adres = (id: string) => sayi.adres('takimlar', sayi.takim[id].slug + '/');
+const n = kemer.sahipler[0]?.uzunluk ?? 0;
+const sahipIds = kemer.sahipler.map((x: any) => x.id);
+const adaylar = kemer.aktif.filter((a: any) => !sahipIds.includes(a.id));
+const ilkAday = adaylar[0];
+const digerAdaylar = adaylar.slice(1, 5);
+const son = kemer.sonSahip;
+const donemYaz = (d: any) => d.baslangic === d.bitis ? _t('{0}. hafta', [d.bitis]) : _t('{0}–{1}. hafta', [d.baslangic, d.bitis]);
+const etiket = kemer.degisim ? ({ ilk: _t('Yeni sahip'), gecti: _t('El değiştirdi'), 'ortak-dustu': _t('Tek sahip kaldı'), bosa: _t('Boşa düştü') } as Record<string, string>)[kemer.degisim.tur] : null;
+// Etkileşim kemeri: bu haftanın en çok yazan ilk 3'ü (mesaj sayısıyla)
+const sohbetIlk3 = kemer.anahtar === 'etkilesim' && sayi.sohbet
+  ? Object.entries(sayi.sohbet as Record<string, number>).sort((a, b) => b[1] - a[1]).filter(([, n], i, l) => n > 0 && (i < 3 || n === l[2][1]))
+  : [];
+const ayrintiVar = sohbetIlk3.length > 0 || digerAdaylar.length > 0 || kemer.degisim?.dusen.length > 0 || kemer.donemler.length > 0 || kemer.rekor.uzunluk >= KEMER_ESIGI;
+---
+<article id={kemerCapa(kemer.anahtar)} class={`kart kemer kemer--${kemer.tur}${sahipIds.length ? '' : ' kemer--bos'}`} data-takim={sahipIds.join(' ') || undefined}>
+  <div class="kemer-ust">
+    <KemerSimge kemer={kemer} boyut={64} bos={!sahipIds.length} />
+    <h3>{kemer.ad}</h3>
+    {etiket && <span class="kemer-yeni">{etiket}</span>}
+  </div>
+  <div class="kemer-govde">
+  {sahipIds.length ? (
+    <>
+      <p class="kemer-deger">{_t('{0} haftadır', [n])}<small>{kemer.simdi}</small></p>
+      <ul class="kemer-sahipler">
+        {kemer.sahipler.map((x: any) => <li data-takim={x.id}><a href={adres(x.id)}><TakimSimge takim={sayi.takim[x.id]} boyut="kucuk" /><span>{ad(x.id)}</span></a></li>)}
+      </ul>
+    </>
+  ) : (
+    <>
+      <p class="kemer-deger kemer-bos-yazi">{_t('Sahibi yok')}</p>
+      <p class="kemer-son">{son
+        ? <>{_t('En son sahibi:')}{' '}<b>{son.sahipler.map(ad).join(', ')}</b> · {sureYaz(kemer, son.uzunluk, false)} ({donemYaz(son)})</>
+        : <>{_t('Henüz kimse almadı: en az {0} hafta gerekir.', [KEMER_ESIGI])}</>}</p>
+    </>
+  )}
+  </div>
+  {ilkAday ? (
+    <div class="kemer-adaylar">
+      <p class="kemer-alt-baslik">{sahipIds.length ? _t('Kemerin peşinde') : _t('Kemere en yakın')}</p>
+      <ul>{[ilkAday].map((a: any) => <li data-takim={a.id}><a href={adres(a.id)}><TakimSimge takim={sayi.takim[a.id]} boyut="kucuk" /><span>{ad(a.id)}</span></a><b>{_t('{0} hafta', [a.uzunluk])}</b></li>)}</ul>
+    </div>
+  ) : <div class="kemer-adaylar kemer-adaylar--bos" aria-hidden="true"></div>}
+  {ayrintiVar ? (
+    <details class="kemer-detay">
+      <summary>{_t('Ayrıntı')}<Ikon ad="sag" boyut={14} class="kg-ok" /></summary>
+      {sohbetIlk3.length > 0 && (
+        <div class="kemer-gecmis">
+          <p class="kemer-alt-baslik">{_t('Bu hafta grupta en çok yazanlar')}</p>
+          <ol>{sohbetIlk3.map(([id, n]) => <li><span>{_t('{0} mesaj', [n])}</span> {ad(id)}</li>)}</ol>
+        </div>
+      )}
+      {digerAdaylar.length > 0 && <div class="kemer-adaylar"><ul>{digerAdaylar.map((a: any) => <li data-takim={a.id}><a href={adres(a.id)}><TakimSimge takim={sayi.takim[a.id]} boyut="kucuk" /><span>{ad(a.id)}</span></a><b>{_t('{0} hafta', [a.uzunluk])}</b></li>)}</ul></div>}
+      {kemer.degisim && kemer.degisim.dusen.length > 0 && (
+        <p class="kemer-not">{_t('Bu hafta serisi biten: {0}', [kemer.degisim.dusen.map((x: any) => _t('{0} ({1} hafta)', [ad(x.id), x.uzunluk])).join(', ')])}</p>
+      )}
+      {kemer.donemler.length > 0 && (
+        <div class="kemer-gecmis">
+          <p class="kemer-alt-baslik">{_t('Sahipleri')}</p>
+          <ol>
+            {[...kemer.donemler].reverse().map((d: any, i: number) => (
+              <li><span>{donemYaz(d)}</span> {d.sahipler.map(ad).join(', ')}{i === 0 && sahipIds.length ? <em>{' '}{_t('· şimdiki')}</em> : null}</li>
+            ))}
+          </ol>
+        </div>
+      )}
+      {kemer.rekor.uzunluk >= KEMER_ESIGI && (
+        <p class="kemer-not">{_t('Sezon rekoru: {0} hafta · {1}', [kemer.rekor.uzunluk, kemer.rekor.sahipler.map(ad).join(', ')])}</p>
+      )}
+    </details>
+  ) : <div aria-hidden="true"></div>}
+</article>

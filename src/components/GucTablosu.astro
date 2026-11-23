@@ -1,0 +1,71 @@
+---
+// Güç sıralaması tablosu (bir kapsam için). Sıralama ve arama site.js içinde yapılır.
+import { t as _t, YEREL } from '../i18n/t.js';
+import TakimSimge from './TakimSimge.astro';
+import { KATEGORILER, KATEGORI_ADI, bicimle, kayit } from '../lib/hesap.js';
+
+interface Props { sayi: any; kapsamAdi: 'hafta' | 'sezon'; gizli?: boolean; satirSiniri?: number }
+const { sayi, kapsamAdi, gizli = false, satirSiniri } = Astro.props;
+const k = sayi.kapsam[kapsamAdi];
+const n = sayi.takimlar.length;
+const sirali = k.gucSirasi.map((id: string) => sayi.takim[id]);
+const satirlar = satirSiniri ? sirali.slice(0, satirSiniri) : sirali;
+const isiSinifi = (sira: number | null) => (sira == null ? '' : sira <= 4 ? 'iyi' : sira >= n - 3 ? 'kotu' : '');
+const sutunlar = [
+  { anahtar: 'guc', etiket: _t('Güç ({0})', [k.maxGuc]), baslik: _t('Güç puanı: her kategoride birinci {0}, sonuncu 1 puan; en fazla {1}', [n, k.maxGuc]) },
+  { anahtar: 'hk', etiket: _t('Herkese karşı'), baslik: _t('Aynı hafta {RAKIP} rakibin her biriyle oynasaydı: galibiyet–mağlubiyet–beraberlik') },
+  { anahtar: 'yahoo', etiket: _t('Yahoo sırası'), baslik: _t('Yahoo resmî sıralaması') },
+];
+---
+<div class="tablo-kutu" data-kapsam-icerik={kapsamAdi} hidden={gizli}>
+  <table class="guc-tablosu" data-tablo>
+    <caption class="gizli">{_t('{0} güç sıralaması ve kategori değerleri', [kapsamAdi === 'hafta' ? _t('Son hafta') : _t('Sezon toplamı')])}</caption>
+    <thead>
+      <tr>
+        <th scope="col" class="sabit sabit-1">#</th>
+        <th scope="col" class="sabit sabit-2">{_t('Takım')}</th>
+        {sutunlar.map((s) => (
+          <th scope="col" aria-sort={s.anahtar === 'guc' ? 'descending' : undefined}>
+            <button type="button" data-sirala={s.anahtar} data-yon={s.anahtar === 'yahoo' ? 'artan' : 'azalan'} title={s.baslik}>{s.etiket}</button>
+          </th>
+        ))}
+        <th scope="col"><abbr title={_t('Yahoo kategori kaydı: kazanılan–kaybedilen–berabere')}>{_t('Kategori kaydı')}</abbr></th>
+        {KATEGORILER.map((kat) => (
+          <th scope="col" class="sayisal">
+            <button type="button" data-sirala={kat} data-yon={kat === 'TO' ? 'artan' : 'azalan'} title={KATEGORI_ADI[kat]}>{kat}</button>
+          </th>
+        ))}
+      </tr>
+    </thead>
+    <tbody>
+      {satirlar.map((t: any, i: number) => {
+        const hk = k.herkeseKarsi[t.id];
+        const pd = sayi.puanDurumu[t.id];
+        return (
+          <tr data-takim={t.id} data-ad={t.ad.toLocaleLowerCase(YEREL)} data-guc={k.guc[t.id]} data-hk={hk.wins + hk.ties / 2} data-yahoo={pd?.rank ?? 99}
+              {...Object.fromEntries(KATEGORILER.map((kat) => [`data-${kat.replace('%', 'y').toLowerCase()}`, k.ist[t.id][kat] ?? '']))}>
+            <td class="sabit sabit-1 soluk" data-sira-no>{String(i + 1).padStart(2, '0')}</td>
+            <th scope="row" class="sabit sabit-2">
+              <a class="takim-bag" href={sayi.adres('takimlar', t.slug + '/')}><TakimSimge takim={t} /><span>{t.ad}</span></a>
+            </th>
+            <td><strong>{k.guc[t.id]}</strong><span class="gizli"> / {k.maxGuc}</span></td>
+            <td>{kayit(hk)}</td>
+            <td>{pd?.rank ?? '—'}</td>
+            <td>{pd ? `${pd.wins}–${pd.losses}–${pd.ties}` : '—'}</td>
+            {KATEGORILER.map((kat) => {
+              const s = k.sira[t.id][kat];
+              return (
+                <td class="sayisal">
+                  <span class={`isi ${isiSinifi(s)}`} title={_t('{0}: {1}. sıra', [KATEGORI_ADI[kat], s ?? '—'])}>
+                    {bicimle(k.ist[t.id][kat], kat)}
+                  </span>
+                </td>
+              );
+            })}
+          </tr>
+        );
+      })}
+    </tbody>
+  </table>
+</div>
+

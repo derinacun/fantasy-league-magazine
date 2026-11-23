@@ -1,0 +1,1098 @@
+{
+ "kaynak": "Draft results (demo)",
+ "not": "[genel seçim sırası, oyuncu kimliği, ad, draft eden takım kimliği]",
+ "secimler": [
+  [
+   1,
+   "5352",
+   "Nikola Jokić",
+   "1"
+  ],
+  [
+   2,
+   "10094",
+   "Victor Wembanyama",
+   "7"
+  ],
+  [
+   3,
+   "6014",
+   "Luka Dončić",
+   "14"
+  ],
+  [
+   4,
+   "6022",
+   "Shai Gilgeous-Alexander",
+   "5"
+  ],
+  [
+   5,
+   "6512",
+   "Cade Cunningham",
+   "10"
+  ],
+  [
+   6,
+   "5765",
+   "Jayson Tatum",
+   "2"
+  ],
+  [
+   7,
+   "10468",
+   "Cooper Flagg",
+   "11"
+  ],
+  [
+   8,
+   "5432",
+   "Karl-Anthony Towns",
+   "4"
+  ],
+  [
+   9,
+   "6413",
+   "Tyrese Maxey",
+   "13"
+  ],
+  [
+   10,
+   "5185",
+   "Giannis Antetokounmpo",
+   "12"
+  ],
+  [
+   11,
+   "6355",
+   "Anthony Edwards",
+   "3"
+  ],
+  [
+   12,
+   "6562",
+   "Jalen Johnson",
+   "9"
+  ],
+  [
+   13,
+   "6044",
+   "Jalen Brunson",
+   "6"
+  ],
+  [
+   14,
+   "6404",
+   "Tyrese Haliburton",
+   "8"
+  ],
+  [
+   15,
+   "4244",
+   "Kevin Durant",
+   "8"
+  ],
+  [
+   16,
+   "6558",
+   "Alperen Şengün",
+   "6"
+  ],
+  [
+   17,
+   "5826",
+   "Donovan Mitchell",
+   "9"
+  ],
+  [
+   18,
+   "6515",
+   "Scottie Barnes",
+   "3"
+  ],
+  [
+   19,
+   "5638",
+   "Jamal Murray",
+   "12"
+  ],
+  [
+   20,
+   "5827",
+   "Bam Adebayo",
+   "13"
+  ],
+  [
+   21,
+   "10108",
+   "Amen Thompson",
+   "4"
+  ],
+  [
+   22,
+   "6548",
+   "Josh Giddey",
+   "11"
+  ],
+  [
+   23,
+   "6016",
+   "Trae Young",
+   "2"
+  ],
+  [
+   24,
+   "6692",
+   "Chet Holmgren",
+   "10"
+  ],
+  [
+   25,
+   "4612",
+   "Stephen Curry",
+   "5"
+  ],
+  [
+   26,
+   "5473",
+   "Devin Booker",
+   "14"
+  ],
+  [
+   27,
+   "6606",
+   "Austin Reaves",
+   "7"
+  ],
+  [
+   28,
+   "4896",
+   "Kawhi Leonard",
+   "1"
+  ],
+  [
+   29,
+   "6514",
+   "Evan Mobley",
+   "1"
+  ],
+  [
+   30,
+   "4563",
+   "James Harden",
+   "7"
+  ],
+  [
+   31,
+   "6703",
+   "Jalen Duren",
+   "14"
+  ],
+  [
+   32,
+   "5007",
+   "Anthony Davis",
+   "5"
+  ],
+  [
+   33,
+   "6395",
+   "LaMelo Ball",
+   "10"
+  ],
+  [
+   34,
+   "5642",
+   "Domantas Sabonis",
+   "2"
+  ],
+  [
+   35,
+   "5769",
+   "Lauri Markkanen",
+   "11"
+  ],
+  [
+   36,
+   "6422",
+   "Desmond Bane",
+   "4"
+  ],
+  [
+   37,
+   "5658",
+   "Pascal Siakam",
+   "13"
+  ],
+  [
+   38,
+   "6559",
+   "Trey Murphy III",
+   "12"
+  ],
+  [
+   39,
+   "6712",
+   "Walker Kessler",
+   "3"
+  ],
+  [
+   40,
+   "5663",
+   "Ivica Zubac",
+   "9"
+  ],
+  [
+   41,
+   "6401",
+   "Deni Avdija",
+   "6"
+  ],
+  [
+   42,
+   "6015",
+   "Jaren Jackson Jr.",
+   "8"
+  ],
+  [
+   43,
+   "5602",
+   "Jaylen Brown",
+   "8"
+  ],
+  [
+   44,
+   "5836",
+   "OG Anunoby",
+   "6"
+  ],
+  [
+   45,
+   "6702",
+   "Jalen Williams",
+   "9"
+  ],
+  [
+   46,
+   "5842",
+   "Derrick White",
+   "3"
+  ],
+  [
+   47,
+   "6398",
+   "Onyeka Okongwu",
+   "12"
+  ],
+  [
+   48,
+   "4840",
+   "Kyrie Irving",
+   "13"
+  ],
+  [
+   49,
+   "10285",
+   "Donovan Clingan",
+   "4"
+  ],
+  [
+   50,
+   "6691",
+   "Paolo Banchero",
+   "11"
+  ],
+  [
+   51,
+   "10294",
+   "Alex Sarr",
+   "2"
+  ],
+  [
+   52,
+   "5294",
+   "Joel Embiid",
+   "10"
+  ],
+  [
+   53,
+   "5835",
+   "Jarrett Allen",
+   "5"
+  ],
+  [
+   54,
+   "6550",
+   "Franz Wagner",
+   "14"
+  ],
+  [
+   55,
+   "10104",
+   "Brandon Miller",
+   "7"
+  ],
+  [
+   56,
+   "6698",
+   "Dyson Daniels",
+   "1"
+  ],
+  [
+   57,
+   "10290",
+   "Stephon Castle",
+   "1"
+  ],
+  [
+   58,
+   "6167",
+   "Darius Garland",
+   "7"
+  ],
+  [
+   59,
+   "3704",
+   "LeBron James",
+   "14"
+  ],
+  [
+   60,
+   "6021",
+   "Mikal Bridges",
+   "5"
+  ],
+  [
+   61,
+   "6734",
+   "Ryan Rollins",
+   "10"
+  ],
+  [
+   62,
+   "6025",
+   "Michael Porter Jr.",
+   "2"
+  ],
+  [
+   63,
+   "10100",
+   "Keyonte George",
+   "11"
+  ],
+  [
+   64,
+   "6205",
+   "Nickeil Alexander-Walker",
+   "4"
+  ],
+  [
+   65,
+   "10096",
+   "Ausar Thompson",
+   "13"
+  ],
+  [
+   66,
+   "5318",
+   "Julius Randle",
+   "12"
+  ],
+  [
+   67,
+   "10450",
+   "Kon Knueppel",
+   "3"
+  ],
+  [
+   68,
+   "10454",
+   "VJ Edgecombe",
+   "9"
+  ],
+  [
+   69,
+   "6581",
+   "Neemias Queta",
+   "6"
+  ],
+  [
+   70,
+   "10265",
+   "Matas Buzelis",
+   "8"
+  ],
+  [
+   71,
+   "5197",
+   "Rudy Gobert",
+   "8"
+  ],
+  [
+   72,
+   "10592",
+   "Cameron Boozer",
+   "6"
+  ],
+  [
+   73,
+   "5292",
+   "Andrew Wiggins",
+   "9"
+  ],
+  [
+   74,
+   "10599",
+   "AJ Dybantsa",
+   "3"
+  ],
+  [
+   75,
+   "10595",
+   "Caleb Wilson",
+   "12"
+  ],
+  [
+   76,
+   "6253",
+   "Naz Reid",
+   "13"
+  ],
+  [
+   77,
+   "10274",
+   "Kel'el Ware",
+   "4"
+  ],
+  [
+   78,
+   "6163",
+   "Zion Williamson",
+   "11"
+  ],
+  [
+   79,
+   "6175",
+   "Tyler Herro",
+   "2"
+  ],
+  [
+   80,
+   "10287",
+   "Zach Edey",
+   "10"
+  ],
+  [
+   81,
+   "5471",
+   "Myles Turner",
+   "5"
+  ],
+  [
+   82,
+   "10444",
+   "Derik Queen",
+   "14"
+  ],
+  [
+   83,
+   "5660",
+   "Dejounte Murray",
+   "7"
+  ],
+  [
+   84,
+   "5012",
+   "Damian Lillard",
+   "1"
+  ],
+  [
+   85,
+   "5843",
+   "Josh Hart",
+   "1"
+  ],
+  [
+   86,
+   "6693",
+   "Jabari Smith Jr.",
+   "7"
+  ],
+  [
+   87,
+   "4725",
+   "Paul George",
+   "14"
+  ],
+  [
+   88,
+   "6418",
+   "Payton Pritchard",
+   "5"
+  ],
+  [
+   89,
+   "5506",
+   "Norman Powell",
+   "10"
+  ],
+  [
+   90,
+   "5767",
+   "De'Aaron Fox",
+   "2"
+  ],
+  [
+   91,
+   "10467",
+   "Dylan Harper",
+   "11"
+  ],
+  [
+   92,
+   "6420",
+   "Jaden McDaniels",
+   "4"
+  ],
+  [
+   93,
+   "6417",
+   "Immanuel Quickley",
+   "13"
+  ],
+  [
+   94,
+   "6571",
+   "Day'Ron Sharpe",
+   "12"
+  ],
+  [
+   95,
+   "5832",
+   "John Collins",
+   "3"
+  ],
+  [
+   96,
+   "5640",
+   "Jakob Poeltl",
+   "9"
+  ],
+  [
+   97,
+   "5856",
+   "Isaiah Hartenstein",
+   "6"
+  ],
+  [
+   98,
+   "10465",
+   "Cedric Coward",
+   "8"
+  ],
+  [
+   99,
+   "5601",
+   "Brandon Ingram",
+   "8"
+  ],
+  [
+   100,
+   "5727",
+   "Fred VanVleet",
+   "6"
+  ],
+  [
+   101,
+   "4622",
+   "Jrue Holiday",
+   "9"
+  ],
+  [
+   102,
+   "6212",
+   "Ty Jerome",
+   "3"
+  ],
+  [
+   103,
+   "5161",
+   "CJ McCollum",
+   "12"
+  ],
+  [
+   104,
+   "5324",
+   "Zach LaVine",
+   "13"
+  ],
+  [
+   105,
+   "6580",
+   "Ayo Dosunmu",
+   "4"
+  ],
+  [
+   106,
+   "6733",
+   "Moussa Diabaté",
+   "11"
+  ],
+  [
+   107,
+   "6018",
+   "Wendell Carter Jr.",
+   "2"
+  ],
+  [
+   108,
+   "10065",
+   "Toumani Camara",
+   "10"
+  ],
+  [
+   109,
+   "6173",
+   "Cameron Johnson",
+   "5"
+  ],
+  [
+   110,
+   "6164",
+   "Ja Morant",
+   "14"
+  ],
+  [
+   111,
+   "6694",
+   "Keegan Murray",
+   "7"
+  ],
+  [
+   112,
+   "6219",
+   "Nic Claxton",
+   "1"
+  ],
+  [
+   113,
+   "10092",
+   "Jaime Jaquez Jr.",
+   "1"
+  ],
+  [
+   114,
+   "6023",
+   "Miles Bridges",
+   "7"
+  ],
+  [
+   115,
+   "10447",
+   "Khaman Maluach",
+   "14"
+  ],
+  [
+   116,
+   "10115",
+   "Brandin Podziemski",
+   "5"
+  ],
+  [
+   117,
+   "6169",
+   "Coby White",
+   "10"
+  ],
+  [
+   118,
+   "6567",
+   "Quentin Grimes",
+   "2"
+  ],
+  [
+   119,
+   "6513",
+   "Jalen Green",
+   "11"
+  ],
+  [
+   120,
+   "10107",
+   "Cason Wallace",
+   "4"
+  ],
+  [
+   121,
+   "6174",
+   "P.J. Washington",
+   "13"
+  ],
+  [
+   122,
+   "6720",
+   "Peyton Watson",
+   "12"
+  ],
+  [
+   123,
+   "6577",
+   "Herbert Jones",
+   "3"
+  ],
+  [
+   124,
+   "6711",
+   "Christian Braun",
+   "9"
+  ],
+  [
+   125,
+   "6551",
+   "Davion Mitchell",
+   "6"
+  ],
+  [
+   126,
+   "6516",
+   "Jalen Suggs",
+   "8"
+  ],
+  [
+   127,
+   "10443",
+   "Collin Murray-Boyles",
+   "8"
+  ],
+  [
+   128,
+   "4614",
+   "DeMar DeRozan",
+   "6"
+  ],
+  [
+   129,
+   "6047",
+   "Mitchell Robinson",
+   "9"
+  ],
+  [
+   130,
+   "6619",
+   "Sam Hauser",
+   "3"
+  ],
+  [
+   131,
+   "10288",
+   "Reed Sheppard",
+   "12"
+  ],
+  [
+   132,
+   "10590",
+   "Darryn Peterson",
+   "13"
+  ],
+  [
+   133,
+   "6450",
+   "Paul Reed",
+   "4"
+  ],
+  [
+   134,
+   "10272",
+   "Kyshawn George",
+   "11"
+  ],
+  [
+   135,
+   "6596",
+   "Sandro Mamukelashvili",
+   "2"
+  ],
+  [
+   136,
+   "5069",
+   "Draymond Green",
+   "10"
+  ],
+  [
+   137,
+   "6721",
+   "Andrew Nembhard",
+   "5"
+  ],
+  [
+   138,
+   "5327",
+   "Jusuf Nurkić",
+   "14"
+  ],
+  [
+   139,
+   "10571",
+   "Yaxel Lendeborg",
+   "7"
+  ],
+  [
+   140,
+   "5295",
+   "Aaron Gordon",
+   "1"
+  ],
+  [
+   141,
+   "5858",
+   "Dillon Brooks",
+   "1"
+  ],
+  [
+   142,
+   "6171",
+   "Rui Hachimura",
+   "7"
+  ],
+  [
+   143,
+   "6218",
+   "Kevin Porter Jr.",
+   "14"
+  ],
+  [
+   144,
+   "6226",
+   "Daniel Gafford",
+   "5"
+  ],
+  [
+   145,
+   "10582",
+   "Darius Acuff Jr.",
+   "10"
+  ],
+  [
+   146,
+   "5350",
+   "Jerami Grant",
+   "2"
+  ],
+  [
+   147,
+   "6032",
+   "Grayson Allen",
+   "11"
+  ],
+  [
+   148,
+   "6441",
+   "Isaiah Joe",
+   "4"
+  ],
+  [
+   149,
+   "6403",
+   "Devin Vassell",
+   "13"
+  ],
+  [
+   150,
+   "10304",
+   "Ajay Mitchell",
+   "12"
+  ],
+  [
+   151,
+   "4472",
+   "Brook Lopez",
+   "3"
+  ],
+  [
+   152,
+   "6751",
+   "Collin Gillespie",
+   "9"
+  ],
+  [
+   153,
+   "6165",
+   "RJ Barrett",
+   "6"
+  ],
+  [
+   154,
+   "4912",
+   "Jimmy Butler III",
+   "8"
+  ],
+  [
+   155,
+   "10462",
+   "Ace Bailey",
+   "8"
+  ],
+  [
+   156,
+   "10048",
+   "Scoot Henderson",
+   "6"
+  ],
+  [
+   157,
+   "5958",
+   "Deandre Ayton",
+   "9"
+  ],
+  [
+   158,
+   "5636",
+   "Kris Dunn",
+   "3"
+  ],
+  [
+   159,
+   "6549",
+   "Jonathan Kuminga",
+   "12"
+  ],
+  [
+   160,
+   "10289",
+   "Yves Missi",
+   "13"
+  ],
+  [
+   161,
+   "4901",
+   "Tobias Harris",
+   "4"
+  ],
+  [
+   162,
+   "6411",
+   "Saddiq Bey",
+   "11"
+  ],
+  [
+   163,
+   "6696",
+   "Bennedict Mathurin",
+   "2"
+  ],
+  [
+   164,
+   "6433",
+   "Tre Jones",
+   "10"
+  ],
+  [
+   165,
+   "10095",
+   "Anthony Black",
+   "5"
+  ],
+  [
+   166,
+   "6745",
+   "Gui Santos",
+   "14"
+  ],
+  [
+   167,
+   "6406",
+   "Aaron Nesmith",
+   "7"
+  ],
+  [
+   168,
+   "10585",
+   "Keaton Wagler",
+   "1"
+  ],
+  [
+   169,
+   "5464",
+   "Kristaps Porziņģis",
+   "1"
+  ],
+  [
+   170,
+   "10496",
+   "Maxime Raynaud",
+   "7"
+  ],
+  [
+   171,
+   "10445",
+   "Egor Dëmin",
+   "14"
+  ],
+  [
+   172,
+   "10312",
+   "Pelle Larsson",
+   "5"
+  ],
+  [
+   173,
+   "10588",
+   "Mikel Brown Jr.",
+   "10"
+  ],
+  [
+   174,
+   "6217",
+   "Keldon Johnson",
+   "2"
+  ],
+  [
+   175,
+   "6705",
+   "Mark Williams",
+   "11"
+  ],
+  [
+   176,
+   "10278",
+   "Ja'Kobe Walter",
+   "4"
+  ],
+  [
+   177,
+   "6707",
+   "Tari Eason",
+   "13"
+  ],
+  [
+   178,
+   "6754",
+   "Julian Champagnie",
+   "12"
+  ],
+  [
+   179,
+   "6254",
+   "Luguentz Dort",
+   "3"
+  ],
+  [
+   180,
+   "5475",
+   "Kelly Oubre Jr.",
+   "9"
+  ],
+  [
+   181,
+   "10279",
+   "Jaylon Tyson",
+   "6"
+  ],
+  [
+   182,
+   "6709",
+   "Jake LaRavia",
+   "8"
+  ]
+ ]
+}

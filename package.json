@@ -1,0 +1,28 @@
+{
+  "name": "league-newspaper",
+  "private": true,
+  "type": "module",
+  "version": "1.0.0",
+  "description": "A weekly newspaper and stats site for your fantasy league (Yahoo NBA, category head-to-head).",
+  "scripts": {
+    "test": "node scripts/dil.mjs tr && node scripts/testler.mjs; s=$?; node scripts/dil.mjs; exit $s",
+    "testler": "node scripts/dil.mjs tr && node scripts/testler.mjs; s=$?; node scripts/dil.mjs; exit $s",
+    "dogrula": "node scripts/dil.mjs && node scripts/dogrula.mjs",
+    "build": "node scripts/dil.mjs && node scripts/dogrula.mjs && node scripts/dil.mjs tr && node scripts/testler.mjs && node scripts/dil.mjs && astro build && node scripts/kimlik-cevir.mjs",
+    "dev": "node scripts/dil.mjs && astro dev",
+    "preview": "astro preview",
+    "dil": "node scripts/dil.mjs",
+    "uyku": "node scripts/dil.mjs && node scripts/uyku.mjs",
+    "tahmin": "node scripts/dil.mjs && node scripts/tahmin.mjs",
+    "anahtar": "node scripts/dil.mjs && node scripts/anahtar-uret.mjs"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {
+    "@fontsource/inter": "5.3.0",
+    "@resvg/resvg-js": "2.6.2",
+    "astro": "7.3.8",
+    "satori": "0.59.2"
+  }
+}

@@ -1,0 +1,109 @@
+---
+// Kehanet (17 Kasım 2026): Analitik Hoca ile Tribün Abi'nin sayfası. Sıra: değerlendirme, gelecek hafta ve iddia defteri,
+// adil puan durumu, şans endeksi (Analiz'den taşındı). Hesaplar src/lib/kehanet.js ve src/lib/gelecek.js.
+import { t as _t, YEREL, ONDALIK } from '../../i18n/t.js';
+import Bilgi from '../Bilgi.astro';
+import TakimSimge from '../TakimSimge.astro';
+import GelecekHafta from '../GelecekHafta.astro';
+import KehanetYazi from '../KehanetYazi.astro';
+import KehanetNot from '../KehanetNot.astro';
+import TahminOyunu from '../TahminOyunu.astro';
+import { kehanetHesapla } from '../../lib/kehanet.js';
+interface Props { sayi: any }
+const { sayi } = Astro.props;
+const K = kehanetHesapla(sayi);
+const E = sayi.eleme; // 8. haftadan itibaren (ayarlar.elemeOlasiligiBaslangic)
+const yuzde = (v: number) => (v >= 0.995 ? '%99+' : v > 0 && v < 0.005 ? '<%1' : `%${Math.round(v * 100)}`);
+const ad = (id: string) => sayi.takim[id]?.ad ?? id;
+const takimAdresi = (id: string) => sayi.adres('takimlar', sayi.takim[id].slug + '/');
+const ondalik = (v: number, d = 1) => v.toFixed(d).replace('.', ONDALIK);
+const isaretli = (v: number) => (v > 0.05 ? '+' : v < -0.05 ? '−' : '±') + ondalik(Math.abs(v));
+const kayitYaz = (r: any) => (r ? `${r.wins}–${r.losses}${r.ties ? '–' + r.ties : ''}` : '—');
+const basamakYaz = (b: number | null) => (b == null ? '—' : b === 0 ? _t('aynı') : b < 0 ? _t('{0} basamak yukarıda', [-b]) : _t('{0} basamak aşağıda', [b]));
+import Atlama from '../Atlama.astro';
+import Ikon from '../Ikon.astro';
+import Onizleme from '../Onizleme.astro';
+const CIP_ELEME = E ? [(() => { const x = [...E.satirlar].sort((a: any, b: any) => b.birinci - a.birinci)[0]; return _t('Birinciliğe en yakın: {0} {1}', [ad(x.id), yuzde(x.birinci)]); })(), (() => { const x = [...E.satirlar].sort((a: any, b: any) => b.eleme - a.eleme)[E.N - 1]; return x ? _t('Çizgide: {0} {1}', [ad(x.id), yuzde(x.eleme)]) : null; })()] : [];
+const N = sayi.kehanetNotlari || {};
+const CIP_ADIL = [_t('Adil lider: {0} (Yahoo\'da {1}.)', [ad(K.adil[0].id), K.adil[0].yahooSira]), K.enCokYukarida ? _t('Fikstürün taşıdığı: {0}', [ad(K.enCokYukarida.id)]) : null, K.enCokAsagida ? _t('Fikstürün ittiği: {0}', [ad(K.enCokAsagida.id)]) : null];
+const CIP_SANS = [_t('En şanslı: {0} {1}', [ad(K.sansli.id), ((v: number) => (v > 0.05 ? '+' : v < -0.05 ? '−' : '±') + Math.abs(v).toFixed(1).replace('.', ONDALIK))(K.sansli.fark)]), _t('En şanssız: {0} {1}', [ad(K.sanssiz.id), ((v: number) => (v > 0.05 ? '+' : v < -0.05 ? '−' : '±') + Math.abs(v).toFixed(1).replace('.', ONDALIK))(K.sanssiz.fark)])];
+---
+<Atlama etiket={_t('Kehanet bölümleri')} bolumler={[{ id: 'degerlendirme', ad: _t('Değerlendirme') }, ...(sayi.gelecek ? [{ id: 'gelecek', ad: _t('Gelecek hafta') }] : []), ...(sayi.tahminOyunu ? [{ id: 'tahmin', ad: _t('Tahmin oyunu') }] : []), ...(sayi.eleme ? [{ id: 'eleme', ad: _t('Eleme olasılığı') }] : []), { id: 'adil', ad: _t('Adil puan durumu') }, { id: 'sans', ad: _t('Şans endeksi') }]} />
+<h1 class="sayfa-baslik">{_t('Kehanet.')}</h1>
+<p class="alt-metin">{_t('{0}. hafta · {1}. Analitik Hoca ile Tribün Abi: haftanın değerlendirmesi, gelecek haftanın tahminleri, fikstür şansı ve fikstür eşit olsaydı puan durumu.', [sayi.hafta, sayi.donem])}</p>
+
+<section class="bolum-hedef" id="degerlendirme" aria-labelledby="kehanet-deger">
+  <h2 id="kehanet-deger" class="gizli">{_t('Haftanın değerlendirmesi')}</h2>
+  <div class="kart kehanet-ozet kehanet-ozet--sayfa"><KehanetYazi sayi={sayi} K={K} /></div>
+</section>
+
+{sayi.gelecek && <GelecekHafta sayi={sayi} kapali not={N.nextWeek} />}
+
+<TahminOyunu sayi={sayi} not={N.predictionGame} />
+
+{E && (
+  <section class="bolum-hedef kehanet-bolum" id="eleme" aria-labelledby="eleme-baslik">
+    <h2 id="eleme-baslik" class="bolum-baslik">{_t('Eleme olasılığı.')}{' '}<span>{_t('Sezonun kalanı {0} kez oynatıldı.', [E.deneme.toLocaleString(YEREL)])}</span><Bilgi baslik={_t('Eleme olasılığı')}>{_t('Normal sezonun kalan {0} haftası gerçek fikstürle {1} kez oynatılır. Her haftada takımın 9 kategori değeri bu sezon oynadığı haftalardan biri olarak çekilir; az veri varken aşırı kesinlik olmasın diye bazen ligin herhangi bir takım-haftasından çekilir (ortalamaya çekme). Sıralama Yahoo gibi kategori kaydıyla. İlk {2}: eleme turuna kalma. {3} haftalık örneklem; tahmin değil eğilim.', [E.kalanHafta, E.deneme.toLocaleString(YEREL), E.N, E.orneklemHafta])}</Bilgi></h2>
+<Onizleme cipler={CIP_ELEME}>
+    <div class="kart seri-kart"><div class="tablo-kutu" tabindex="0" aria-label={_t('Eleme olasılığı')}>
+      <table class="seri-tablo eleme-tablo">
+        <thead><tr><th scope="col">{_t('Takım')}</th><th scope="col">{_t('Yahoo')}</th><th scope="col">{_t('İlk {0}', [E.N])}</th><th scope="col">{_t('Birincilik')}</th><th scope="col">{_t('Sonunculuk')}</th></tr></thead>
+        <tbody>
+          {E.satirlar.map((x: any) => (
+            <tr data-takim={x.id}>
+              <th scope="row"><a href={takimAdresi(x.id)}><TakimSimge takim={sayi.takim[x.id]} boyut="kucuk" />{ad(x.id)}</a></th>
+              <td>{x.yahoo ?? '—'}</td>
+              <td class="eleme-hucre"><span class="eleme-cubuk" aria-hidden="true"><i style={`width:${(x.eleme * 100).toFixed(1)}%`}></i></span><b>{yuzde(x.eleme)}</b></td>
+              <td>{yuzde(x.birinci)}</td>
+              <td>{yuzde(x.sonuncu)}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div></div>
+  </Onizleme>
+</section>
+)}
+
+<section class="bolum-hedef kehanet-bolum" id="adil" aria-labelledby="adil-baslik">
+  <h2 id="adil-baslik" class="bolum-baslik">{_t('Adil puan durumu.')}{' '}<span>{_t('Fikstür herkese eşit olsaydı.')}</span><Bilgi baslik={_t('Adil puan durumu')}>{_t('Takımlar, sezon boyunca her hafta {RAKIP} rakibin her birine karşı alacakları kategori sayısının ortalamasına (beklenen) göre sıralanır: herkes herkesle oynasaydı ortaya çıkacak sıra. Yanında Yahoo\'nun gerçek sırası. "Yukarıda": fikstür takımı adil sırasından yukarı taşımış; "aşağıda": fikstür aşağı itmiş. {0} haftada en fazla {1} kategori alınabilir.', [K.hafta, K.kategoriSiniri])}</Bilgi></h2>
+<KehanetNot not={N.fairTable} />
+<Onizleme cipler={CIP_ADIL}>
+  <div class="kart seri-kart"><div class="tablo-kutu" tabindex="0" aria-label={_t('Adil puan durumu')}>
+    <table class="seri-tablo adil-tablo">
+      <thead><tr><th scope="col">{_t('Adil')}</th><th scope="col">{_t('Takım')}</th><th scope="col">{_t('Beklenen (haftalık)')}</th><th scope="col">{_t('Yahoo')}</th><th scope="col">{_t('Kayıt')}</th><th scope="col">{_t('Fikstür')}</th></tr></thead>
+      <tbody>
+        {K.adil.map((x: any) => (
+          <tr data-takim={x.id}>
+            <td><b>{x.adilSira}</b></td>
+            <th scope="row"><a href={takimAdresi(x.id)}><TakimSimge takim={sayi.takim[x.id]} boyut="kucuk" />{ad(x.id)}</a></th>
+            <td>{ondalik(x.beklenen)} <span class="soluk">({ondalik(x.haftalikBeklenen)})</span></td>
+            <td>{x.yahooSira ?? '—'}</td>
+            <td>{kayitYaz(x.kayit)}</td>
+            <td class={x.basamak < 0 ? 'adil-yukari' : x.basamak > 0 ? 'adil-asagi' : 'soluk'}>{basamakYaz(x.basamak)}</td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  </div></div>
+</Onizleme>
+</section>
+
+<section class="bolum-hedef kehanet-bolum" id="sans" aria-labelledby="sans-baslik">
+  <h2 id="sans-baslik" class="bolum-baslik">{_t('Şans endeksi.')}{' '}<span>{_t('Fikstür kime yardım etti.')}</span><Bilgi baslik={_t('Şans endeksi')}>{_t('Sezon boyunca gerçek eşleşmelerde alınan kategori toplamı ile beklenen toplamın farkı ({0} haftada en fazla {1} kategori). Beklenen: her hafta {RAKIP} rakibin her birine karşı alınacak kategori sayısının ortalaması; beraberlik yarım sayılır. Çubuk sağa: şanslı, sola: şanssız. Rakiplerin gücü: eşleştiği rakiplerin o hafta herkese karşı kazanacağı eşleşme oranının ortalaması; %50\'nin üstü zor fikstür.', [K.hafta, K.kategoriSiniri])}</Bilgi></h2>
+<KehanetNot not={N.luck} />
+<Onizleme cipler={CIP_SANS}>
+  <div class="panel">
+    <ol class="sans-listesi">
+      {K.sans.map((s: any) => (
+        <li data-takim={s.id}>
+          <a class="sans-ad" href={takimAdresi(s.id)}><TakimSimge takim={sayi.takim[s.id]} boyut="kucuk" /><span>{ad(s.id)}</span></a>
+          <span class="sans-cubuk" aria-hidden="true"><i class={s.fark >= 0 ? 'arti' : 'eksi'} style={`width:${(Math.abs(s.fark) / K.sansSiniri) * 50}%`}></i></span>
+          <b class="sans-deger">{isaretli(s.fark)}</b>
+          <span class="sans-detay"><span>{_t('{0} haftada gerçek {1} / {2}', [K.hafta, ondalik(s.gercek), K.kategoriSiniri])}</span> · <span>{_t('beklenen {0}', [ondalik(s.beklenen)])}</span> · <span>{_t('haftada {0} aldı, beklenen {1}', [ondalik(s.haftalikGercek), ondalik(s.haftalikBeklenen)])}</span> · <span>{_t('rakiplerin gücü %{0}', [Math.round((s.rakipGucu ?? 0) * 100)])}</span></span>
+        </li>
+      ))}
+    </ol>
+  </div>
+</Onizleme>
+</section>

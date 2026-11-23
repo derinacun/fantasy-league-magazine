@@ -1,0 +1,68 @@
+---
+import { t as _t } from '../../i18n/t.js';
+import Bilgi from '../Bilgi.astro';
+import GucTablosu from '../GucTablosu.astro';
+import KapsamSecici from '../KapsamSecici.astro';
+import IsiAciklama from '../IsiAciklama.astro';
+import Ikon from '../Ikon.astro';
+import AltSekmeler from '../AltSekmeler.astro';
+import { KATEGORILER, KATEGORI_ADI, farkBicimle } from '../../lib/hesap.js';
+
+interface Props { sayi: any }
+const { sayi } = Astro.props;
+const n = sayi.takimlar.length;
+import Atlama from '../Atlama.astro';
+---
+<Atlama etiket={_t('İstatistik bölümleri')} bolumler={[{ id: 'guc', ad: _t('Güç tablosu') }, { id: 'degisim', ad: _t('Son hafta ne değişti?') }]} />
+<AltSekmeler sayi={sayi} aktif="tablo" />
+<h1 class="sayfa-baslik">{_t('Rakamlar konuşsun.')}<Bilgi baslik={_t('Güç tablosu')}>{_t('Güç: her kategoride birinci {0}, sonuncu 1 puan; eşit değerler aynı puanı alır (en fazla {1}). Herkese karşı: aynı dönemin istatistikleriyle {RAKIP} rakibin her birine karşı sonuç. Yahoo sırası ve kategori kaydı (kazanılan–kaybedilen–berabere) rapor tarihindeki resmî kayıttır. Hücre rengi değerin {TAKIM} takım içindeki sırasını gösterir; sütun başlığına dokununca sıralanır.', [n, n * 9])}</Bilgi></h1>
+<p class="alt-metin">{_t('Fikstürden bağımsız güç sıralaması: aynı hafta herkes herkesle oynasaydı ne olurdu? Sütun başlığına dokunarak sırala. Sezon yüzdeleri toplam isabet / toplam deneme ile hesaplanır. Daha derini için')}{' '}<a class="satir-bag" href={sayi.adres('istatistikler', 'analiz/')}>{_t('Analiz')}</a>{' '}{_t('sekmesine geç.')}</p>
+
+<section class="panel" id="guc">
+  <div class="arac-cubugu">
+    <KapsamSecici haftaSayisi={sayi.haftaSayisi} />
+    <label class="arama">
+      <Ikon ad="ara" boyut={16} />
+      <span class="gizli">{_t('Takım ara')}</span>
+      <input type="search" placeholder={_t('Takım ara…')} data-ara autocomplete="off" />
+    </label>
+  </div>
+  <IsiAciklama n={n} />
+  <GucTablosu sayi={sayi} kapsamAdi="hafta" />
+  <GucTablosu sayi={sayi} kapsamAdi="sezon" gizli />
+
+</section>
+
+<section class="panel" id="degisim">
+  <h2>{_t('Son hafta ne değişti?')}<Bilgi baslik={_t('Değişim tablosu')}>{_t('Her hücre: son haftanın değeri ile önceki haftaların haftalık ortalaması arasındaki fark. Yüzdelerde fark yüzde puanıdır. Yeşil iyiye, kırmızı kötüye gidiş; top kaybında azalma iyidir.')}</Bilgi></h2>
+  <p class="alt-metin">{_t('Son haftanın değerleri, önceki tamamlanmış haftaların haftalık ortalamasıyla karşılaştırılır. Yüzdelerde fark yüzde puanıdır.')}</p>
+  {sayi.degisimler ? (
+    <div class="tablo-kutu">
+      <table class="degisim-tablosu">
+        <caption class="gizli">{_t('Kategorilere göre son hafta değişimi')}</caption>
+        <thead>
+          <tr>
+            <th scope="col" class="sabit sabit-2">{_t('Takım')}</th>
+            {KATEGORILER.map((kat) => <th scope="col" class="sayisal"><abbr title={KATEGORI_ADI[kat]}>{kat}</abbr></th>)}
+          </tr>
+        </thead>
+        <tbody>
+          {sayi.kapsam.hafta.gucSirasi.map((id: string) => (
+            <tr data-takim={id}>
+              <th scope="row" class="sabit sabit-2"><a class="takim-bag" href={sayi.adres('takimlar', sayi.takim[id].slug + '/')}><span>{sayi.takim[id].ad}</span></a></th>
+              {KATEGORILER.map((kat) => {
+                const d = sayi.degisimler[id][kat];
+                const iyi = d != null && d * (kat === 'TO' ? -1 : 1) > 1e-9;
+                const kotu = d != null && d * (kat === 'TO' ? -1 : 1) < -1e-9;
+                return <td class="sayisal"><span class={`isi ${iyi ? 'iyi' : kotu ? 'kotu' : ''}`}>{farkBicimle(d, kat)}</span></td>;
+              })}
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  ) : (
+    <p class="bilgi-notu">{_t('İlk hafta başlangıç verisidir. Değişim, ikinci tamamlanmış haftadan itibaren burada görünecek.')}</p>
+  )}
+</section>
+

@@ -1,0 +1,155 @@
+---
+// Kürsü (17 Kasım 2026): kemerler (seriler), uyku ligi ve madalyalar tek sayfada. Sıra: kemerler, seriler tablosu, uyku ligi, madalyalar (madalya kemerden az önemli).
+// Kemer kuralları src/lib/seriler.js'te; ön sayfada yalnızca özet var (Kemerler.astro).
+import { t as _t } from '../../i18n/t.js';
+import KemerKart from '../KemerKart.astro';
+import TakimSimge from '../TakimSimge.astro';
+import Madalya from '../Madalya.astro';
+import Bilgi from '../Bilgi.astro';
+import Ikon from '../Ikon.astro';
+import { KEMER_ESIGI, UYKU_ESIGI } from '../../lib/seriler.js';
+import { ODUL_TANIMLARI, sezonOdulleri } from '../../lib/oduller.js';
+
+interface Props { sayi: any }
+const { sayi } = Astro.props;
+const kemerler = sayi.seriler.kemerler;
+const buyukler = kemerler.filter((k: any) => k.tur === 'buyuk');
+const kategoriler = kemerler.filter((k: any) => k.tur === 'kategori');
+const T = sayi.seriler.takim;
+const siraliTakimlar = [...sayi.takimlar].sort((a: any, b: any) =>
+  T[b.id].kemerler.length - T[a.id].kemerler.length || (sayi.puanDurumu[a.id]?.rank ?? 99) - (sayi.puanDurumu[b.id]?.rank ?? 99));
+const sahipMi = (k: any, id: string) => k.sahipler.some((x: any) => x.id === id);
+// Madalya tablosu: her takımın her ödülü kaç kez aldığı (1 bronz, 2 gümüş, 3+ altın)
+const tumOduller = Object.entries(sezonOdulleri(sayi)).flatMap(([h, liste]) => (liste as any[]).map((o) => ({ ...o, hafta: Number(h) })));
+const seviye = (adet: number) => (adet >= 3 ? 'altin' : adet === 2 ? 'gumus' : 'bronz');
+const seviyeAdi: Record<string, string> = { bronz: _t('Bronz'), gumus: _t('Gümüş'), altin: _t('Altın') };
+const madalya = sayi.takimlar.map((t: any) => {
+  const hucre = Object.fromEntries(ODUL_TANIMLARI.map((d) => {
+    const al = tumOduller.filter((o) => o.takim === t.id && o.anahtar === d.anahtar);
+    return [d.anahtar, { adet: al.length, haftalar: al.map((o) => o.hafta).sort((a, b) => a - b) }];
+  }));
+  const vals = Object.values(hucre) as any[];
+  return { t, hucre, toplam: vals.reduce((a, x) => a + x.adet, 0), altin: vals.filter((x) => x.adet >= 3).length, gumus: vals.filter((x) => x.adet === 2).length };
+}).sort((a: any, b: any) => b.toplam - a.toplam || b.altin - a.altin || b.gumus - a.gumus || (sayi.puanDurumu[a.t.id]?.rank ?? 99) - (sayi.puanDurumu[b.t.id]?.rank ?? 99));
+const U = sayi.uykuLigi;
+const haftalar = [...new Set(tumOduller.map((o) => o.hafta))].sort((a, b) => b - a);
+import Atlama from '../Atlama.astro';
+import Onizleme from '../Onizleme.astro';
+const CIP_SERI = Object.entries(T).flatMap(([id, x]: any) => Object.entries(x.seriler).map(([k, n]: any) => ({ id, k, n }))).filter((x: any) => x.n >= 2).sort((a: any, b: any) => b.n - a.n).slice(0, 3).map((x: any) => _t('{0} · {1} hafta {2}', [sayi.takim[x.id].ad, x.n, x.k.startsWith('kategori-') ? x.k.slice(9) + _t(' ilk 3') : ({ galibiyet: _t('galibiyet'), yenilgi: _t('yenilgi'), uyku: _t('uyku'), etkilesim: _t('etkileşim') } as any)[x.k]]));
+const CIP_UYKU = U?.satirlar?.length ? [_t('Lider: {0} {1} puan', [sayi.takim[U.satirlar[0].id].ad, U.satirlar[0].toplam]), _t('En uyanık: {0} {1} puan', [sayi.takim[U.satirlar.at(-1).id].ad, U.satirlar.at(-1).toplam])] : [];
+const CIP_MADALYA = [_t('En çok madalya: {0} ({1})', [madalya[0].t.ad, madalya[0].toplam]), _t('Toplam {0} madalya, {1} hafta', [tumOduller.length, haftalar.length])];
+---
+<Atlama etiket={_t('Kürsü bölümleri')} bolumler={[{ id: 'kemerler', ad: _t('Kemerler') }, { id: 'seriler', ad: _t('Seriler') }, { id: 'uyku-ligi', ad: _t('Uyku ligi') }, { id: 'madalyalar', ad: _t('Madalyalar') }]} />
+<h1 class="sayfa-baslik">{_t('Kürsü.')}</h1>
+<p class="alt-metin">{_t('{0}. hafta · {1}. Kemerler: üst üste kazanan, kaybeden, uyuyan ve bir kategoride ilk 3\'ten inmeyen. Seri en az {2} hafta sürerse kemer gelir; seri bitince kemer o an en uzun seriye geçer.', [sayi.hafta, sayi.donem, KEMER_ESIGI])}</p>
+
+<section class="bolum-hedef" id="kemerler" aria-labelledby="kursu-kemer">
+  <h2 id="kursu-kemer" class="bolum-baslik">{_t('Büyük kemerler.')}{' '}<span>{_t('Galibiyet, yenilgi, uyku, etkileşim.')}</span><Bilgi baslik={_t('Kemerler')}>{_t('Kemer, devam eden en uzun serinin sahibindedir. Seri en az {0} hafta sürmeli; eşit seriler kemeri paylaşır. Seri bitince kemer o an en uzun seriye geçer; öyle bir seri yoksa sahibi boş kalır ve en son sahibi yazar. Etkileşim kemeri: WhatsApp grubunda haftanın en çok yazan ilk 3\'ü (yazı, fotoğraf, video, çıkartma; silinen ve sistem mesajları sayılmaz); yalnızca koç başına mesaj sayısı tutulur. Kartta "Ayrıntı" peşindekileri, sahiplerini ve rekoru açar.', [KEMER_ESIGI])}</Bilgi></h2>
+  <div class="kemer-izgara kemer-izgara--buyuk">
+    {buyukler.map((k: any) => <KemerKart sayi={sayi} kemer={k} />)}
+  </div>
+
+  <h2 class="bolum-baslik kursu-ara">{_t('Kategori kemerleri.')}{' '}<span>{_t('Üst üste ilk 3.')}</span><Bilgi baslik={_t('Kategori kemerleri')}>{_t('Bir kategoride üst üste en az {0} hafta o haftanın ilk 3\'ünde kalan takım kemeri alır. Bu hafta ilk 3\'ten düşen kemeri kaybeder; kemer o an en uzun seriye geçer.', [KEMER_ESIGI])}</Bilgi></h2>
+  <div class="kemer-izgara kemer-izgara--kucuk">
+    {kategoriler.map((k: any) => <KemerKart sayi={sayi} kemer={k} />)}
+  </div>
+</section>
+
+<section class="bolum-hedef" id="seriler" aria-labelledby="kursu-seri">
+  <h2 id="kursu-seri" class="bolum-baslik">{_t('Devam eden seriler.')}{' '}<span>{_t('Kim kaç haftadır sürüyor.')}</span><Bilgi baslik={_t('Devam eden seriler')}>{_t('Her hücre: o takım o seride kaç haftadır üst üste devam ediyor. Koyu sarı: kemer şu an onda. Açık sarı: 2 hafta ya da daha uzun süren, kemerin peşindeki seri. Nokta: seri yok. Uyku serisi uyku puanı {0} ve üstü olan haftaları sayar (uyku verisi 2. haftadan beri var); beraberlik galibiyet ve yenilgi serisini bitirir.', [UYKU_ESIGI])}</Bilgi></h2>
+<Onizleme cipler={CIP_SERI}>
+  <div class="kart seri-kart"><div class="tablo-kutu" tabindex="0" aria-label={_t('Devam eden seriler tablosu')}>
+    <table class="seri-tablo">
+      <caption class="gizli">{_t('Devam eden seriler')}</caption>
+      <thead>
+        <tr>
+          <th scope="col">{_t('Takım')}</th>
+          {kemerler.map((k: any) => <th scope="col" title={k.ad}>{k.tur === 'buyuk' ? k.kisa : k.kategori}</th>)}
+        </tr>
+      </thead>
+      <tbody>
+        {siraliTakimlar.map((t: any) => (
+          <tr data-takim={t.id}>
+            <th scope="row"><a href={sayi.adres('takimlar', t.slug + '/')}><TakimSimge takim={t} boyut="kucuk" />{t.ad}</a></th>
+            {kemerler.map((k: any) => {
+              const n = T[t.id].seriler[k.anahtar];
+              return <td class={sahipMi(k, t.id) ? 'seri-sahip' : n >= 2 ? 'seri-yakin' : n === 0 ? 'soluk' : undefined}>{n || '·'}</td>;
+            })}
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  </div></div>
+</Onizleme>
+</section>
+
+<section class="bolum-hedef" id="uyku-ligi" aria-labelledby="kursu-uyku">
+  <h2 id="kursu-uyku" class="bolum-baslik">{_t('Uyku ligi.')}{' '}<span>{U?.bitti ? _t('Altın Yastık sahibini buldu.') : _t('Altın Yastık yarışı.')}</span><Bilgi baslik={_t('Uyku ligi')}>{_t('Her haftanın uyku puanı sezon boyunca toplanır. Uyku puanı = yedekte kalıp takıma sayılmayan maçlar + ilk beşte oynamadan yatan oyuncunun günleri (sakat oyuncu tek gün bile, sakat olmayan en az 2 gün). Eşitlikte daha çok uyuyan (5+) hafta önde. Koç değişen takım yeni koçla sıfırdan başlar. Normal sezonun sonunda lider')}{' '}<b>{_t('Altın Yastık')}</b>{_t('\'ı alır. Uyku verisi 2. haftadan beri var.')}</Bilgi></h2>
+<Onizleme cipler={CIP_UYKU}>
+  {U ? (
+    <div class="kart seri-kart"><div class="tablo-kutu" tabindex="0" aria-label={_t('Uyku ligi')}>
+      <table class="seri-tablo uyku-ligi-tablo">
+      <caption class="gizli">{_t('Uyku ligi')}</caption>
+        <thead><tr><th scope="col">{_t('Sıra')}</th><th scope="col">{_t('Takım')}</th><th scope="col">{_t('Toplam')}</th><th scope="col">{_t('Uyuyan hafta')}</th><th scope="col">{_t('Yedekte kalan maç')}</th><th scope="col">{_t('İlk beşte yatan gün')}</th><th scope="col">{_t('Hafta hafta')}</th></tr></thead>
+        <tbody>
+          {U.satirlar.map((x: any) => (
+            <tr data-takim={x.id} class={x.sira === 1 && x.toplam > 0 ? 'uyku-lider' : undefined}>
+              <td><b>{x.sira}</b></td>
+              <th scope="row"><a href={sayi.adres('takimlar', sayi.takim[x.id].slug + '/')}><TakimSimge takim={sayi.takim[x.id]} boyut="kucuk" />{sayi.takim[x.id].ad}</a>{x.sira === 1 && x.toplam > 0 && <span class="uyku-yastik" title={U.bitti ? _t('Altın Yastık') : _t('Altın Yastık\'a en yakın')}>{U.bitti ? _t('Altın Yastık') : _t('yastığa en yakın')}</span>}{x.sifirlandi && <span class="soluk uyku-not">{' '}{_t('· yeni koç{0}, {1}. haftadan', [x.yeniKoc ? ` ${x.yeniKoc}` : '', x.sifirlandi])}</span>}</th>
+              <td><b>{x.toplam}</b></td>
+              <td>{x.uyuyanHafta}</td>
+              <td>{x.kacan}</td>
+              <td>{x.yatan}</td>
+              <td class="uyku-haftalar">{x.haftalar.map((h: any) => <span class={h.uyku >= 5 ? 'uyuyan' : h.uyku >= 2 ? 'uyukluyor' : undefined} title={_t('{0}. hafta', [h.hafta])}>{h.uyku}</span>)}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div></div>
+  ) : <p class="soluk">{_t('Uyku verisi henüz yok.')}</p>}
+</Onizleme>
+</section>
+
+<section class="bolum-hedef" id="madalyalar" aria-labelledby="kursu-madalya">
+  <h2 id="kursu-madalya" class="bolum-baslik">{_t('Madalyalar.')}{' '}<span>{_t('Haftanın ödülleri, sezon boyu.')}</span><Bilgi baslik={_t('Madalya tablosu')}>{_t('Her hafta 8 ödül o haftanın sayılarından otomatik verilir. Bir takım aynı ödülü ilk kez alınca bronz, ikinci kez gümüş, üçüncü kez ve sonrası altın. Hücrede madalya ve kaç kez alındığı; üstüne gelince haftalar görünür. Sıra: toplam ödül, sonra altın ve gümüş sayısı.')}</Bilgi></h2>
+<Onizleme cipler={CIP_MADALYA}>
+  <div class="kart seri-kart"><div class="tablo-kutu" tabindex="0" aria-label={_t('Madalya tablosu')}>
+    <table class="seri-tablo madalya-tablo">
+      <caption class="gizli">{_t('Madalya tablosu')}</caption>
+      <thead>
+        <tr>
+          <th scope="col">{_t('Takım')}</th>
+          {ODUL_TANIMLARI.map((d) => <th scope="col" title={d.tanim}>{d.ad}</th>)}
+          <th scope="col">{_t('Toplam')}</th>
+        </tr>
+      </thead>
+      <tbody>
+        {madalya.map((m: any) => (
+          <tr data-takim={m.t.id}>
+            <th scope="row"><a href={sayi.adres('takimlar', m.t.slug + '/')}><TakimSimge takim={m.t} boyut="kucuk" />{m.t.ad}</a></th>
+            {ODUL_TANIMLARI.map((d) => {
+              const h = m.hucre[d.anahtar];
+              return h.adet ? (
+                <td title={_t('{0} · {1} · {2}. hafta', [d.ad, seviyeAdi[seviye(h.adet)], h.haftalar.join(', ')])}>
+                  <span class="madalya-hucre"><Madalya odul={d.anahtar} ikon={d.ikon} seviye={seviye(h.adet)} boyut={30} />{h.adet > 1 && <b>×{h.adet}</b>}</span>
+                </td>
+              ) : <td class="soluk">·</td>;
+            })}
+            <td><b>{m.toplam}</b></td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  </div></div>
+  <details class="kart madalya-haftalar">
+    <summary>{_t('Hafta hafta ödüller')}</summary>
+    <ol>
+      {haftalar.map((h) => (
+        <li><b>{_t('{0}. hafta', [h])}</b> {tumOduller.filter((o) => o.hafta === h).map((o) => `${o.ad}: ${sayi.takim[o.takim]?.ad ?? o.takim}`).join(' · ')}</li>
+      ))}
+    </ol>
+  </details>
+</Onizleme>
+</section>
+
+<p class="bag-satiri kursu-kupa-bag"><a class="metin-bag" href={sayi.adres('kupa-dolabi')}>{_t('Geçmiş sezonlar, şampiyonlar ve rekorlar: Kupa Dolabı')}{' '}<Ikon ad="sag" boyut={15} /></a></p>

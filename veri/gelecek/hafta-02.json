@@ -1,0 +1,51 @@
+{
+ "week": 2,
+ "nextWeek": {
+  "week": 3,
+  "period": "Nov 2–8, 2026",
+  "matchups": [
+   {
+    "home": "5",
+    "away": "8",
+    "abiPick": "5",
+    "abiNote": "Sample prediction note from the fan persona."
+   },
+   {
+    "home": "1",
+    "away": "7",
+    "abiPick": "7",
+    "abiNote": "Sample prediction note from the fan persona."
+   },
+   {
+    "home": "2",
+    "away": "9",
+    "abiPick": "2",
+    "abiNote": "Sample prediction note from the fan persona."
+   },
+   {
+    "home": "3",
+    "away": "12",
+    "abiPick": "3",
+    "abiNote": "Sample prediction note from the fan persona."
+   },
+   {
+    "home": "4",
+    "away": "10",
+    "abiPick": "10",
+    "abiNote": "Sample prediction note from the fan persona."
+   },
+   {
+    "home": "6",
+    "away": "11",
+    "abiPick": "6",
+    "abiNote": "Sample prediction note from the fan persona."
+   },
+   {
+    "home": "13",
+    "away": "14",
+    "abiPick": "14",
+    "abiNote": "Sample prediction note from the fan persona."
+   }
+  ]
+ }
+}

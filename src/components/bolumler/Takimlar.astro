@@ -1,0 +1,68 @@
+---
+import { t as _t } from '../../i18n/t.js';
+import TakimSimge from '../TakimSimge.astro';
+import Ikon from '../Ikon.astro';
+import Madalya from '../Madalya.astro';
+import { kayit, KATEGORI_ADI } from '../../lib/hesap.js';
+import { odulDolabi, ODUL_TANIMLARI } from '../../lib/oduller.js';
+import { kadroOzeti } from '../../lib/kadroGorunum.js';
+
+interface Props { sayi: any }
+const { sayi } = Astro.props;
+const k = sayi.kapsam.hafta;
+const seviye = (adet: number) => (adet >= 3 ? 'altin' : adet === 2 ? 'gumus' : 'bronz');
+const seviyeAdi: Record<string, string> = { bronz: _t('Bronz'), gumus: _t('Gümüş'), altin: _t('Altın') };
+// Takımın en çok sahip olduğu madalya: en çok alınan ödül; eşitlikte en son alınan, o da eşitse ödül sırası
+const enCokMadalya = (id: string) => {
+  const dolap = odulDolabi(sayi, id);
+  const turler = ODUL_TANIMLARI.map((d, i) => {
+    const alinan = dolap.filter((o: any) => o.anahtar === d.anahtar);
+    return { ...d, sira: i, adet: alinan.length, son: Math.max(0, ...alinan.map((o: any) => o.hafta)) };
+  }).filter((d) => d.adet > 0).sort((a, b) => b.adet - a.adet || b.son - a.son || a.sira - b.sira);
+  return { en: turler[0] ?? null, toplam: dolap.length };
+};
+---
+<h1 class="sayfa-baslik">{_t('Her takımın bir hikâyesi var.')}</h1>
+<p class="alt-metin">{_t('Takımlar güç sırasına göre dizildi. Kartın altında takımın en çok aldığı madalya var. Bir takıma dokun: haftanın notu, kategori sıraları, takas uyumu, kadro ve bütün sezonu (hafta hafta sonuçlar, güç sırası seyri, ödül dolabı) açılır.')}</p>
+
+<ol class="takim-izgara">
+  {k.gucSirasi.map((id: string, i: number) => {
+    const t = sayi.takim[id];
+    const pd = sayi.puanDurumu[id];
+    return (
+      <li data-takim={t.id}>
+        <a class="takim-kart" href={sayi.adres('takimlar', t.slug + '/')}>
+          <span class="takim-kart-ust">
+            <TakimSimge takim={t} />
+            <span class="takim-kart-ad">
+              <strong>{t.ad}</strong>
+              <small>{_t('Güç #{0} · Yahoo #{1} ({2})', [i + 1, pd?.rank ?? '—', pd ? `${pd.wins}–${pd.losses}–${pd.ties}` : '—'])}</small>
+            </span>
+            <Ikon ad="sag" boyut={18} class="ok" />
+          </span>
+          <span class="takim-kart-sayilar">
+            <span><b>{k.guc[id]}</b><small>{_t('/ {0} güç', [k.maxGuc])}</small></span>
+            <span><b>{kayit(k.herkeseKarsi[id])}</b><small>{_t('herkese karşı')}</small></span>
+          </span>
+          {kadroOzeti(sayi, id) && <span class="takim-kart-kadro">{kadroOzeti(sayi, id)}</span>}
+          <span class="etiketler" aria-label={_t('En güçlü üç kategori')}>
+            {k.enIyi(id).map((kat: string) => <span class="etiket">{(KATEGORI_ADI as any)[kat]} #{k.sira[id][kat]}</span>)}
+          </span>
+          {(() => {
+            const m = enCokMadalya(id);
+            return m.en ? (
+              <span class={`takim-kart-madalya odul--${seviye(m.en.adet)}`}>
+                <Madalya odul={m.en.anahtar} ikon={m.en.ikon} seviye={seviye(m.en.adet)} boyut={34} />
+                <span class="tkm-metin">
+                  <b>{m.en.ad}</b>
+                  <small class={`seviye seviye--${seviye(m.en.adet)}`}>{_t('{0} · {1} kez{2}', [seviyeAdi[seviye(m.en.adet)], m.en.adet, m.toplam > m.en.adet ? _t(' · toplam {0} madalya', [m.toplam]) : ''])}</small>
+                </span>
+              </span>
+            ) : <span class="takim-kart-madalya bos"><small>{_t('Henüz madalya yok')}</small></span>;
+          })()}
+        </a>
+      </li>
+    );
+  })}
+</ol>
+

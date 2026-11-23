@@ -1,0 +1,366 @@
+---
+import { t as _t, ONDALIK, YEREL, sorguAdi } from '../../i18n/t.js';
+import TakimSimge from '../TakimSimge.astro';
+import Ikon from '../Ikon.astro';
+import Madalya from '../Madalya.astro';
+import Bilgi from '../Bilgi.astro';
+import KemerSimge from '../KemerSimge.astro';
+import { sureYaz, kemerCapa } from '../../lib/seriler.js';
+import { KATEGORILER, KATEGORI_ADI, bicimle, kayit, kapsamHesapla } from '../../lib/hesap.js';
+import { analizHesapla } from '../../lib/analiz.js';
+import { odulDolabi, ODUL_TANIMLARI } from '../../lib/oduller.js';
+import { puanDurumu, farkYaz } from '../../lib/puan.js';
+import KadroListesi from '../KadroListesi.astro';
+import { gecmisHesapla, ikiKoc } from '../../lib/gecmis.js';
+import { gecmisOku } from '../../lib/okuma.js';
+import { oyuncuAdresi } from '../../lib/kadroGorunum.js';
+
+interface Props { sayi: any; slug: string }
+const { sayi, slug } = Astro.props;
+const t = sayi.takimlar.find((x: any) => x.slug === slug);
+const k = sayi.kapsam.hafta;
+const n = sayi.takimlar.length;
+const pd = sayi.puanDurumu[t.id];
+const gucSira = k.gucSirasi.indexOf(t.id) + 1;
+const ad = (id: string) => sayi.takim[id]?.ad ?? id;
+const mac = sayi.eslesmeler.find((e: any) => e.ev === t.id || e.dep === t.id);
+const rakip = mac ? (mac.ev === t.id ? mac.dep : mac.ev) : null;
+const benimSkor = mac ? (mac.ev === t.id ? mac.evSkor : mac.depSkor) : null;
+const rakipSkor = mac ? (mac.ev === t.id ? mac.depSkor : mac.evSkor) : null;
+const kiyas = (b: string) => `${sayi.adres('karsilastir')}?a=${t.slug}&b=${sayi.takim[b].slug}`;
+const takaslar = sayi.takaslar.filter((x: any) => x.a === t.id || x.b === t.id);
+const notlar = sayi.oyuncuNotlari.filter((x: any) => x.teamId === t.id);
+const not = sayi.takimNotu[t.id];
+const sira = k.gucSirasi;
+const onceki = sira[(sira.indexOf(t.id) - 1 + sira.length) % sira.length];
+const sonraki = sira[(sira.indexOf(t.id) + 1) % sira.length];
+
+// --- Gelecek hafta (nextWeek varsa) ---
+const gelecekMac = sayi.gelecek?.eslesmeler.find((e: any) => e.a === t.id || e.b === t.id) ?? null;
+const gelecekRakip = gelecekMac ? (gelecekMac.a === t.id ? gelecekMac.b : gelecekMac.a) : null;
+const gelecekBen = gelecekMac ? (gelecekMac.a === t.id ? gelecekMac.skorA : gelecekMac.skorB) : 0;
+const gelecekO = gelecekMac ? (gelecekMac.a === t.id ? gelecekMac.skorB : gelecekMac.skorA) : 0;
+
+// --- Sezon ---
+const A = analizHesapla(sayi);
+const P = puanDurumu(sayi);
+const ps = P.takim[t.id];
+const sans = A.sans.find((x: any) => x.id === t.id);
+const ks = sayi.kapsam.sezon;
+const sezonSira = ks.gucSirasi.indexOf(t.id) + 1;
+// Karşılaştır sayfasında o hafta seçili açılır (?hafta=N; son hafta varsayılan)
+const kiyasHafta = (hafta: number, b: string) =>
+  `${sayi.adres('karsilastir')}?a=${t.slug}&b=${sayi.takim[b].slug}${hafta === sayi.hafta ? '' : `&${sorguAdi('hafta')}=${hafta}`}`;
+const haftalar = A.haftalik.map((h: any) => ({ hafta: h.hafta, donem: h.donem, ...h.takim[t.id] }));
+const haftaKapsam = sayi.haftalarHam.map((w: any) => ({ hafta: w.week, k: kapsamHesapla(sayi.hesapTakimlari, [w]) }));
+const isiSinifi = (r: number | null) => (r == null ? '' : `isi-${Math.min(7, Math.ceil((r * 7) / n))}`);
+const isaretli = (v: number) => (v > 0.05 ? '+' : v < -0.05 ? '−' : '±') + Math.abs(v).toFixed(1).replace('.', ONDALIK);
+// Güç sırası çizgisi (yüzde koordinat)
+const gx = (i: number) => (haftalar.length === 1 ? 50 : 4 + (i * 92) / (haftalar.length - 1));
+const gy = (r: number) => ((r - 1) / (n - 1)) * 100;
+const cizgi = haftalar.map((h: any, i: number) => `${gx(i).toFixed(2)},${gy(h.sira).toFixed(2)}`).join(' ');
+// Ödül dolabı: ödül türüne göre
+const dolap = ODUL_TANIMLARI.map((d) => {
+  const alinan = odulDolabi(sayi, t.id).filter((o: any) => o.anahtar === d.anahtar);
+  return { ...d, adet: alinan.length, haftalar: alinan.map((o: any) => o.hafta).sort((a: number, b: number) => a - b) };
+}).filter((d) => d.adet > 0);
+// Uyku karnesi ve haftanın oyuncusu/faciası (veri/nba dosyası varsa)
+const uyku = sayi.uyuyan?.satirlar.find((x: any) => x.takimId === t.id) ?? null;
+const UYKU_ADI: Record<string, string> = { uyuyan: _t('Uyuyan koç'), uyukluyor: _t('Uyukluyor'), uyanik: _t('Uyanık') };
+const HO = sayi.haftaninOyunculari?.takimlar.find((x: any) => x.id === t.id) ?? null;
+const seviye = (adet: number) => (adet >= 3 ? 'altin' : adet === 2 ? 'gumus' : 'bronz');
+// Kürsü kutusu (17 Kasım 2026): şu an elindeki kemerler ve daha önce taşıdıkları
+const tumKemerler = sayi.seriler?.kemerler ?? [];
+const kemerSimdi = tumKemerler.filter((km: any) => km.sahipler.some((x: any) => x.id === t.id));
+const kemerEski = tumKemerler.flatMap((km: any) => (km.takimDonemleri?.[t.id] ?? [])
+  .filter((d: any) => !(kemerSimdi.includes(km) && d.bitis === sayi.hafta))
+  .map((d: any) => ({ kemer: km, donem: d.baslangic === d.bitis ? _t('{0}. hafta', [d.bitis]) : _t('{0}–{1}. hafta', [d.baslangic, d.bitis]) })));
+const seviyeAdi: Record<string, string> = { bronz: _t('Bronz'), gumus: _t('Gümüş'), altin: _t('Altın') };
+// Koçun geçmişi (18 Kasım 2026): src/lib/gecmis.js. Rakipler yalnızca bugünkü koçlar; en az 3 karşılaşma.
+const GR = gecmisHesapla(gecmisOku(), sayi);
+const KG = GR ? GR.koc(t.id) : null;
+const rakipler = GR ? sayi.takimlar.filter((x: any) => x.id !== t.id).map((x: any) => ({ id: x.id, ...ikiKoc(GR.liste, t.id, x.id) })).filter((r: any) => r.maclar.length >= 3)
+  .map((r: any) => ({ ...r, oran: (r.g + r.b / 2) / r.maclar.length })) : [];
+const favori = [...rakipler].sort((a: any, b: any) => b.oran - a.oran || b.maclar.length - a.maclar.length)[0];
+const kabus = [...rakipler].sort((a: any, b: any) => a.oran - b.oran || b.maclar.length - a.maclar.length)[0];
+const kgYaz = (k: any) => `${k.g}–${k.m}${k.b ? `–${k.b}` : ''}`;
+const KT = GR ? GR.tum.satirlar.find((x: any) => x.koc === t.id) : null;
+const sampiyonMu = GR?.sampiyon?.id === t.id;
+const sezonYaz = (x: any) => (x ? `${x.etiket} · ${x.sira <= 3 ? x.sonuc.toLocaleLowerCase(YEREL) : `${x.sira}. / ${x.takimSayisi}`}` : '—');
+import Atlama from '../Atlama.astro';
+import Onizleme from '../Onizleme.astro';
+import DraftKartlari from '../DraftKartlari.astro';
+---
+<Atlama etiket={_t('Takım sayfası bölümleri')} bolumler={[{ id: 'bu-hafta', ad: _t('Bu hafta') }, { id: 'kursu', ad: _t('Kürsü') }, { id: 'kategori', ad: _t('Kategoriler') }, { id: 'sezon', ad: _t('Sezon') }, { id: 'kadro-ac', ad: _t('Kadro') }, ...(KG ? [{ id: 'koc-karnesi', ad: _t('Koçun karnesi') }] : []), { id: 'takas', ad: _t('Takas') }]} />
+<p class="geri"><a href={sayi.adres('takimlar')}><Ikon ad="sag" boyut={16} class="ters" />{_t('Tüm takımlar')}</a></p>
+<header class="takim-bas">
+  <TakimSimge takim={t} buyuk />
+  <div>
+    <div class="takim-ad-satir">
+      <h1 class={`sayfa-baslik kucuk${sampiyonMu ? ' sampiyon-ad' : ''}`}>{t.ad}</h1>
+      {sampiyonMu && <a class="sampiyon-etiket" href={`${sayi.adres('kupa-dolabi')}#sampiyonlar`}><Ikon ad="kupa" boyut={14} />{_t('Son şampiyon · {0}', [GR.sampiyon.etiket])}</a>}
+      <button class="benim-dugme" type="button" data-benim-dugme={t.id} aria-pressed="false" title={_t('Benim takımım yap')} hidden><Ikon ad="yildiz" boyut={28} /><span class="gizli" data-benim-yazi>{_t('Benim takımım yap')}</span></button>
+    </div>
+    <p class="takim-ozet">
+      <span>{_t('Güç')}{' '}<b>{k.guc[t.id]}</b> / {k.maxGuc} <span class="soluk">(#{gucSira})</span></span>
+      <span>{_t('Herkese karşı')}{' '}<b>{kayit(k.herkeseKarsi[t.id])}</b></span>
+      <span>{_t('Yahoo')}{' '}<b>#{pd?.rank ?? '—'}</b> <span class="soluk">({pd ? `${pd.wins}–${pd.losses}–${pd.ties}` : '—'})</span></span>
+      {ps && P.N > 0 && <span>{ps.icerde ? <>{_t('Eleme hattında')}{ps.cizgiFarki != null && ps.cizgiFarki > 0 ? <span class="soluk">{' '}{_t('({0} önde)', [farkYaz(ps.cizgiFarki)])}</span> : null}</> : <>{_t('Eleme hattının')}{' '}<b>{farkYaz(ps.cizgiFarki)}</b>{' '}{_t('gerisinde')}</>}</span>}
+    </p>
+  </div>
+</header>
+
+  <section class="panel takim-buhafta bolum-hedef" id="bu-hafta" aria-labelledby="bu-hafta-baslik">
+    <h2 id="bu-hafta-baslik">{_t('Bu hafta')}</h2>
+    {not ? <p class="takim-notu">{not}</p> : <p class="soluk">{_t('Bu sayıda takım notu yok.')}</p>}
+    {mac && (
+      <a class="mac-satiri" href={kiyas(rakip)}>
+        <span>{_t('Eşleşme:')}{' '}<b>{t.ad}</b> {benimSkor}–{rakipSkor} <b>{ad(rakip)}</b></span>
+        <span class={`durum-etiketi ${benimSkor > rakipSkor ? 'iyi' : benimSkor < rakipSkor ? 'kotu' : ''}`}>{benimSkor > rakipSkor ? _t('Kazandı') : benimSkor < rakipSkor ? _t('Kaybetti') : _t('Berabere')}</span>
+        <Ikon ad="ileri" boyut={16} />
+      </a>
+    )}
+    {gelecekMac && (
+      <a class="mac-satiri" href={`${sayi.adres()}#gelecek`}>
+        <span>{_t('Gelecek hafta:')}{' '}<b>{ad(gelecekRakip)}</b>{' '}{_t('· sezon ortalamasıyla {0}–{1}', [gelecekBen, gelecekO])}{gelecekMac.abi && <span class="soluk">{' '}{_t('· Tribün Abi: {0}', [ad(gelecekMac.abi)])}</span>}</span>
+        <span class={`durum-etiketi ${gelecekBen > gelecekO ? 'iyi' : gelecekBen < gelecekO ? 'kotu' : ''}`}>{gelecekBen > gelecekO ? _t('Favori') : gelecekBen < gelecekO ? _t('Sürpriz arıyor') : _t('Başa baş')}</span>
+        <Ikon ad="ileri" boyut={16} />
+      </a>
+    )}
+    {uyku && (
+      <a class="mac-satiri" href={`${sayi.adres()}#uyuyan`}>
+        <span>{_t('Uyku karnesi:')}{' '}<b>{UYKU_ADI[uyku.seviye]}</b>{uyku.uyku > 0 && <span class="soluk">{' '}{_t('· {0} maç yedekte kaldı, {1} gün ilk beşte oynamayan oyuncu', [uyku.kacan, uyku.yatanGun])}</span>}</span>
+        <span class={`durum-etiketi ${uyku.seviye === 'uyanik' ? 'iyi' : uyku.seviye === 'uyuyan' ? 'kotu' : 'uyari'}`}>{_t('{0} puan', [uyku.uyku])}</span>
+        <Ikon ad="ileri" boyut={16} />
+      </a>
+    )}
+    {HO && (HO.oyuncusu || HO.faciasi) && (
+      <p class="takim-oyuncular">
+        {HO.oyuncusu && <a href={`#oyuncu-${HO.oyuncusu.id}`}><span class="ust-etiket">{_t('Haftanın oyuncusu')}</span><b>{HO.oyuncusu.name}</b></a>}
+        {HO.faciasi && <a href={`#oyuncu-${HO.faciasi.id}`}><span class="ust-etiket">{_t('Haftanın faciası')}</span><b>{HO.faciasi.name}</b></a>}
+      </p>
+    )}
+  </section>
+
+<section class="kart takim-kursu takim-kursu--genis bolum-hedef" id="kursu" aria-labelledby="takim-kursu-baslik">
+    <h2 id="takim-kursu-baslik" class="kutu-baslik">{_t('Kürsü')}<Bilgi baslik={_t('Kemerler ve madalyalar')}>{_t('Kemer: devam eden en uzun seri (galibiyet, yenilgi, uyku ya da bir kategoride ilk 3), en az 3 hafta. Altın çerçeveli kemerler şu an takımda; gri olanlar daha önce taşınmış. Madalyalar haftanın ödülleri: ilk kez bronz, ikinci kez gümüş, üçüncü kez ve sonrası altın. Madalyanın üstüne gelince hangi hafta alındığı görünür.')}</Bilgi></h2>
+    {(sayi.tahminOyunu?.ligKahini ?? []).includes(t.id) && <p class="takim-unvan"><a href={`${sayi.adres('kehanet')}#tahmin`}><Ikon ad="kure" boyut={18} />{_t('Ligin Kâhini')}</a></p>}
+    {kemerSimdi.length || kemerEski.length ? (
+      <ul class="takim-kemerler">
+        {kemerSimdi.map((km: any) => <li class="sahip"><a href={`${sayi.adres('kursu')}#${kemerCapa(km.anahtar)}`}><KemerSimge kemer={km} boyut={40} />{km.ad} · {sureYaz(km, km.sahipler[0].uzunluk)}</a></li>)}
+        {kemerEski.map((x: any) => <li><a href={`${sayi.adres('kursu')}#${kemerCapa(x.kemer.anahtar)}`}><KemerSimge kemer={x.kemer} boyut={40} bos />{x.kemer.ad} · {x.donem}</a></li>)}
+      </ul>
+    ) : <p class="soluk takim-kursu-bos">{_t('Henüz kemer yok.')}</p>}
+    {dolap.length ? (
+      <ul class="takim-madalyalar">
+        {dolap.map((d) => (
+          <li title={_t('{0} · {1} · {2} kez ({3}. hafta)', [d.ad, seviyeAdi[seviye(d.adet)], d.adet, d.haftalar.join(', ')])}>
+            <Madalya odul={d.anahtar} ikon={d.ikon} seviye={seviye(d.adet)} boyut={40} />
+            {d.adet > 1 && <span class="takim-madalya-adet">×{d.adet}</span>}
+            <span class="gizli">{_t('{0}, {1}, {2} kez, {3}. hafta', [d.ad, seviyeAdi[seviye(d.adet)], d.adet, d.haftalar.join(', ')])}</span>
+          </li>
+        ))}
+      </ul>
+    ) : <p class="soluk takim-kursu-bos">{_t('Madalya dolabı boş. Pazartesi yeni şans.')}</p>}
+</section>
+
+<section class="takim-ac bolum-hedef" id="kategori" aria-labelledby="kategori-baslik">
+  <h2 id="kategori-baslik" class="takim-ac-ad">{_t('Kategori sıraları')}</h2>
+  <Onizleme cipler={[(() => { const z = k.enZayif(t.id)[0]; return z ? _t('En zayıf: {0} {1}.', [KATEGORI_ADI[z], k.sira[t.id][z]]) : null; })(), (() => { const v = KATEGORILER.map((kat) => k.sira[t.id][kat]).filter((x: any) => x != null); return v.length ? _t('Ortalama sıra {0}', [(v.reduce((a: number, b: number) => a + b, 0) / v.length).toFixed(1).replace('.', ONDALIK)]) : null; })()]}>
+  <section class="panel">
+    <p class="alt-metin">{_t('Çubuk ne kadar uzunsa takım o kategoride o kadar üst sırada ({0} takım içinde).', [n])}</p>
+    <h3 class="ara-baslik">{_t('Güçlü kategoriler')}</h3>
+    <p class="etiketler">{k.enIyi(t.id).map((kat: string) => <span class="etiket">{KATEGORI_ADI[kat]} #{k.sira[t.id][kat]}</span>)}</p>
+    <h3 class="ara-baslik">{_t('Gelişim alanı')}</h3>
+    <p class="etiketler">{k.enZayif(t.id).map((kat: string) => <span class="etiket zayif">{KATEGORI_ADI[kat]} #{k.sira[t.id][kat]}</span>)}</p>
+    <ul class="kategori-cubuklari">
+      {KATEGORILER.map((kat) => {
+        const s = k.sira[t.id][kat];
+        return (
+          <li>
+            <span class="kat-ad"><abbr title={KATEGORI_ADI[kat]}>{kat}</abbr></span>
+            <span class="cubuk" aria-hidden="true"><i style={`width:${s == null ? 0 : ((n + 1 - s) / n) * 100}%`}></i></span>
+            <span class="kat-deger">{bicimle(k.ist[t.id][kat], kat)}</span>
+            <span class="kat-sira">#{s ?? '—'}</span>
+          </li>
+        );
+      })}
+    </ul>
+  </section>
+
+  </Onizleme>
+</section>
+<section class="takim-ac bolum-hedef" id="sezon" aria-labelledby="sezon-baslik">
+  <h2 id="sezon-baslik" class="takim-ac-ad">{_t('Sezon')}</h2>
+  <Onizleme cipler={[ps ? _t('Puan durumu {0}.', [ps.sira]) : null, _t('Sezon güç sırası {0}.', [sezonSira]), sans ? _t('Şans {0}', [isaretli(sans.fark)]) : null]}>
+<section class="sezon-bolum">
+  <div class="sezon-ozet">
+    {ps && (
+      <div class="ozet-kutu">
+        <p class="kutu-alt">{_t('Puan durumu')}</p>
+        <p class="ozet-buyuk">{ps.sira}.</p>
+        <p class="soluk">{_t('{0}–{1}{2} · lidere {3}', [ps.wins, ps.losses, ps.ties ? `–${ps.ties}` : '', ps.lidereFark ? farkYaz(ps.lidereFark) : _t('fark yok')])}</p>
+      </div>
+    )}
+    <div class="ozet-kutu">
+      <p class="kutu-alt">{_t('Eşleşmeler')}</p>
+      <p class="ozet-buyuk">{sans ? `${sans.mac.G}–${sans.mac.M}${sans.mac.B ? '–' + sans.mac.B : ''}` : '—'}</p>
+      <p class="soluk">{_t('kazanılan–kaybedilen{0}', [sans?.mac.B ? '–berabere' : ''])}</p>
+    </div>
+    <div class="ozet-kutu">
+      <p class="kutu-alt">{_t('Sezon güç sırası')}</p>
+      <p class="ozet-buyuk">{sezonSira}.</p>
+      <p class="soluk">{_t('güç {0} / {1} · herkese karşı {2}', [ks.guc[t.id], ks.maxGuc, kayit(ks.herkeseKarsi[t.id])])}</p>
+    </div>
+    {sans && (
+      <div class="ozet-kutu">
+        <p class="kutu-alt">{_t('Şans endeksi')}</p>
+        <p class="ozet-buyuk">{isaretli(sans.fark)}</p>
+        <p class="soluk">{_t('gerçek {0} · beklenen {1} kategori', [sans.gercek.toFixed(1).replace('.', ONDALIK), sans.beklenen.toFixed(1).replace('.', ONDALIK)])}</p>
+      </div>
+    )}
+  </div>
+
+  <div class="sezon-izgara">
+    <section class="panel" aria-labelledby="hafta-baslik">
+      <h3 id="hafta-baslik" class="kutu-baslik">{_t('Hafta hafta')}<Bilgi baslik={_t('Hafta hafta')}>{_t('Her satır bir hafta: eşleşme sonucu, Yahoo kategori skoru ve o haftanın güç sırası (yalnızca o haftanın istatistikleriyle). Sonuca dokununca o haftanın iki takımlı karşılaştırması açılır.')}</Bilgi></h3>
+      <div class="tablo-kutu">
+        <table class="hafta-tablosu">
+          <caption class="gizli">{_t('{0}: haftalık eşleşme sonuçları, güç sırası ve herkese karşı kaydı', [t.ad])}</caption>
+          <thead><tr><th scope="col">{_t('Hafta')}</th><th scope="col">{_t('Rakip')}</th><th scope="col">{_t('Sonuç')}</th><th scope="col" class="sayisal">{_t('Güç sırası')}</th><th scope="col" class="sayisal">{_t('Herkese karşı')}</th></tr></thead>
+          <tbody>
+            {[...haftalar].reverse().map((h: any) => {
+              const bag = h.rakip ? kiyasHafta(h.hafta, h.rakip) : null;
+              return (
+                <tr>
+                  <th scope="row">{h.hafta}</th>
+                  <td>{h.rakip ? <a class="takim-bag" href={sayi.adres('takimlar', sayi.takim[h.rakip].slug + '/')}><TakimSimge takim={sayi.takim[h.rakip]} boyut="kucuk" /><span>{ad(h.rakip)}</span></a> : '—'}</td>
+                  <td>{h.sonuc ? (bag
+                    ? <a class={`sonuc sonuc-${h.sonuc}`} href={bag}><span class="gizli">{h.sonuc === 'G' ? _t('kazandı') : h.sonuc === 'M' ? _t('kaybetti') : _t('berabere')} </span>{h.sonuc === 'G' ? '▲' : h.sonuc === 'M' ? '▼' : '='} {h.skor}</a>
+                    : <span class={`sonuc sonuc-${h.sonuc}`}><span class="gizli">{h.sonuc === 'G' ? _t('kazandı') : h.sonuc === 'M' ? _t('kaybetti') : _t('berabere')} </span>{h.sonuc === 'G' ? '▲' : h.sonuc === 'M' ? '▼' : '='} {h.skor}</span>) : '—'}</td>
+                  <td class="sayisal"><b>{h.sira}.</b> <span class="soluk">({h.guc})</span></td>
+                  <td class="sayisal">{kayit(h.hk)}</td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      </div>
+
+    </section>
+
+    <section class="panel" aria-labelledby="gs-baslik">
+      <h3 id="gs-baslik" class="kutu-baslik">{_t('Güç sırası seyri')}</h3>
+      <p class="kutu-alt">{_t('Yukarı = daha iyi. Her nokta bir hafta.')}</p>
+      <div class="seyir-grafik" aria-hidden="true">
+        <div class="sg-alan">
+          {[1, Math.round((n + 1) / 2), n].map((r) => <span class="sg-cizgi" style={`top:${gy(r)}%`}><span>{r}.</span></span>)}
+          {haftalar.length > 1 && (
+            <svg class="sg-yol" viewBox="0 0 100 100" preserveAspectRatio="none"><polyline points={cizgi} /></svg>
+          )}
+          {haftalar.map((h: any, i: number) => <span class="sg-nokta" style={`left:${gx(i)}%;top:${gy(h.sira)}%`} data-ipucu={_t('{0}. sıra|Hafta {1} · güç {2}|{3}', [h.sira, h.hafta, h.guc, h.sonuc ? `${h.sonuc === 'G' ? _t('Kazandı') : h.sonuc === 'M' ? _t('Kaybetti') : _t('Berabere')} ${h.skor}` : ''])}></span>)}
+        </div>
+        <div class="sg-haftalar">
+          {haftalar.map((h: any, i: number) => <span style={`left:${gx(i)}%`}>H{h.hafta}</span>)}
+        </div>
+      </div>
+      <p class="gizli">{_t('Haftalık güç sırası: {0}', [haftalar.map((h: any) => _t('Hafta {0}: {1}.', [h.hafta, h.sira])).join(', ')])}</p>
+    </section>
+  </div>
+
+  <section class="panel" aria-labelledby="karne-baslik">
+    <h3 id="karne-baslik" class="kutu-baslik">{_t('Kategori karnesi')}<Bilgi baslik={_t('Kategori karnesi')}>{_t('Satır kategori, sütun hafta. Hücredeki sayı o haftanın kategori sırası (1 en iyi, {TAKIM} en kötü); son sütun sezon toplamı. Mavi üst, kırmızı alt sıralar.')}</Bilgi></h3>
+    <p class="kutu-alt">{_t('Her haftanın kategori sırası (1 en iyi, {0} en kötü) ve sezon toplamı. Mavi üst, kırmızı alt sıralar.', [n])}</p>
+    <div class="tablo-kutu">
+      <table class="isi-tablosu karne-tablosu">
+        <caption class="gizli">{_t('{0}: haftalara göre kategori sıraları', [t.ad])}</caption>
+        <thead>
+          <tr>
+            <th scope="col" class="sabit sabit-2">{_t('Kategori')}</th>
+            {haftaKapsam.map((h: any) => <th scope="col" class="ortali">{_t('Hafta {0}', [h.hafta])}</th>)}
+            <th scope="col" class="ortali">{_t('Sezon')}</th>
+          </tr>
+        </thead>
+        <tbody>
+          {KATEGORILER.map((kat) => (
+            <tr>
+              <th scope="row" class="sabit sabit-2"><abbr title={KATEGORI_ADI[kat]}>{kat}</abbr> <span class="soluk">{KATEGORI_ADI[kat]}</span></th>
+              {haftaKapsam.map((h: any) => {
+                const r = h.k.sira[t.id]?.[kat];
+                return <td class={`isi-hucre ${isiSinifi(r)}`} data-ipucu={_t('{0}|Hafta {1} · {2}|{3}. sıra', [bicimle(h.k.ist[t.id]?.[kat], kat), h.hafta, KATEGORI_ADI[kat], r ?? '—'])}>{r ?? '—'}</td>;
+              })}
+              <td class={`isi-hucre ${isiSinifi(ks.sira[t.id][kat])}`} data-ipucu={_t('{0}|Sezon · {1}|{2}. sıra', [bicimle(ks.ist[t.id][kat], kat), KATEGORI_ADI[kat], ks.sira[t.id][kat]])}>{ks.sira[t.id][kat] ?? '—'}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  </section>
+</section>
+  </Onizleme>
+</section>
+<section class="takim-ac bolum-hedef" id="kadro-ac" aria-labelledby="kadro-ac-baslik">
+  <h2 id="kadro-ac-baslik" class="takim-ac-ad">{_t('Kadro')}</h2>
+  <Onizleme cipler={[HO?.oyuncusu ? _t('Haftanın oyuncusu: {0}', [HO.oyuncusu.name]) : null, HO?.faciasi ? _t('Faciası: {0}', [HO.faciasi.name]) : null]}>
+<DraftKartlari sayi={sayi} takimId={t.id} />
+<KadroListesi sayi={sayi} takimId={t.id} id="kadro" />
+  </Onizleme>
+</section>
+{KG && (
+<section class="takim-ac bolum-hedef" id="koc-karnesi" aria-labelledby="koc-karnesi-baslik">
+  <h2 id="koc-karnesi-baslik" class="takim-ac-ad">{_t('Koçun karnesi')}</h2>
+  <Onizleme cipler={KG ? (KG.sezonlar.length ? [_t('Şampiyonluk {0}', [KG.sampiyonluk]), _t('Tüm zamanlar {0}', [kgYaz(KG.eslesme)]), KG.enIyi ? _t('En iyi: {0}. ({1})', [KG.enIyi.sira, KG.enIyi.etiket]) : null] : [_t('Ligdeki ilk sezonu')]) : []}>
+  <section class="koc-kutular" aria-labelledby="koc-karnesi-baslik">
+    <p class="koc-bilgi">{_t('Nasıl hesaplanır')}<Bilgi baslik={_t('Koçun karnesi')}>{_t('2022\'den beri aynı Yahoo yöneticisinin takımları; takım adı sezondan sezona değişebilir. Sıra eleme turu dahil sezon sonu sırası. Kayıt haftalık eşleşmeler (eleme turu ve bu sezon dahil). Rakipler bugünkü koçlar arasından, en az 3 karşılaşma. Sezon sezon tablo Kupa Dolabı\'nda.')}</Bilgi></p>
+    {KG.sezonlar.length ? (
+      <ul class="koc-izgara">
+        <li class="koc-kutu koc-kutu--altin"><span>{_t('Şampiyonluk')}</span><b>{KG.sampiyonluk}</b>{KG.sampiyonluk > 0 && <small>{KG.sezonlar.filter((x: any) => x.sira === 1).map((x: any) => x.etiket).join(', ')}</small>}</li>
+        <li class="koc-kutu koc-kutu--altin"><span>{_t('Final')}</span><b>{KG.final}</b></li>
+        <li class="koc-kutu koc-kutu--mavi"><span>{_t('Eleme turu')}</span><b>{KT?.eleme ?? 0}</b><small>{_t('{0} sezonda', [KG.sezonlar.length])}</small></li>
+        <li class={`koc-kutu koc-kutu--genis ${(KT?.oran ?? 0) >= 0.5 ? 'koc-kutu--iyi' : 'koc-kutu--kotu'}`}><span>{_t('Tüm zamanlar')}</span><b>{kgYaz(KG.eslesme)}</b><small>{_t('%{0} kazanma · bugünkü koçlar arasında {1}.', [Math.round((KT?.oran ?? 0) * 100), KT?.oranSira])}</small></li>
+        <li class="koc-kutu koc-kutu--genis koc-kutu--iyi"><span>{_t('En iyi sezon')}</span><b>{KG.enIyi ? (KG.enIyi.sira <= 3 ? KG.enIyi.sonuc : `${KG.enIyi.sira}.`) : '—'}</b><small>{KG.enIyi?.etiket} · {KG.enIyi?.ad}</small></li>
+        <li class={`koc-kutu koc-kutu--genis koc-kutu--kotu${!favori ? ' koc-kutu--tam' : ''}`}><span>{_t('En kötü sezon')}</span><b>{KG.enKotu ? `${KG.enKotu.sira}.` : '—'}</b><small>{_t('{0} · {1} · {2} takım', [KG.enKotu?.etiket, KG.enKotu?.ad, KG.enKotu?.takimSayisi])}</small></li>
+        {favori && <li class={`koc-kutu koc-kutu--genis koc-kutu--iyi`}><span>{_t('En sevdiği rakip')}</span><a class="koc-rakip" href={kiyas(favori.id)}><TakimSimge takim={sayi.takim[favori.id]} boyut="kucuk" /><b>{ad(favori.id)}</b></a><small>{_t('{0} · {1} karşılaşma', [kgYaz(favori), favori.maclar.length])}</small></li>}
+        {kabus && kabus.id !== favori?.id && <li class="koc-kutu koc-kutu--genis koc-kutu--kotu koc-kutu--tam"><span>{_t('Kâbusu')}</span><a class="koc-rakip" href={kiyas(kabus.id)}><TakimSimge takim={sayi.takim[kabus.id]} boyut="kucuk" /><b>{ad(kabus.id)}</b></a><small>{_t('{0} · {1} karşılaşma', [kgYaz(kabus), kabus.maclar.length])}</small></li>}
+      </ul>
+    ) : <p class="koc-ilk soluk">{_t('Bu sezon ligdeki ilk yılı; karnesi sezon sonunda açılır.')}</p>}
+    {KG.sezonlar.length > 0 && <p class="bag-satiri"><a class="metin-bag" href={`${sayi.adres('kupa-dolabi')}#sezonlar`}>{_t('Sezon sezon: {0}', [KG.sezonlar.map((x: any) => x.ad).filter((v: string, i: number, a: string[]) => a.indexOf(v) === i).join(', ')])}{' '}<Ikon ad="sag" boyut={15} /></a></p>}
+  </section>
+
+  </Onizleme>
+</section>
+)}
+<section class="takim-ac bolum-hedef" id="takas" aria-labelledby="takas-baslik">
+  <h2 id="takas-baslik" class="takim-ac-ad">{_t('Takas için uyumlu takımlar')}</h2>
+  <Onizleme cipler={[_t('En uyumlu: {0} {1}/6', [ad(sayi.uyum[t.id][0].id), sayi.uyum[t.id][0].puan]), takaslar.length ? _t('{0} Takas Masası', [takaslar.length]) : null]}>
+  <section class="panel">
+    <p class="alt-metin">{_t('Puan: iki tarafın üç zayıf kategorisinden kaçında karşı taraf ilk 5\'te (en fazla 6). Oyuncu değeri veya takas adaleti ölçüsü değildir.')}</p>
+    <ol class="uyum-listesi">
+      {sayi.uyum[t.id].map((u: any) => (
+        <li><a href={kiyas(u.id)}><span>{ad(u.id)}</span><b>{u.puan}/6</b><Ikon ad="ileri" boyut={15} /></a></li>
+      ))}
+    </ol>
+    <h3 class="ara-baslik">{_t('Bu takımın Takas Masaları')}</h3>
+    {takaslar.length ? (
+      <ul class="liste-sade">
+        {takaslar.map((x: any) => (
+          <li><a href={`${sayi.adres('takas')}?${sorguAdi('takim')}=${t.slug}`}>{_t('Takas Masası {0}: {1} ⇄ {2}', [Number(x.no), x.a === t.id ? x.giveA : x.giveB, x.a === t.id ? x.giveB : x.giveA])}{' '}<span class="soluk">({ad(x.a === t.id ? x.b : x.a)})</span></a></li>
+        ))}
+      </ul>
+    ) : <p class="soluk">{_t('Bu sayıda bu takım için Takas Masası yok.')}</p>}
+    {notlar.length > 0 && (
+      <>
+        <h3 class="ara-baslik">{_t('Oyuncu notları')}</h3>
+        <ul class="liste-sade">{notlar.map((x: any) => <li><a href={oyuncuAdresi(sayi, t.id, x.name) ?? `${sayi.adres('oyuncular')}#oyuncu-notlari`}><b>{x.name}</b> · {x.label.toLocaleLowerCase(YEREL)}</a></li>)}</ul>
+      </>
+    )}
+  </section>
+
+  </Onizleme>
+</section>
+
+<nav class="takim-gezinme" aria-label={_t('Diğer takımlar')}>
+  <a href={sayi.adres('takimlar', sayi.takim[onceki].slug + '/')}><Ikon ad="sag" boyut={16} class="ters" />{ad(onceki)}</a>
+  <a href={sayi.adres('takimlar', sayi.takim[sonraki].slug + '/')}>{ad(sonraki)}<Ikon ad="sag" boyut={16} /></a>
+</nav>
+

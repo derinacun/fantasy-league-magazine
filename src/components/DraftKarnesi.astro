@@ -1,0 +1,39 @@
+---
+// Oyuncular sayfası (18 Kasım 2026): ligin en büyük 5 draft sürprizi ve 5 hayal kırıklığı. Hesap src/lib/draft.js
+import { t as _t, YEREL } from '../i18n/t.js';
+import Bilgi from './Bilgi.astro';
+import TakimSimge from './TakimSimge.astro';
+import { farkYazDraft } from '../lib/draft.js';
+interface Props { sayi: any }
+const { sayi } = Astro.props;
+const D = sayi.draft;
+const ad = (id: string) => sayi.takim[id]?.ad ?? id;
+const oyuncuAdresi = (x: any) => `${sayi.adres('takimlar', sayi.takim[x.takim].slug + '/')}#oyuncu-${x.id}`;
+const tarih = D?.tarih ? new Date(D.tarih + 'T12:00:00Z').toLocaleDateString(YEREL, { day: 'numeric', month: 'long' }) : '';
+const listeler = D ? [
+  { tur: 'surpriz', baslik: _t('Sürprizler'), liste: D.surprizler },
+  { tur: 'hayal', baslik: _t('Hayal kırıklıkları'), liste: D.hayalKiriklari },
+] : [];
+---
+{D && (
+  <section class="oyuncu-bolum bolum-hedef" id="draft" aria-labelledby="draft-baslik">
+    <h2 id="draft-baslik" class="bolum-baslik">{_t('Draft karnesi.')}{' '}<span>{_t('Kim draft yerinin üstünde, kim altında.')}</span><Bilgi baslik={_t('Draft karnesi')}>{_t('Draft sırası (genel seçim numarası) ile Yahoo\'nun bu sezonki sırası (9 kategori, {0} itibarıyla) karşılaştırılır. Artı: draft yerinden yukarıda, eksi: aşağıda. Yalnızca şu an bir kadroda olan draft oyuncuları; oyuncu şu an kimdeyse onun hanesine. Sezonun maçlarının üçte birinden ({1} maç) azında oynayanlar sayılmaz.', [tarih, D.esik])}</Bilgi></h2>
+    <div class="draft-liste-izgara">
+      {listeler.map((L) => (
+        <div class={`kart draft-liste draft-liste--${L.tur}`}>
+          <h3 class="kutu-baslik">{L.baslik}</h3>
+          <ol>
+            {L.liste.map((x: any) => (
+              <li data-takim={x.takim}>
+                <b class="draft-fark">{farkYazDraft(x.fark)}</b>
+                <span class="draft-oyuncu"><a href={oyuncuAdresi(x)}><b>{x.ad}</b></a><small>{_t('{0}. seçim → Yahoo\'da {1}. · {2} maç', [x.secim, x.sira, x.mac])}</small></span>
+                <span class="draft-sahip"><TakimSimge takim={sayi.takim[x.takim]} boyut="kucuk" /><span>{ad(x.takim)}{x.draftEden !== x.takim && <small>{_t('{0} draft etti', [ad(x.draftEden)])}</small>}</span></span>
+              </li>
+            ))}
+          </ol>
+        </div>
+      ))}
+    </div>
+    {D.oynamayanlar.length > 0 && <p class="kutu-alt draft-oynamayan">{_t('Sahaya çıkamayan draft oyuncuları: {0}', [D.oynamayanlar.map((x: any) => _t('{0} ({1}. seçim, {2})', [x.ad, x.secim, ad(x.takim)])).join(' · ')])}</p>}
+  </section>
+)}

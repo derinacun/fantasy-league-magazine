@@ -1,0 +1,14 @@
+---
+// Kehanet sayfasında bölüm başlığının altındaki tek cümlelik Hoca ya da Abi notu (18 Kasım 2026).
+// Metin: sayı dosyasındaki forecastNotes.<anahtar> = { from, text }. Yoksa hiçbir şey çıkmaz.
+import { KOSE_YAZARLARI } from '../lib/model.js';
+interface Props { not?: { from: 'hoca' | 'abi'; text: string } | null }
+const { not } = Astro.props;
+const Y = not ? KOSE_YAZARLARI[not.from] : null;
+---
+{not && Y && (
+  <p class={`kehanet-not kehanet-not--${not.from}`}>
+    <span class={`kose-simge kose-simge--${not.from}`} aria-hidden="true">{Y.harf}</span>
+    <span><b>{Y.ad}:</b> {not.text}</span>
+  </p>
+)}

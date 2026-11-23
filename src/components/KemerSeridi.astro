@@ -1,0 +1,23 @@
+---
+// Kemer şeridi (17 Kasım 2026): büyük kemerlerden biri (galibiyet, yenilgi, uyku) el değiştirince ön sayfanın en üstünde,
+// son dakika şeridinin üstünde çıkar. Bağlantılar takımlara değil Kürsü'deki ilgili kemer kartına gider. Metin: sayı dosyasındaki beltNews, yoksa src/lib/seriler.js'teki hazır cümle.
+import { t as _t } from '../i18n/t.js';
+import Ikon from './Ikon.astro';
+import { kemerCapa } from '../lib/seriler.js';
+
+interface Props { sayi: any }
+const { sayi } = Astro.props;
+const s = sayi.kemerSeridi;
+---
+{s && (
+  <aside class="son-dakika son-dakika--kemer" aria-labelledby="kemer-seridi-baslik">
+    <p class="son-dakika-etiket"><Ikon ad="kupa" boyut={15} />{s.etiket}</p>
+    <div class="son-dakika-govde">
+      <h2 id="kemer-seridi-baslik" class="son-dakika-baslik">{s.baslik}</h2>
+      {s.metin && <p class="son-dakika-metin">{s.metin}</p>}
+      <p class="son-dakika-takimlar">
+        {(s.kemerler ?? []).map((k: any) => <a href={`${sayi.adres('kursu')}#${kemerCapa(k.anahtar)}`}><Ikon ad="kupa" boyut={14} />{_t('{0} Kürsü\'de', [k.ad])}</a>)}
+      </p>
+    </div>
+  </aside>
+)}
