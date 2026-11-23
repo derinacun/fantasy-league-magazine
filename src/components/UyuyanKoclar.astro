@@ -1,0 +1,118 @@
+---
+// Ön sayfa: Uyuyan koçlar. Hesap src/lib/uyuyan.js (kadrodaki günlük diziliş + veri/nba/hafta-NN.json'daki maç kâğıtları).
+// Uyuyanlar büyük kartta, uyuklayanlar şeritte, bütün takımlar açılır tabloda. Sayı dosyasında sleepNotes varsa kartın notu odur;
+// yoksa sayılardan kısa bir cümle kurulur.
+import { t as _t } from '../i18n/t.js';
+import Bilgi from './Bilgi.astro';
+import TakimSimge from './TakimSimge.astro';
+import Ikon from './Ikon.astro';
+
+interface Props { sayi: any }
+const { sayi } = Astro.props;
+const U = sayi.uyuyan;
+const L = sayi.uykuLigi; // sezon toplamı, Altın Yastık yarışı (src/lib/uykuLigi.js)
+const ad = (id: string) => sayi.takim[id]?.ad ?? id;
+const takimAdresi = (id: string) => sayi.adres('takimlar', sayi.takim[id].slug + '/');
+const mac = (id: string) => sayi.eslesmeler.find((e: any) => e.ev === id || e.dep === id);
+const skorMetni = (id: string) => {
+  const e = mac(id);
+  if (!e) return '';
+  const rakip = e.ev === id ? e.dep : e.ev;
+  const ben = e.ev === id ? e.evSkor : e.depSkor, o = e.ev === id ? e.depSkor : e.evSkor;
+  return _t('{0}–{1}, rakip {2}', [ben, o, ad(rakip)]);
+};
+const SONUC = { kazandi: _t('Kazandı'), kaybetti: _t('Kaybetti'), berabere: _t('Berabere') } as Record<string, string>;
+const SEVIYE = { uyuyan: _t('Uyuyan koç'), uyukluyor: _t('Uyukluyor'), uyanik: _t('Uyanık') } as Record<string, string>;
+const otomatikNot = (s: any) => {
+  if (s.sonuc === 'kaybetti') return _t('Uyudu, kaybetti. Yahoo dizilişi kendi kendine kurmuyor, hatırlatalım.');
+  if (s.sonuc === 'kazandi') return _t('Uyudu, yine de kazandı. Rakibin yüzü kızarsın.');
+  return _t('Uyudu, berabere kaldı. Gözünü açsa maç onundu.');
+};
+const yedekteMetni = (s: any) => {
+  const say = new Map<string, number>();
+  for (const g of s.kacanGunler) for (const a of g.yedekte) say.set(a, (say.get(a) ?? 0) + 1);
+  return [...say.entries()].sort((a, b) => b[1] - a[1]).map(([a, n]) => (n > 1 ? `${a} (${n})` : a)).join(', ');
+};
+const yatanMetni = (s: any) => s.yatanlar.filter((y: any) => y.agir).map((y: any) => _t('{0} {1} gün{2}', [y.ad, y.gun, y.durum === 'Out' ? _t(', sakat') : ''])).join(' · ');
+---
+{U && (
+  <section class="haberler bolum-hedef uyuyan" id="uyuyan" aria-labelledby="uyuyan-baslik">
+    <h2 id="uyuyan-baslik" class="bolum-baslik">{_t('Uyuyan koçlar.')}{' '}<span>{_t('Kadroyu kuran var, başında duran yok.')}</span><Bilgi baslik={_t('Uyku puanı')}>{_t('Uyku puanı = yedekte oynayıp takıma sayılmayan maçlar + ilk beşte oynamayan oyuncunun beklediği günler (sakat ya da en az iki gün; tek günlük dinlenme sayılmaz). 5 ve üstü uyuyan, 2–4 uyukluyor. Hesap geriye dönük: maç saatinde belli olmayan son dakika kararları da girer. Bırak-al sayısı yalnızca bilgi, uyku ölçüsü değil. Karnede her satır bir takım. Ayrıntı')}{' '}<a href={sayi.adres('metodoloji')}>{_t('Metodoloji')}</a>{' '}{_t('sayfasında.')}</Bilgi></h2>
+    {L && L.lider.length > 0 && (
+      <p class="uyku-yaris" data-takim={L.satirlar.slice(0, 2).map((x: any) => x.id).join(' ')}>
+        <span class="uyku-yastik">{L.bitti ? _t('Altın Yastık') : _t('Altın Yastık yarışı')}</span>
+        {L.bitti ? _t('sahibi') : _t('lider')} <a href={takimAdresi(L.lider[0].id)}><b>{L.lider.map((x: any) => ad(x.id)).join(_t(' ve '))}</b></a>{' '}{_t('({0} puan){1}', [L.lider[0].toplam, L.satirlar[L.lider.length] && L.satirlar[L.lider.length].toplam > 0 && <>{_t(', peşinde {0} ({1})', [ad(L.satirlar[L.lider.length].id), L.satirlar[L.lider.length].toplam])}</>])}{L.liderDegisti && <b class="uyku-degisti">{' '}{_t('· liderlik el değiştirdi')}</b>}{' · '}<a class="satir-bag" href={`${sayi.adres('kursu')}#uyku-ligi`}>{_t('uyku ligi')}</a>
+      </p>
+    )}
+
+    {U.uyuyanlar.length > 0 ? (
+      <div class="uyuyan-izgara">
+        {U.uyuyanlar.map((s: any) => (
+          <article class="kart uyuyan-kart" data-takim={s.takimId}>
+            <div class="uyuyan-ust">
+              <TakimSimge takim={sayi.takim[s.takimId]} boyut="orta" />
+              <div>
+                <p class="ust-etiket uyuyan-etiket"><Ikon ad="ay" boyut={14} /> {SEVIYE[s.seviye]}</p>
+                <h3><a href={takimAdresi(s.takimId)}>{ad(s.takimId)}</a></h3>
+                {s.sonuc && <p class="soluk">{SONUC[s.sonuc]} · {skorMetni(s.takimId)}</p>}
+              </div>
+              <p class="uyuyan-puan" aria-label={_t('Uyku puanı {0}', [s.uyku])}><b>{s.uyku}</b><small>{_t('uyku')}</small></p>
+            </div>
+            <ul class="uyuyan-maddeler">
+              {s.kacan > 0 && <li><b>{_t('{0} maç', [s.kacan])}</b>{' '}{_t('yedekte oynandı, takıma sayılmadı')}{yedekteMetni(s) && <span class="soluk">: {yedekteMetni(s)}</span>}</li>}
+              {s.yatanGun > 0 && <li><b>{_t('{0} gün', [s.yatanGun])}</b>{' '}{_t('ilk beşte oynamayan oyuncu bekledi')}<span class="soluk">: {yatanMetni(s)}</span></li>}
+              <li><b>{s.islem === 0 ? _t('Hiç') : s.islem}</b>{' '}{_t('bırak-al hareketi{0}', [s.islem === 0 ? _t(' yok') : ''])}</li>
+            </ul>
+            <p class="uyuyan-not">{sayi.uyuyanNotu[s.takimId] ?? otomatikNot(s)}</p>
+          </article>
+        ))}
+      </div>
+    ) : (
+      <p class="kart uyuyan-bos">{_t('Bu hafta kimse uyumadı. Yayın kurulu şaşkın; uykucuları gelecek hafta yine arayacak.')}</p>
+    )}
+
+    {U.uyukluyanlar.length > 0 && (
+      <p class="uyukluyor-serit">
+        <span class="ust-etiket">{_t('Uyukluyor')}</span>
+        {U.uyukluyanlar.map((s: any) => (
+          <a class="uyukluyor-takim" href={takimAdresi(s.takimId)} data-takim={s.takimId}>
+            <TakimSimge takim={sayi.takim[s.takimId]} boyut="kucuk" />{ad(s.takimId)} <b>{s.uyku}</b>
+          </a>
+        ))}
+      </p>
+    )}
+
+    <details class="kart uyku-tablo">
+      <summary><span>{_t('{0} takımın uyku karnesi', [U.satirlar.length])}</span><Ikon ad="sag" boyut={16} class="kg-ok" /></summary>
+      <div class="tablo-kutu">
+        <table class="uyku-tablosu">
+          <caption class="gizli">{_t('Takım takım uyku karnesi: yedekte kalan maç, ilk beşte oynamayan oyuncu günü, bırak-al hareketi ve eşleşme sonucu')}</caption>
+          <thead>
+            <tr>
+              <th scope="col" class="sabit">{_t('Takım')}</th>
+              <th scope="col" class="sayisal">{_t('Uyku')}</th>
+              <th scope="col" class="sayisal">{_t('Yedekte kalan maç')}</th>
+              <th scope="col" class="sayisal">{_t('İlk beşte yatan gün')}</th>
+              <th scope="col" class="sayisal">{_t('Bırak-al')}</th>
+              <th scope="col">{_t('Sonuç')}</th>
+            </tr>
+          </thead>
+          <tbody>
+            {U.satirlar.map((s: any) => (
+              <tr class={`seviye-${s.seviye}`} data-takim={s.takimId}>
+                <th scope="row" class="sabit"><a class="takim-bag" href={takimAdresi(s.takimId)}><TakimSimge takim={sayi.takim[s.takimId]} boyut="kucuk" /><span>{ad(s.takimId)}</span></a></th>
+                <td class="sayisal"><b>{s.uyku}</b></td>
+                <td class="sayisal">{s.kacan}</td>
+                <td class="sayisal">{s.yatanGun}</td>
+                <td class="sayisal">{s.islem}</td>
+                <td>{SONUC[s.sonuc] ?? '—'}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </details>
+
+  </section>
+)}
+

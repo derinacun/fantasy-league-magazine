@@ -1,0 +1,8 @@
+---
+// Takas masalarındaki oyuncu adları: her ad, o takımın sayfasındaki kadro satırına bağlanır (bulunamazsa düz yazı).
+import { adParcalari } from '../lib/kadroGorunum.js';
+interface Props { sayi: any; takimId: string; metin: string }
+const { sayi, takimId, metin } = Astro.props;
+const parcalar = adParcalari(sayi, takimId, metin);
+---
+{parcalar.map((p: any) => (p.href ? <a class="oyuncu-bag" href={p.href}>{p.metin}</a> : p.metin))}

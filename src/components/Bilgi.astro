@@ -1,0 +1,12 @@
+---
+// Bilgi düğmesi (17 Kasım 2026): turuncu daire içinde "i"; dokununca açıklama kartı açılır.
+// Tabloların ve bölümlerin açıklamaları sayfaya satır eklemesin diye burada durur.
+// Tarayıcının "popover" özelliğini kullanır: dışarı dokununca ya da Esc ile kapanır. Konumu site.js ayarlar (düğmenin yanında).
+// Başlıkların (h2, h3) içine konabilir: yalnızca satır içi öğeler (span) kullanır.
+import { t as _t } from '../i18n/t.js';
+interface Props { baslik?: string; etiket?: string }
+const { baslik = '', etiket = _t('Açıklama') } = Astro.props;
+let sayac = (globalThis as any).__bilgiSayac = ((globalThis as any).__bilgiSayac ?? 0) + 1;
+const id = `bilgi-${sayac}`;
+---
+<button class="bilgi-i" type="button" popovertarget={id} aria-label={baslik ? `${baslik}: ${etiket}` : etiket} data-bilgi-dugme>i</button><span class="bilgi-kart" id={id} popover role="note" data-bilgi-kart>{baslik && <b class="bilgi-baslik">{baslik}</b>}<span class="bilgi-metin"><slot /></span></span>

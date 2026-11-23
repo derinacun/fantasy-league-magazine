@@ -1,0 +1,44 @@
+---
+// Ön sayfa "Kemerler" (17 Kasım 2026): ödül kartları gibi; yalnızca şu an sahibi olan
+// ya da bu hafta el değiştiren kemerler. Ayrıntı ve geçmiş Kürsü sayfasında.
+import { t as _t } from '../i18n/t.js';
+import TakimSimge from './TakimSimge.astro';
+import Ikon from './Ikon.astro';
+import Bilgi from './Bilgi.astro';
+import { KEMER_ESIGI, sureYaz, kemerCapa } from '../lib/seriler.js';
+
+interface Props { sayi: any }
+const { sayi } = Astro.props;
+const kemerler = (sayi.seriler?.kemerler ?? []).filter((k: any) => k.sahipler.length || k.degisim);
+const ad = (id: string) => sayi.takim[id]?.ad ?? id;
+const kursu = (k: any) => `${sayi.adres('kursu')}#${kemerCapa(k.anahtar)}`;
+const ETIKET: Record<string, string> = { ilk: _t('Yeni sahip'), gecti: _t('El değiştirdi'), 'ortak-dustu': _t('Tek sahip kaldı'), bosa: _t('Boşa düştü') };
+---
+{kemerler.length > 0 && (
+  <section class="haberler bolum-hedef" id="kemerler" aria-labelledby="kemer-baslik">
+    <h2 id="kemer-baslik" class="bolum-baslik">{_t('Kemerler.')}{' '}<span>{_t('Seriyi süren taşır.')}</span>
+      <Bilgi baslik={_t('Kemerler')}>{_t('Kemer, devam eden en uzun serinin sahibindedir: galibiyet, yenilgi, uyku (uyku puanı 5 ve üstü) ya da bir kategoride haftanın ilk 3\'ünde kalmak. Seri en az {0} hafta sürmeli; eşit seriler kemeri paylaşır; seri bitince kemer o an en uzun seriye geçer. Burada yalnızca sahibi olan ya da bu hafta el değiştiren kemerler var; hepsi Kürsü\'de.', [KEMER_ESIGI])}</Bilgi>
+    </h2>
+    <div class="odul-izgara kaydirmali">
+      {kemerler.map((k: any) => {
+        const sahip = k.sahipler.length ? k.sahipler : (k.sonSahip?.sahipler ?? []).map((id: string) => ({ id }));
+        return (
+          <a class={`kart odul kemer-odul${k.sahipler.length ? '' : ' kemer-odul--bos'}`} href={kursu(k)} data-takim={sahip.map((x: any) => x.id).join(' ') || undefined}>
+            <div class="odul-ust">
+              <span class="kemer-simge kemer-simge--buyuk" aria-hidden="true"><Ikon ad={k.ikon} boyut={24} /></span>
+              <div>
+                <h3>{k.ad}</h3>
+                <p class="seviye">{k.degisim ? ETIKET[k.degisim.tur] : k.tur === 'buyuk' ? _t('Büyük kemer') : _t('Kategori kemeri')}</p>
+              </div>
+            </div>
+            <p class="odul-deger">{k.sahipler.length ? _t('{0} haftadır', [k.sahipler[0].uzunluk]) : _t('Sahibi yok')}{k.sahipler.length > 0 && <small class="kemer-odul-alt">{k.simdi}</small>}</p>
+            {sahip.map((x: any) => <span class="odul-takim"><TakimSimge takim={sayi.takim[x.id]} boyut="kucuk" /><span>{ad(x.id)}{k.sahipler.length ? '' : _t(' · en son sahibi')}</span></span>)}
+            <p class="odul-aciklama">{k.sahipler.length
+              ? (k.aktif.find((a: any) => !k.sahipler.some((s: any) => s.id === a.id)) ? _t('Peşinde: {0} ({1} hafta)', [ad(k.aktif.find((a: any) => !k.sahipler.some((s: any) => s.id === a.id)).id), k.aktif.find((a: any) => !k.sahipler.some((s: any) => s.id === a.id)).uzunluk]) : _t('Peşinde kimse yok'))
+              : _t('Seri {0} haftada bitti; {1} haftalık seri yapan alır.', [k.sonSahip?.uzunluk ?? '', KEMER_ESIGI])}</p>
+          </a>
+        );
+      })}
+    </div>
+  </section>
+)}

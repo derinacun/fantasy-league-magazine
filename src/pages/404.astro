@@ -1,0 +1,19 @@
+---
+import { t as _t, yol } from '../i18n/t.js';
+import Kabuk from '../layouts/Kabuk.astro';
+import Ikon from '../components/Ikon.astro';
+import { tumSayilar } from '../lib/model.js';
+const { sayilar } = tumSayilar();
+const guncel = sayilar.at(-1);
+---
+<Kabuk sayi={guncel} bolum="bulunamadi" baslik={_t('Sayfa bulunamadı')} aciklama={_t('Aradığın sayfa bulunamadı.')} yolEk={(s) => s.adres()}>
+  <section class="bulunamadi">
+    <p class="buyuk-sayi" aria-hidden="true">404</p>
+    <h1 class="sayfa-baslik">{_t('Bu top auta çıktı.')}</h1>
+    <p class="alt-metin">{_t('Aradığın sayfa yok ya da taşınmış. Adres eski bir sayıya aitse arşivden bulabilirsin.')}</p>
+    <p class="dugme-satiri">
+      <a class="koyu-dugme" href="/">{_t('Ön sayfaya dön')}{' '}<Ikon ad="ileri" boyut={16} /></a>
+      <a class="dugme ikincil" href={yol('/arsiv/')}>{_t('Arşiv')}</a>
+    </p>
+  </section>
+</Kabuk>

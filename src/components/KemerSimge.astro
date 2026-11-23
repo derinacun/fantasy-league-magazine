@@ -1,0 +1,10 @@
+---
+// Kemer simgesi (17 Kasım 2026: kemerler kemer şeklinde): şampiyonluk kemeri çizimi (src/lib/simgeler.js).
+import { kemerIc } from '../lib/simgeler.js';
+interface Props { kemer: any; boyut?: number; bos?: boolean; class?: string }
+const { kemer, boyut = 72, bos = false, class: sinif = '' } = Astro.props;
+const g = globalThis as any;
+g.__kemerSayac = (g.__kemerSayac ?? 0) + 1;
+const id = `kemer-${g.__kemerSayac}`;
+---
+<svg class={`kemer-svg ${sinif}`} width={boyut} height={boyut / 2} viewBox="0 0 120 60" aria-hidden="true" focusable="false" set:html={kemerIc({ anahtar: kemer.anahtar, tur: kemer.tur, ikon: kemer.ikon, kategori: kemer.kategori, id, bos })}></svg>

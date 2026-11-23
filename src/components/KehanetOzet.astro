@@ -1,0 +1,32 @@
+---
+// Ön sayfa Kehanet özeti (17 Kasım 2026): iddia defterinin sezon skoru, Hoca ile Abi'nin kısa değerlendirmesi,
+// şans ve adil sıra tek satır; gelecek hafta kartları ve tablolar Kehanet sayfasında.
+import { t as _t, ONDALIK } from '../i18n/t.js';
+import Ikon from './Ikon.astro';
+import Bilgi from './Bilgi.astro';
+import KehanetYazi from './KehanetYazi.astro';
+import { kehanetHesapla } from '../lib/kehanet.js';
+interface Props { sayi: any }
+const { sayi } = Astro.props;
+const K = kehanetHesapla(sayi);
+const p = sayi.defter.puan;
+const ad = (id: string) => sayi.takim[id]?.ad ?? id;
+const ondalik = (v: number) => v.toFixed(1).replace('.', ONDALIK);
+const isaretli = (v: number) => (v > 0.05 ? '+' : v < -0.05 ? '−' : '±') + ondalik(Math.abs(v));
+---
+<section class="haberler bolum-hedef" id="kehanet" aria-labelledby="kehanet-baslik">
+  <h2 id="kehanet-baslik" class="bolum-baslik">{_t('Kehanet.')}{' '}<span>{_t('Hoca ile Abi.')}</span><Bilgi baslik={_t('Kehanet')}>{_t('İddia defteri: her hafta Analitik Hoca (sezon ortalamasının favorisi) ile Tribün Abi her maç için bir takım seçer; doğru tahmin 1 puan. Şans endeksi ve adil puan durumu fikstürün kime yardım ettiğini gösterir. Gelecek haftanın eşleşmeleri ve bütün tablolar Kehanet sayfasında.')}</Bilgi></h2>
+  <div class="kart kehanet-ozet">
+    <div class="kehanet-skor">
+      <p class="kemer-alt-baslik">{_t('İddia defteri · sezon')}</p>
+      <p class="defter-skor" aria-label={_t('Analitik Hoca {0}, Tribün Abi {1}', [p.hoca, p.abi])}>
+        <span class={`defter-kisi${p.hoca > p.abi ? ' onde' : ''}`}><span class="defter-ad">{_t('Analitik Hoca')}</span><b>{p.hoca}</b></span>
+        <span class="defter-ayrac" aria-hidden="true">–</span>
+        <span class={`defter-kisi${p.abi > p.hoca ? ' onde' : ''}`}><b>{p.abi}</b><span class="defter-ad">{_t('Tribün Abi')}</span></span>
+      </p>
+      <p class="kehanet-satir" data-takim={`${K.sansli.id} ${K.sanssiz.id}`}>{_t('En şanslı')}{' '}<b>{ad(K.sansli.id)}</b>{' '}{_t('{0} · en şanssız', [isaretli(K.sansli.fark)])}{' '}<b>{ad(K.sanssiz.id)}</b>{' '}{_t('{0} · adil sırada lider', [isaretli(K.sanssiz.fark)])}{' '}<b>{ad(K.adil[0].id)}</b>{' '}{_t('(Yahoo\'da {0}.)', [K.adil[0].yahooSira])}</p>
+    </div>
+    <KehanetYazi sayi={sayi} K={K} />
+    <p class="kursu-hepsi"><a class="metin-bag" href={sayi.adres('kehanet')}>{_t('Gelecek hafta, şans endeksi ve adil puan durumu')}{' '}<Ikon ad="sag" boyut={15} /></a></p>
+  </div>
+</section>

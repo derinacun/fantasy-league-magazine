@@ -1,0 +1,69 @@
+---
+// Ön sayfa Kürsü özeti (17 Kasım 2026): ödüller ve kemerler kart kart değil, tek kartta iki küçük tablo.
+// Sol: haftanın ödülleri (küçük madalya, ödül, takım, değer). Sağ: büyük kemerler + sahibi olan kategori kemerleri, satır satır.
+// Ayrıntı Kürsü sayfasında.
+import { t as _t } from '../i18n/t.js';
+import Madalya from './Madalya.astro';
+import TakimSimge from './TakimSimge.astro';
+import Ikon from './Ikon.astro';
+import Bilgi from './Bilgi.astro';
+import KemerSimge from './KemerSimge.astro';
+import { haftaOdulleri, sezonOdulleri } from '../lib/oduller.js';
+import { KEMER_ESIGI, kemerCapa } from '../lib/seriler.js';
+
+interface Props { sayi: any }
+const { sayi } = Astro.props;
+const oduller = haftaOdulleri(sayi);
+const tum = sezonOdulleri(sayi);
+const kez = (o: any) => Object.entries(tum).filter(([h]) => Number(h) <= o.hafta).flatMap(([, l]) => l as any[]).filter((x) => x.anahtar === o.anahtar && x.takim === o.takim).length;
+const seviye = (n: number) => (n >= 3 ? 'altin' : n === 2 ? 'gumus' : 'bronz');
+const kemerler = sayi.seriler?.kemerler ?? [];
+// Yalnızca şu an sahibi olan kemerler (17 Kasım 2026)
+const buyukler = kemerler.filter((k: any) => k.tur === 'buyuk' && k.sahipler.length);
+const kategoriler = kemerler.filter((k: any) => k.tur === 'kategori' && k.sahipler.length);
+const ad = (id: string) => sayi.takim[id]?.ad ?? id;
+const takimAdresi = (id: string) => sayi.adres('takimlar', sayi.takim[id].slug + '/');
+const kursu = (k: any) => `${sayi.adres('kursu')}#${kemerCapa(k.anahtar)}`;
+const ETIKET: Record<string, string> = { ilk: _t('yeni'), gecti: _t('el değiştirdi'), 'ortak-dustu': _t('tek sahip'), bosa: _t('boşa düştü') };
+---
+{(oduller.length > 0 || buyukler.length + kategoriler.length > 0) && (
+  <section class="haberler bolum-hedef" id="oduller" aria-labelledby="odul-baslik">
+    <h2 id="odul-baslik" class="bolum-baslik">{_t('Kürsü.')}{' '}<span>{_t('Haftanın ödülleri ve kemerler.')}</span><Bilgi baslik={_t('Ödüller ve kemerler')}>{_t('Ödüller her hafta yalnızca o haftanın sayılarından otomatik hesaplanır; aynı ödülü ilk kez alan bronz, ikinci kez gümüş, üçüncü kez ve sonrası altın madalya alır. Kemer, devam eden en uzun serinin sahibindedir (en az {0} hafta). Tanımlar', [KEMER_ESIGI])}{' '}<a href={sayi.adres('metodoloji')}>{_t('Metodoloji')}</a>{' '}{_t('sayfasında; hepsi Kürsü\'de.')}</Bilgi></h2>
+    <div class="kart kursu-ozet">
+      {oduller.length > 0 && (
+        <div class="kursu-ozet-sutun">
+          <h3 class="kemer-alt-baslik">{_t('Haftanın ödülleri')}</h3>
+          <ul class="kursu-liste">
+            {oduller.map((o: any) => (
+              <li class="kursu-odul-satir" data-takim={o.takim} title={o.aciklama}>
+                <Madalya odul={o.anahtar} ikon={o.ikon} seviye={seviye(kez(o))} boyut={26} />
+                <span class="kursu-ad">{o.ad}</span>
+                <a class="kursu-takim" href={takimAdresi(o.takim)}><TakimSimge takim={sayi.takim[o.takim]} boyut="kucuk" /><span>{ad(o.takim)}</span></a>
+                <b class="kursu-deger">{o.deger}</b>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+      {buyukler.length + kategoriler.length > 0 && (
+        <div class="kursu-ozet-sutun">
+          <h3 class="kemer-alt-baslik">{_t('Kemerler')}</h3>
+          <ul class="kursu-liste kursu-liste--kemer">
+            {[...buyukler, ...kategoriler].map((k: any) => {
+              const sahip = k.sahipler.length ? k.sahipler : (k.sonSahip?.sahipler ?? []).map((id: string) => ({ id }));
+              return (
+                <li data-takim={sahip.map((x: any) => x.id).join(' ') || undefined}>
+                  <KemerSimge kemer={k} boyut={52} />
+                  <a class="kursu-ad" href={kursu(k)}>{k.tur === 'kategori' ? _t('{0} kemeri', [k.kategori]) : k.kisa}{k.degisim && <em> · {ETIKET[k.degisim.tur]}</em>}</a>
+                  <span class="kursu-takim">{sahip.length ? sahip.map((x: any) => <a href={takimAdresi(x.id)}><TakimSimge takim={sayi.takim[x.id]} boyut="kucuk" /><span>{ad(x.id)}</span></a>) : <span class="soluk">{_t('boşta')}</span>}</span>
+                  <b class="kursu-deger">{k.sahipler.length ? _t('{0} hafta', [k.sahipler[0].uzunluk]) : k.sonSahip ? _t('son sahibi') : '—'}</b>
+                </li>
+              );
+            })}
+          </ul>
+        </div>
+      )}
+      <p class="kursu-hepsi"><a class="metin-bag" href={sayi.adres('kursu')}>{_t('Kürsü\'de hepsi')}{' '}<Ikon ad="sag" boyut={15} /></a></p>
+    </div>
+  </section>
+)}

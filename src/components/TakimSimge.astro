@@ -1,0 +1,9 @@
+---
+// Takım avatarı: fotoğraf varsa yuvarlak fotoğraf, yoksa renkli baş harf simgesi. Adı yanında yazdığı için süs öğesidir.
+interface Props { takim: { ad: string; harf: string; renk: string; avatar?: { src: string; en: number; boy: number } | null }; buyuk?: boolean; boyut?: 'kucuk' | 'orta' }
+const { takim, buyuk = false, boyut } = Astro.props;
+const sinif = ['simge', buyuk && 'simge--buyuk', boyut && `simge--${boyut}`].filter(Boolean).join(' ');
+---
+{takim.avatar
+  ? <img class={`${sinif} simge--foto`} src={takim.avatar.src} width={takim.avatar.en} height={takim.avatar.boy} alt="" loading="lazy" decoding="async" />
+  : <span class={sinif} style={`background:${takim.renk}`} aria-hidden="true">{takim.harf}</span>}

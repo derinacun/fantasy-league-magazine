@@ -1,0 +1,30 @@
+---
+// Haftanın ödülü kartı: madalya (kaçıncı kez alındığına göre bronz, gümüş, altın), takım, değer, açıklama.
+import { t as _t } from '../i18n/t.js';
+import Madalya from './Madalya.astro';
+import TakimSimge from './TakimSimge.astro';
+import { sezonOdulleri } from '../lib/oduller.js';
+
+interface Props { sayi: any; odul: any }
+const { sayi, odul } = Astro.props;
+// Bu takımın bu ödülü bu haftaya kadar kaç kez aldığı (bu hafta dahil)
+const kez = Object.entries(sezonOdulleri(sayi))
+  .filter(([h]) => Number(h) <= odul.hafta)
+  .flatMap(([, liste]) => liste as any[])
+  .filter((o) => o.anahtar === odul.anahtar && o.takim === odul.takim).length;
+const seviye = kez >= 3 ? 'altin' : kez === 2 ? 'gumus' : 'bronz';
+const seviyeAdi = { bronz: _t('Bronz'), gumus: _t('Gümüş'), altin: _t('Altın') }[seviye];
+const t = sayi.takim[odul.takim];
+---
+<article class={`kart odul odul--${seviye}`} data-takim={odul.takim}>
+  <div class="odul-ust">
+    <Madalya odul={odul.anahtar} ikon={odul.ikon} seviye={seviye} boyut={56} />
+    <div>
+      <h3>{odul.ad}</h3>
+      <p class={`seviye seviye--${seviye}`}>{_t('{0} · {1}. kez', [seviyeAdi, kez])}</p>
+    </div>
+  </div>
+  <p class="odul-deger">{odul.deger}</p>
+  <a class="odul-takim" href={sayi.adres('takimlar', t.slug + '/')}><TakimSimge takim={t} boyut="kucuk" /><span>{t.ad}</span></a>
+  <p class="odul-aciklama">{odul.aciklama}</p>
+</article>

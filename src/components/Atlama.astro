@@ -1,0 +1,11 @@
+---
+// Bölüm çubuğu (18 Kasım 2026): ön sayfadakiyle aynı, her sayfanın üstünde o sayfanın bölümlerine götürür.
+// Davranış ve animasyon ön sayfayla aynı (site.js: [data-atlama], okunan bölüm işaretlenir, üst çubukla birlikte daralır).
+interface Props { bolumler: { id: string; ad: string }[]; etiket: string }
+const { bolumler, etiket } = Astro.props;
+---
+{bolumler.length > 1 && (
+  <nav class="atlama cam" aria-label={etiket} data-atlama>
+    {bolumler.map((a) => <a href={`#${a.id}`} data-atla={a.id}>{a.ad}</a>)}
+  </nav>
+)}

@@ -1,0 +1,41 @@
+---
+// "Tablo ile Tribün" köşesi: Analitik Hoca ile Tribün Abi'nin haftalık tartışması, telefon mesajlaşması görünümünde.
+// Hoca solda (gri balon), Abi sağda (mavi balon). Karakterler kurgudur.
+import { t as _t, YEREL } from '../i18n/t.js';
+import { KOSE_YAZARLARI } from '../lib/model.js';
+
+interface Props { kose: { baslik: string; mesajlar: { kim: 'hoca' | 'abi'; ad: string; metin: string; ilk: boolean }[] } }
+const { kose } = Astro.props;
+const { hoca, abi } = KOSE_YAZARLARI;
+const son = (i: number) => i === kose.mesajlar.length - 1 || kose.mesajlar[i + 1].kim !== kose.mesajlar[i].kim;
+---
+<section class="kart kutu kose bolum-hedef" id="kose" aria-labelledby="kose-baslik">
+  <div class="kutu-bas">
+    <h2 id="kose-baslik" class="kutu-baslik">{_t('Tablo ile Tribün')}</h2>
+    <p class="kutu-alt">{_t('Haftanın köşesi: iki yorumcu, tek konu.')}</p>
+  </div>
+  <div class="sohbet-ekran">
+    <div class="sohbet-ust" aria-hidden="true">
+      <span class="sohbet-yuzler">
+        <span class="kose-simge kose-simge--hoca">{hoca.harf}</span>
+        <span class="kose-simge kose-simge--abi">{abi.harf}</span>
+      </span>
+      <span class="sohbet-kim">
+        <b>{_t('Tablo ile Tribün')}</b>
+        <small>{hoca.ad}, {abi.ad}</small>
+      </span>
+    </div>
+    <div class="sohbet-kaydir" tabindex="0" role="region" aria-label={_t('Tablo ile Tribün sohbeti')}>
+      <p class="sohbet-konu"><span class="gizli">{_t('Bu haftanın konusu:')}{' '}</span>{kose.baslik}</p>
+      <ol class="sohbet" data-katla="4" data-katla-etiket="mesaj">
+        {kose.mesajlar.map((m, i) => (
+          <li class={`balon balon--${m.kim}${m.ilk ? ' balon--ilk' : ''}${son(i) ? ' balon--son' : ''}`}>
+            {m.ilk ? <span class="balon-ad">{m.ad}</span> : <span class="gizli">{m.ad}: </span>}
+            <p>{m.metin}</p>
+          </li>
+        ))}
+      </ol>
+    </div>
+  </div>
+  <p class="kutu-not">{_t('{0}: {1}. {2}: {3}. İkisi de uydurma karakter.', [hoca.ad, hoca.tanim.toLocaleLowerCase(YEREL), abi.ad, abi.tanim.toLocaleLowerCase(YEREL)])}</p>
+</section>

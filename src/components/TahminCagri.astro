@@ -1,0 +1,18 @@
+---
+// Ön sayfada tahmin oyununa çağrı (18 Kasım 2026): kapanışa kadar görünür; bu cihazdan tahmin girilince kaybolur (site.js).
+import { t as _t } from '../i18n/t.js';
+import Ikon from './Ikon.astro';
+interface Props { sayi: any }
+const { sayi } = Astro.props;
+const A = sayi.tahminOyunu?.acik;
+---
+{A && sayi.guncel && (
+  <aside class="kart tahmin-cagri" data-tahmin-cagri data-hafta={A.hafta} data-kapanis={A.kapanis} aria-labelledby="tahmin-cagri-baslik" hidden>
+    <span class="tahmin-cagri-simge" aria-hidden="true"><Ikon ad="kure" boyut={22} /></span>
+    <div>
+      <h2 id="tahmin-cagri-baslik" class="kutu-baslik">{_t('Tahmin oyunu · {0}. hafta', [A.hafta])}</h2>
+      <p class="kutu-alt">{_t('{ESLESME} eşleşmenin kazananı ve haftanın maçının skoru. Hoca ile Abi de oynuyor.')}<span data-tahmin-geri></span></p>
+    </div>
+    <a class="dugme" href={`${sayi.adres('kehanet')}#tahmin`}>{_t('Tahminini gir')}</a>
+  </aside>
+)}

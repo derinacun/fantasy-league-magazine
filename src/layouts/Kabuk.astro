@@ -1,0 +1,227 @@
+---
+// Bütün sayfaların kabuğu: cam üst çubuk ve sağ üstte açılan menü paneli, sayı satırı (ön sayfada künye), içerik, alt bilgi.
+import { t as _t, YEREL, DIL, yol } from '../i18n/t.js';
+import '@fontsource/inter/latin-400.css';
+import '@fontsource/inter/latin-ext-400.css';
+import '@fontsource/inter/latin-500.css';
+import '@fontsource/inter/latin-ext-500.css';
+import '@fontsource/inter/latin-600.css';
+import '@fontsource/inter/latin-ext-600.css';
+import '@fontsource/inter/latin-700.css';
+import '@fontsource/inter/latin-ext-700.css';
+import '@fontsource/inter/latin-800.css';
+import '@fontsource/inter/latin-ext-800.css';
+import '../styles/site.css';
+import Ikon from '../components/Ikon.astro';
+import Marka from '../components/Marka.astro';
+import Kunye from '../components/Kunye.astro';
+import SayiSecici from '../components/SayiSecici.astro';
+import { BOLUMLER, EK_BOLUMLER, tumSayilar } from '../lib/model.js';
+import { sayfaKapakAdresi } from '../lib/gorsel.js';
+import { sonSampiyon } from '../lib/gecmis.js';
+import { gecmisOku } from '../lib/okuma.js';
+
+interface Props {
+  sayi: any;            // sayı modeli
+  bolum: string;        // BOLUMLER / EK_BOLUMLER anahtarı
+  baslik: string;       // sayfa başlığı (sekmede görünür)
+  aciklama: string;     // paylaşım ve arama açıklaması
+  yolEk?: (s: any) => string; // başka sayıya geçerken bu sayfanın karşılığı
+  indir?: { adres: string; ad: string } | null;
+  takim?: any;          // takım sayfasında takım (paylaşım görseli için)
+}
+const { sayi, bolum, baslik, aciklama, yolEk, indir = null, takim = null } = Astro.props;
+const { sayilar, ayarlar } = tumSayilar();
+const gazete = ayarlar.gazeteAdi ?? ayarlar.ligAdi;
+const site = Astro.site ?? new URL(ayarlar.siteAdresi);
+const mutlak = (yol: string) => new URL(yol, site).toString();
+const tamBaslik = _t('{0} · Sayı {1} | {2}', [baslik, sayi.no, gazete]);
+const ekBolum: any = EK_BOLUMLER.find((b) => b.anahtar === bolum);
+const aktifMenu = bolum === 'takim' ? 'takimlar' : ekBolum?.ust ?? bolum;
+const bolumYolu = BOLUMLER.find((b) => b.anahtar === bolum)?.yol ?? (ekBolum && bolum !== 'arsiv' ? ekBolum.yol : '');
+const haftaSecenekleri = [...sayilar].reverse().map((s) => ({
+  adres: yolEk ? yolEk(s) : s.adres(bolumYolu),
+  etiket: _t('{0}. sayı', [s.hafta]),
+  secili: s.hafta === sayi.hafta,
+}));
+const onSayfa = bolum === 'onsayfa';
+const guncelSayi = sayilar.at(-1);
+const guncelAdres = yolEk ? yolEk(guncelSayi) : guncelSayi.adres(bolumYolu);
+const sayfaAdresi = mutlak(Astro.url.pathname);
+const acilim = (ayarlar.gazeteAcilimi ?? []).join(' · ');
+// Paylaşım görseli: her sayfanın kendi kapağı (17 Kasım 2026); ön sayfa ve bilinmeyen sayfalar sayının kapağı.
+const kapak = mutlak(sayfaKapakAdresi(sayi, bolum, takim));
+// Son şampiyonun adı her yerde altın (18 Kasım 2026): takım sayfasına giden bütün bağlantılar ve [data-sampiyon-ad] işaretli adlar
+const sampiyon = sonSampiyon(gecmisOku(), sayi);
+const sampiyonCss = sampiyon ? `a[href$="${yol(`/takimlar/${sayi.takim[sampiyon.id].slug}/`)}"]:not(.dugme){color:var(--altin-yazi)!important}:is(p,span,li,dd)>a[href$="${yol(`/takimlar/${sayi.takim[sampiyon.id].slug}/`)}"]{text-decoration:underline;text-underline-offset:2px}` : '';
+const kapakAlt = onSayfa || bolum === 'bulunamadi' ? _t('{0} · Sayı {1} · {2}', [gazete, sayi.no, sayi.baslik]) : _t('{0} · Sayı {1} · {2}', [gazete, sayi.no, baslik]);
+---
+<!doctype html>
+<html lang={DIL}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content={_t('width=device-width, initial-scale=1, viewport-fit=cover')} />
+    <title>{tamBaslik}</title>
+    <meta name="description" content={aciklama} />
+    <meta name="robots" content={_t('noindex, nofollow')} />
+    <meta name="color-scheme" content={_t('light dark')} />
+    <meta name="theme-color" content="#f5f5f7" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)" />
+    <meta name="apple-mobile-web-app-title" content={gazete} />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <link rel="manifest" href="/manifest.webmanifest" />
+    <!-- Simge adresleri yeni: tarayıcılar eski "FS" simgesini aynı adreste önbellekte tutuyordu. -->
+    <link rel="icon" href="/simge-32.png" type="image/png" sizes="32x32" />
+    <link rel="icon" href="/simge.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="/simge-180.png" />
+    <link rel="canonical" href={sayfaAdresi} />
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="tr_TR" />
+    <meta property="og:site_name" content={gazete} />
+    <meta property="og:title" content={tamBaslik} />
+    <meta property="og:description" content={aciklama} />
+    <meta property="og:url" content={sayfaAdresi} />
+    <meta property="og:image" content={kapak} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content={kapakAlt} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={tamBaslik} />
+    <meta name="twitter:description" content={aciklama} />
+    <meta name="twitter:image" content={kapak} />
+    {sampiyonCss && <style set:html={sampiyonCss}></style>}
+  </head>
+  <body data-bolum={bolum} data-son-sayi={sayilar.at(-1).hafta} data-bildirim-anahtari={ayarlar.bildirimAnahtari ?? ''}>
+    <a class="atla" href="#icerik">{_t('İçeriğe geç')}</a>
+
+    <header class="ust">
+      <div class="ust-ic">
+        <span class="ust-zemin cam" aria-hidden="true"></span>
+        <a class="marka" href={sayi.adres()} aria-label={_t('{0} ön sayfa', [gazete])}><Marka ad={gazete} /></a>
+        <nav class="menu" aria-label={_t('Ana menü')}>
+          {BOLUMLER.map((b) => (
+            <a href={sayi.adres(b.yol)} aria-current={aktifMenu === b.anahtar ? 'page' : undefined}>{b.ad}</a>
+          ))}
+        </nav>
+        <div class="eylemler">
+          {indir && (
+            <a class="dugme ikincil indir-dugme" href={indir.adres} download={indir.ad} aria-label={_t('Tabloyu indir (.csv dosyası)')}>
+              <Ikon ad="indir" boyut={15} /><span>{_t('Tabloyu indir')}</span>
+            </a>
+          )}
+          <button class="menu-dugme" type="button" aria-expanded="false" aria-controls="menu-panel" data-menu-dugme>
+            <Ikon ad="nokta3" boyut={22} class="menu-ac" /><Ikon ad="kapat" boyut={20} class="menu-kapat" />
+            <span class="gizli" data-menu-yazi>{_t('Menüyü aç')}</span>
+          </button>
+        </div>
+      </div>
+      <div class="menu-panel cam" id="menu-panel" data-menu-panel hidden>
+        <nav class="panel-menu" aria-label={_t('Bölümler')}>
+          {[...BOLUMLER.slice(0, 2), { anahtar: 'analiz', ad: _t('Analiz'), yol: 'istatistikler/analiz', ikon: 'dagilim' }, ...BOLUMLER.slice(2)].map((b: any) => (
+            <a href={sayi.adres(b.yol)} aria-current={(bolum === 'analiz' ? b.anahtar === 'analiz' : aktifMenu === b.anahtar) ? 'page' : undefined}>
+              <span class="panel-ikon"><Ikon ad={b.ikon} boyut={20} /></span><span>{b.ad}</span>
+            </a>
+          ))}
+          <a href={yol('/arsiv/')} aria-current={bolum === 'arsiv' ? 'page' : undefined}><span class="panel-ikon"><Ikon ad="arsiv" boyut={20} /></span><span>{_t('Arşiv')}</span></a>
+        </nav>
+        <div class="panel-alt">
+          <SayiSecici secenekler={haftaSecenekleri} class="panel-sayi" />
+          <label class="panel-satir panel-benim">
+            <Ikon ad="yildiz" boyut={18} /><span>{_t('Benim takımım')}</span>
+            <select data-benim-sec aria-label={_t('Benim takımım')}>
+              <option value="">{_t('Seçilmedi')}</option>
+              {[...sayi.takimlar].sort((a: any, b: any) => a.ad.localeCompare(b.ad, YEREL)).map((t: any) => <option value={t.id}>{t.ad}</option>)}
+            </select>
+          </label>
+          <a class="panel-satir" href={sayi.adres('metodoloji')} aria-current={bolum === 'metodoloji' ? 'page' : undefined}><Ikon ad="kitap" boyut={18} /><span>{_t('Veriler ve metodoloji')}</span></a>
+          <button class="panel-satir" type="button" data-kurulum-dugme hidden><Ikon ad="ekle" boyut={18} /><span>{_t('Ana ekrana ekle')}</span></button>
+          <p class="panel-not" data-kurulum-ios hidden>{_t('iPhone\'da: Safari\'nin alt çubuğundaki Paylaş simgesine, ardından')}{' '}<b>{_t('Ana Ekrana Ekle')}</b>{_t('\'ye dokun.')}</p>
+        </div>
+      </div>
+      <div class="menu-perde" data-menu-perde hidden></div>
+    </header>
+
+    <div class="sayfa">
+      {!onSayfa && (
+        <nav class="sayi-satiri" aria-label={_t('Sayı seçimi')}>
+          <p class="sayi-bilgi"><b>{_t('{0} · {1}. sayı', [gazete, sayi.hafta])}</b> <span>{sayi.donem}</span></p>
+          <SayiSecici secenekler={haftaSecenekleri} />
+        </nav>
+      )}
+      <main id="icerik" tabindex="-1" class={onSayfa ? 'on-sayfa' : undefined}>
+        {!sayi.guncel && (
+          <p class="arsiv-uyari">{_t('Arşivdeki bir sayıya bakıyorsun.')}{' '}<a href={guncelAdres}>{_t('Güncel sayıya git')}{' '}<Ikon ad="ileri" boyut={14} /></a></p>
+        )}
+        {onSayfa && <Kunye sayi={sayi} />}
+        <slot />
+      </main>
+    </div>
+
+    <footer class="alt">
+      <div class="alt-ic">
+        <div class="alt-marka">
+          <p class="alt-ad"><Marka ad={gazete} /></p>
+          <p>{acilim}</p>
+          <p>{_t('{0} lig gazetesi · {1} takım · 9 kategori · {2} sezonu', [ayarlar.ligAdi, sayi.takimlar.length, sayi.sezonEtiketi])}</p>
+        </div>
+        <nav class="alt-baglantilar" aria-label={_t('Site haritası')}>
+          <ul>
+            {BOLUMLER.map((b) => <li><a href={sayi.adres(b.yol)}>{b.ad}</a></li>)}
+          </ul>
+          <ul>
+            <li><a href={yol('/arsiv/')} aria-current={bolum === 'arsiv' ? 'page' : undefined}>{_t('Arşiv')}</a></li>
+            <li><a href={sayi.adres('metodoloji')} aria-current={bolum === 'metodoloji' ? 'page' : undefined}>{_t('Veriler ve metodoloji')}</a></li>
+          </ul>
+        </nav>
+        <p class="alt-kurulum"><b>{_t('Ana ekrana ekle:')}</b>{' '}{_t('iPhone\'da Safari → Paylaş → Ana Ekrana Ekle. Android\'de Chrome → ⋮ menüsü → Ana ekrana ekle. Site uygulama gibi açılır.')}</p>
+        <p class="alt-son">{(() => {
+          // Yayın günü ve son veri, ayarlardaki saat diliminde (Türkiye saati, 17 Kasım 2026).
+          const tz = ayarlar.saatDilimi;
+          const veriAni = new Date(sayi.yayin);
+          const veriGunu = veriAni.toLocaleDateString('en-CA', { timeZone: tz });
+          const yayinGunu = sayi.yayinGunu ?? veriGunu;
+          const yayinYazi = new Date(yayinGunu + 'T12:00:00Z').toLocaleDateString(YEREL, { timeZone: 'UTC', day: 'numeric', month: 'long', year: 'numeric', weekday: 'long' });
+          const saat = veriAni.toLocaleTimeString(YEREL, { timeZone: tz, hour: '2-digit', minute: '2-digit' });
+          const veriYazi = veriGunu === yayinGunu ? saat : `${veriAni.toLocaleDateString(YEREL, { timeZone: tz, day: 'numeric', month: 'long' })} ${saat}`;
+          return <>{_t('Yayın:')}{' '}<time datetime={yayinGunu}>{yayinYazi}</time>{' '}{_t('· Son veri:')}{' '}<time datetime={sayi.yayin}>{veriYazi}</time>{' '}{_t('({0}) · {1}', [ayarlar.saatDilimiAdi, ayarlar.veriKaynagi ?? _t('Yahoo Fantasy')])}</>;
+        })()}</p>
+      </div>
+    </footer>
+
+    <div class="bildirim" role="status" aria-live="polite" data-bildirim></div>
+    <dialog class="takim-sor kurulum-sor" aria-labelledby="kurulum-sor-baslik" aria-describedby="kurulum-sor-aciklama" data-kurulum-sor>
+      <img class="kurulum-sor-simge" src="/simge.svg" width="56" height="56" alt="" />
+      <h2 id="kurulum-sor-baslik" tabindex="-1" autofocus>{_t('Yeni sayıyı kaçırma')}</h2>
+      <p id="kurulum-sor-aciklama">{_t('Grubun milyon mesajı arasında yeni sayı kaybolup gidiyor. {0} sitesini ana ekrana ekle; yeni sayı düşünce bildirim gelsin, takımının sonucu da içinde.', [ayarlar.gazeteAdi])}</p>
+      <ol class="kurulum-adimlar" data-kurulum-ios-adim hidden>
+        <li>{_t('Safari\'nin alt çubuğunda')}{' '}<b>{_t('Paylaş')}</b>{' '}{_t('simgesine dokun')}{' '}<span class="kurulum-paylas" aria-hidden="true"><svg width="16" height="20" viewBox="0 0 16 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M8 13V2M4 5.5 8 1.5l4 4M3 9H2v9.5h12V9h-1"/></svg></span></li>
+        <li>{_t('Listeden')}{' '}<b>{_t('Ana Ekrana Ekle')}</b>{_t('\'yi seç.')}</li>
+        <li>{_t('Ana ekrandaki {0} simgesini aç ve', [ayarlar.gazeteAdi])}{' '}<b>{_t('Bildirimleri aç')}</b>{_t('\'a dokun.')}</li>
+      </ol>
+      <button class="dugme" type="button" data-kurulum-dugme hidden>{_t('Ana ekrana ekle')}</button>
+      <button class="takim-sor-kapat" type="button" data-kurulum-sor-kapat>{_t('Daha sonra')}</button>
+    </dialog>
+    <dialog class="takim-sor bildirim-sor" aria-labelledby="bildirim-sor-baslik" data-bildirim-sor>
+      <img class="kurulum-sor-simge" src="/simge.svg" width="56" height="56" alt="" />
+      <h2 id="bildirim-sor-baslik" tabindex="-1" autofocus>{_t('Yeni sayı düşünce haber verelim mi?')}</h2>
+      <p>{_t('Pazartesi yeni sayı çıkınca tek bir bildirim: takımının sonucu ve manşet. Başka bir şey göndermeyiz.')}</p>
+      <button class="dugme" type="button" data-bildirim-ac>{_t('Bildirimleri aç')}</button>
+      <button class="takim-sor-kapat" type="button" data-bildirim-sor-kapat>{_t('Daha sonra')}</button>
+    </dialog>
+    <dialog class="takim-sor" aria-labelledby="takim-sor-baslik" aria-describedby="takim-sor-aciklama" data-takim-sor>
+      <span class="takim-sor-simge" aria-hidden="true"><Ikon ad="yildiz" boyut={24} /></span>
+      <h2 id="takim-sor-baslik" tabindex="-1" autofocus>{_t('Senin takımın hangisi?')}</h2>
+      <p id="takim-sor-aciklama">{_t('Seç, sitede takımın öne çıksın: skorun, sıran ve gelecek haftan hep en üstte. Seçimin bu tarayıcıda kalır.')}</p>
+      <select data-benim-sec aria-label={_t('Takımını seç')}>
+        <option value="">{_t('Takımını seç')}</option>
+        {[...sayi.takimlar].sort((a: any, b: any) => a.ad.localeCompare(b.ad, YEREL)).map((t: any) => <option value={t.id}>{t.ad}</option>)}
+      </select>
+      <button class="takim-sor-kapat" type="button" data-takim-sor-kapat>{_t('Şimdi değil')}</button>
+    </dialog>
+    <script>
+      import '../scripts/site.js';
+    </script>
+  </body>
+</html>

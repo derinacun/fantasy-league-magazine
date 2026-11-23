@@ -1,0 +1,15 @@
+---
+// Ödül madalyası: her ödülün kendi şekli, kurdele renkleri ve simgesi var (çizim src/lib/simgeler.js).
+// Seviye, takımın o ödülü kaçıncı kez aldığına göre: 1 bronz, 2 gümüş, 3 ve üstü altın.
+import { t as _t } from '../i18n/t.js';
+import { madalyaIc } from '../lib/simgeler.js';
+
+interface Props { odul: string; ikon: string; seviye: 'bronz' | 'gumus' | 'altin'; boyut?: number; etiket?: string }
+const { odul, ikon, seviye, boyut = 64, etiket } = Astro.props;
+// Aynı sayfada birden çok madalya olacağı için tanım kimlikleri tekil
+const g = globalThis as any;
+g.__madalyaSayac = (g.__madalyaSayac ?? 0) + 1;
+const id = `madalya-${g.__madalyaSayac}`;
+const seviyeAdi = { bronz: 'bronz', gumus: _t('gümüş'), altin: _t('altın') }[seviye];
+---
+<svg class={`madalya madalya--${seviye}`} width={boyut} height={boyut * 1.25} viewBox="0 0 64 80" role={etiket ? 'img' : undefined} aria-label={etiket ? `${etiket} madalyası, ${seviyeAdi}` : undefined} aria-hidden={etiket ? undefined : 'true'} focusable="false" set:html={madalyaIc({ odul, ikon, seviye, id })}></svg>

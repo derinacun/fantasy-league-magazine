@@ -1,0 +1,81 @@
+---
+// Tüm bölüm sayfaları bu dosyadan üretilir.
+// Güncel sayı kök adreslerde (/, /istatistikler/ ...), her sayı ayrıca /hafta/N/... altında yayınlanır.
+import { t as _t, yol, dosyaAdi } from '../i18n/t.js';
+import Kabuk from '../layouts/Kabuk.astro';
+import OnSayfa from '../components/bolumler/OnSayfa.astro';
+import Istatistikler from '../components/bolumler/Istatistikler.astro';
+import Karsilastir from '../components/bolumler/Karsilastir.astro';
+import Takimlar from '../components/bolumler/Takimlar.astro';
+import TakimDetay from '../components/bolumler/TakimDetay.astro';
+import Oyuncular from '../components/bolumler/Oyuncular.astro';
+import Takas from '../components/bolumler/Takas.astro';
+import Metodoloji from '../components/bolumler/Metodoloji.astro';
+import Analiz from '../components/bolumler/Analiz.astro';
+import Kursu from '../components/bolumler/Kursu.astro';
+import Kehanet from '../components/bolumler/Kehanet.astro';
+import KupaDolabi from '../components/bolumler/KupaDolabi.astro';
+import { tumSayilar, sayiBul } from '../lib/model.js';
+
+export function getStaticPaths() {
+  const { sayilar } = tumSayilar();
+  const yollar: any[] = [];
+  const bolumler = ['', 'istatistikler', 'istatistikler/analiz', 'karsilastir', 'takimlar', 'oyuncular', 'takas', 'kursu', 'kehanet', 'kupa-dolabi', 'metodoloji'];
+  for (const s of sayilar) {
+    const onekler = s.guncel ? [[], ['hafta', String(s.hafta)]] : [['hafta', String(s.hafta)]];
+    for (const onek of onekler) {
+      for (const b of bolumler) {
+        const parca = [...onek, ...(b ? [b] : [])];
+        yollar.push({ params: { yol: parca.length ? yol('/' + parca.join('/') + '/').slice(1, -1) : undefined }, props: { hafta: s.hafta, bolum: b === 'istatistikler/analiz' ? 'analiz' : b === 'kupa-dolabi' ? 'kupa' : b || 'onsayfa' } });
+      }
+      for (const t of s.takimlar) {
+        yollar.push({ params: { yol: yol('/' + [...onek, 'takimlar', t.slug].join('/') + '/').slice(1, -1) }, props: { hafta: s.hafta, bolum: 'takim', slug: t.slug } });
+      }
+    }
+  }
+  return yollar;
+}
+
+const { hafta, bolum, slug } = Astro.props as { hafta: number; bolum: string; slug?: string };
+const sayi = sayiBul(hafta);
+const takim = slug ? sayi.takimlar.find((t: any) => t.slug === slug) : null;
+const kv = sayi.kapsam.hafta;
+
+const sayfa: Record<string, { baslik: string; aciklama: string }> = {
+  onsayfa: { baslik: _t('Ön sayfa'), aciklama: sayi.spot },
+  istatistikler: { baslik: _t('İstatistikler'), aciklama: _t('Sayı {0}: fikstürden bağımsız güç sıralaması ve 9 kategorinin tamamı. Lider: {1} ({2}/{3}).', [sayi.no, sayi.takim[sayi.gucLideri].ad, kv.guc[sayi.gucLideri], kv.maxGuc]) },
+  analiz: { baslik: _t('Analiz'), aciklama: _t('Sayı {0}: ısı haritası, herkese karşı matrisi, haftalık seyir, kategori dağılımları ve kendi grafiğini kur.', [sayi.no]) },
+  karsilastir: { baslik: _t('Karşılaştır'), aciklama: _t('İki takımı 9 kategoride yan yana koy: son hafta veya sezon toplamı.') },
+  takimlar: { baslik: _t('Takımlar'), aciklama: _t('{0} takımın güç sırası, güçlü kategorileri ve takas uyumu.', [sayi.takimlar.length]) },
+  oyuncular: { baslik: _t('Oyuncular'), aciklama: _t('Haftanın oyuncu notları: {0}.', [sayi.oyuncuNotlari.map((n: any) => n.name).slice(0, 4).join(', ')]) },
+  takas: { baslik: _t('Takas Masaları'), aciklama: _t('{0} takas görüşmesi ve ligde yapılan takasların karnesi.', [sayi.takaslar.length]) },
+  kursu: { baslik: _t('Kürsü'), aciklama: _t('Kemerler: {0}.', [sayi.seriler.kemerler.filter((k: any) => k.tur === 'buyuk').map((k: any) => `${k.kisa} ${k.sahipler.length ? k.sahipler.map((x: any) => sayi.takim[x.id].ad).join(_t(' ve ')) + ' (' + _t('{0} hafta', [k.sahipler[0].uzunluk]) + ')' : _t('boşta')}`).join(' · ')]) },
+  kehanet: { baslik: _t('Kehanet'), aciklama: _t('İddia defteri: Analitik Hoca {0} – Tribün Abi {1}. Gelecek haftanın tahminleri, şans endeksi ve fikstür eşit olsaydı puan durumu.', [sayi.defter.puan.hoca, sayi.defter.puan.abi]) },
+  kupa: { baslik: _t('Kupa Dolabı'), aciklama: _t('2022\'den beri şampiyonlar, tüm zamanlar tablosu, rekorlar ve sezon sezon sıralamalar.') },
+  metodoloji: { baslik: _t('Metodoloji'), aciklama: _t('Verilerin kaynağı, güç puanı ve herkese karşı hesabının nasıl yapıldığı.') },
+};
+const bilgi = takim
+  ? { baslik: takim.ad, aciklama: sayi.takimNotu[takim.id] ?? _t('{0}: güç {1}/{2}, en güçlü kategoriler {3}.', [takim.ad, kv.guc[takim.id], kv.maxGuc, kv.enIyi(takim.id).join(', ')]) }
+  : sayfa[bolum];
+const yolEk = takim
+  ? (s: any) => (s.takimlar.some((t: any) => t.slug === slug) ? s.adres('takimlar', slug + '/') : s.adres('takimlar'))
+  : undefined;
+const indir = bolum === 'istatistikler'
+  ? { adres: yol(`/tablo/hafta-${sayi.no}-son-hafta.csv`), ad: dosyaAdi(`hafta-${sayi.no}-son-hafta.csv`) }
+  : null;
+---
+<Kabuk sayi={sayi} bolum={bolum} baslik={bilgi.baslik} aciklama={bilgi.aciklama} yolEk={yolEk} indir={indir} takim={takim}>
+  {bolum === 'onsayfa' && <OnSayfa sayi={sayi} />}
+  {bolum === 'istatistikler' && <Istatistikler sayi={sayi} />}
+  {bolum === 'kursu' && <Kursu sayi={sayi} />}
+  {bolum === 'kehanet' && <Kehanet sayi={sayi} />}
+  {bolum === 'kupa' && <KupaDolabi sayi={sayi} />}
+  {bolum === 'analiz' && <Analiz sayi={sayi} />}
+  {bolum === 'karsilastir' && <Karsilastir sayi={sayi} />}
+  {bolum === 'takimlar' && <Takimlar sayi={sayi} />}
+  {bolum === 'takim' && <TakimDetay sayi={sayi} slug={slug} />}
+  {bolum === 'oyuncular' && <Oyuncular sayi={sayi} />}
+  {bolum === 'takas' && <Takas sayi={sayi} />}
+  {bolum === 'metodoloji' && <Metodoloji sayi={sayi} />}
+</Kabuk>
+

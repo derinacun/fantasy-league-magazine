@@ -1,0 +1,29 @@
+---
+import { t as _t, yol, yolParcasi } from '../i18n/t.js';
+import Kabuk from '../layouts/Kabuk.astro';
+import Ikon from '../components/Ikon.astro';
+import { tumSayilar } from '../lib/model.js';
+const { sayilar, ayarlar } = tumSayilar();
+const gazete = ayarlar.gazeteAdi ?? ayarlar.ligAdi;
+const guncel = sayilar.at(-1);
+export function getStaticPaths() { return [{ params: { arsiv: yolParcasi('arsiv') } }]; }
+---
+<Kabuk sayi={guncel} bolum="arsiv" baslik={_t('Arşiv')} aciklama={_t('{0} arşivi: bütün sayılar.', [gazete])} yolEk={() => yol('/arsiv/')}>
+  <h1 class="sayfa-baslik">{_t('Arşiv.')}</h1>
+  <p class="alt-metin">{_t('Her sayı, yayımlandığı haftanın verisiyle olduğu gibi saklanır.')}</p>
+  <ol class="arsiv-listesi" reversed>
+    {[...sayilar].reverse().map((s) => (
+      <li>
+        <a class="panel arsiv-kart" href={yol(`/hafta/${s.hafta}/`)}>
+          <span class="arsiv-no" aria-hidden="true" data-no={s.no}></span>
+          <span class="arsiv-metin">
+            <span class="ust-etiket">{_t('Sayı {0} · {1}', [s.no, s.donem])}{s.guncel && <span class="durum-etiketi iyi">{_t('Güncel')}</span>}</span>
+            <strong>{s.baslik}</strong>
+            <span class="soluk">{s.spot}</span>
+          </span>
+          <Ikon ad="ileri" boyut={18} />
+        </a>
+      </li>
+    ))}
+  </ol>
+</Kabuk>
